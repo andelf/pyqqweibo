@@ -5,7 +5,7 @@
 #  Created     : Mon Apr 04 01:12:20 2011 by Feather.et.ELF 
 #  Copyright   : Feather Workshop (c) 2011 
 #  Description : A example file 
-#  Time-stamp: <2011-04-04 01:41:22 andelf> 
+#  Time-stamp: <2011-04-05 03:23:09 andelf> 
 
 
 import sys
@@ -106,3 +106,48 @@ print api.info()
 
 # TEST: ok
 print api.other_info(name='andelf')
+
+# TEST: ok
+#print 'Fans:', len(api.fanslist()['data']['info']) # max=30
+
+# TEST: ok
+#print 'Idols:', len(api.idollist()['data']['info']) # max=30
+
+# TEST: ok
+#print 'Blacks:', api.blacklist()
+
+# TEST: unkown
+#print 'Special:', api.speciallist()
+
+# TEST: ok
+#print api.fadd(name='andelf')
+
+# TEST: ok
+#print api.fdelete(name='zhudeyong')
+
+# TEST: unkown
+#print api.addspecial(name='NBA')
+
+# TEST: fail
+#print api.addblacklist(name='NBA')
+
+# TEST: fail
+#print api.delblacklist(name='NBA')
+
+# TEST: ok
+#print api.check(names='NBA,zhudeyong')
+
+# TEST: ok
+#print api.user_fanslist(name='NBA')
+
+# TEST: ok
+#print api.user_idollist(name='NBA')
+
+# TEST: fail
+#print api.user_speciallist(name='NBA')
+
+# TEST: fail
+print api.padd(content=u'test from api', clientip='127.0.0.1',
+               name=u'yuanfeishu')
+
+

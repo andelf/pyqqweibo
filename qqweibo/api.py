@@ -280,6 +280,172 @@ class API(object):
     )
 
 
+    ## 关系链相关 ##
+    """ 1.friends/fanslist 我的听众列表 """
+    fanslist = bind_api(
+        path = '/api/friends/fanslist',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'reqnum', 'startindex'],
+        require_auth = True
+    )
+
+    """ 2.friends/idollist 我收听的人列表 """
+    idollist = bind_api(
+        path = '/api/friends/idollist',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'reqnum', 'startindex'],
+        require_auth = True
+    )
+
+    """ 3.Friends/blacklist 黑名单列表 """
+    blacklist = bind_api(
+        path = '/api/friends/blacklist',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'reqnum', 'startindex'],
+        require_auth = True
+    )    
+
+    """ 4.Friends/speciallist 特别收听列表 """
+    speciallist = bind_api(
+        path = '/api/friends/speciallist',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'reqnum', 'startindex'],
+        require_auth = True
+    )    
+
+
+    """ 5.friends/add 收听某个用户 """
+    # TODO: fix confilicts with add message
+    fadd = bind_api(
+        path = '/api/friends/add',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'name'],
+        require_auth = True
+    )    
+
+    """ 6.friends/del取消收听某个用户 """
+    # TODO: fix confilicts with add message
+    fdelete = bind_api(          # fix confilicts with del
+        path = '/api/friends/del',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'name'],
+        require_auth = True
+    )    
+
+    """ 7.friends/addspecial 特别收听某个用户 """
+    addspecial = bind_api(
+        path = '/api/friends/addspecial',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'name'],
+        require_auth = True
+    )    
+
+    """ 8.friends/delspecial 取消特别收听某个用户 """
+    delspecial = bind_api(
+        path = '/api/friends/delspecial',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'name'],
+        require_auth = True
+    )    
+
+    """ 9.friends/addblacklist 添加某个用户到黑名单 """
+    addblacklist = bind_api(
+        path = '/api/friends/addblacklist',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'name'],
+        require_auth = True
+    )    
+
+    """ 10.friends/delblacklist 从黑名单中删除某个用户 """
+    delblacklist = bind_api(
+        path = '/api/friends/delblacklist',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'name'],
+        require_auth = True
+    )    
+
+
+    """ 11.friends/check 检测是否我的听众或收听的人 """
+    check = bind_api(
+        path = '/api/friends/check',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'names', 'flag'],
+        require_auth = True
+    )    
+
+    """ 12.friends/user_fanslist 其他帐户听众列表 """
+    user_fanslist = bind_api(
+        path = '/api/friends/user_fanslist',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'reqnum', 'startindex', 'name'],
+        require_auth = True
+    )
+
+    """ 13.friends/user_idollist 其他帐户收听的人列表 """
+    user_idollist = bind_api(
+        path = '/api/friends/user_idollist',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'reqnum', 'startindex', 'name'],
+        require_auth = True
+    )
+
+    """ 14.friends/user_speciallist 其他帐户特别收听的人列表 """
+    user_speciallist = bind_api(
+        path = '/api/friends/user_speciallist',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'reqnum', 'startindex', 'name'],
+        require_auth = True
+    )    
+
+
+    ## 私信相关 ""
+    """ 1.private/add 发私信 """
+    padd = bind_api(
+        path = '/api/private/add',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'content', 'clientip', 'jing',
+                         'wei', 'name'],
+        require_auth = True
+    )
+
+    """ 2.private/del 删除一条私信 """
+    pdel = bind_api(
+        path = '/api/private/del',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'id'],
+        require_auth = True
+    )
+
+    """ 3.private/recv 收件箱 """
+    recv = bind_api(
+        path = '/api/private/recv',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum',
+                         'lastid'],
+        require_auth = True
+    )
+
+    """ 4.private/send 发件箱 """
+    send = bind_api(
+        path = '/api/private/send',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum',
+                         'lastid'],
+        require_auth = True
+    )
+
+    ## 搜索相关 ##
+
+
+
 
     ####################
     

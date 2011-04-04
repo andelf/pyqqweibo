@@ -1,0 +1,9 @@
+2011-04-05  andelf  <andelf@gmail.com>
+	* qqweibo/api.py
+	加入 关系链相关 私信相关 API
+	* example.py
+	加入相关测试
+
+2011-04-03  andelf <andelf@gmail.com>
+	* README
+	初始 repos, 基本可用
