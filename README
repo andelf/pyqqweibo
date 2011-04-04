@@ -1,3 +1,9 @@
 腾讯微博 API Python 绑定。
 基于 Twitter API 修改。
 By andelf <andelf@gmail.com>
+
+已经完成: Oauth授权, 时间线, 微博相关, 帐户相关 API
+
+TODO: add full api
+      model parser
+      add more examples
