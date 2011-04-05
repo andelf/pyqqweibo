@@ -14,7 +14,7 @@ from parsers import ModelParser
 
 class API(object):
     """Weibo API"""
-
+    # TODO: remove unsupported params
     def __init__(self, auth_handler=None,
             host='open.t.qq.com', search_host='open.t.qq.com',
             cache=None, secure=False, api_root='', search_root='',
@@ -443,28 +443,51 @@ class API(object):
     )
 
     ## 搜索相关 ##
+    """ 1.Search/user 搜索用户 """
+    user = bind_api(
+        path = '/api/search/user',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'keyword', 'pagesize', 'page'],
+        require_auth = True
+    )
 
+    """ 2.Search/t 搜索微博 """
+    t = bind_api(
+        path = '/api/search/t',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'keyword', 'pagesize', 'page'],
+        require_auth = True
+    )
+
+    """ 3.Search/userbytag 通过标签搜索用户 """
+    userbytag = bind_api(
+        path = '/api/search/userbytag',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'keyword', 'pagesize', 'page'],
+        require_auth = True
+    )
+
+    ## 热度，趋势 ##
+    """ 1.trends/ht 话题热榜 """
+    ht = bind_api(
+        path = '/api/trends/ht',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'type', 'reqnum', 'pos'],
+        require_auth = True
+    )
+
+    ## 数据更新相关 ##
+    """ 1.info/update 查看数据更新条数 """
+    iupdate = bind_api(
+        path = '/api/info/update',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['format', 'op', 'type'],
+        require_auth = True
+    )
 
 
 
     ####################
-    
-    """ status """
-    comment_destroy  = bind_api(
-        path = '/statuses/comment_destroy/{id}.json',
-        method = 'POST',
-        payload_type = 'comments',
-        allowed_param = ['id'],
-        require_auth = True
-    )
-    
-    """ statuses/comments_timeline """
-    comments = bind_api(
-        path = '/statuses/comments.json',
-        payload_type = 'comments', payload_list = True,
-        allowed_param = ['id', 'count', 'page'],
-        require_auth = True
-    )
     
     """ statuses/comments_timeline """
     comments_timeline = bind_api(

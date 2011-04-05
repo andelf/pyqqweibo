@@ -1,6 +1,6 @@
 2011-04-05  andelf  <andelf@gmail.com>
 	* qqweibo/api.py
-	加入 关系链相关 私信相关 API
+	加入 关系链相关 私信相关 搜索相关 热度，趋势 数据更新相关 API
 	* example.py
 	加入相关测试
 
