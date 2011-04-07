@@ -40,7 +40,7 @@ class Status(Model):
 
     @classmethod
     def parse(cls, api, json):
-        status = cls(api)
+        status = cls(api); print json
         for k, v in json.items():
             if k == 'user':
                 user = User.parse(api, v)

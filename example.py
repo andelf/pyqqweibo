@@ -5,7 +5,7 @@
 #  Created     : Mon Apr 04 01:12:20 2011 by Feather.et.ELF 
 #  Copyright   : Feather Workshop (c) 2011 
 #  Description : A example file 
-#  Time-stamp: <2011-04-05 03:23:09 andelf> 
+#  Time-stamp: <2011-04-07 13:31:59 andelf> 
 
 
 import sys
@@ -20,6 +20,7 @@ from qqweibo.parsers import JSONParser
 
 a = OAuthHandler('your key','your secret')
 
+# use this
 print a.get_authorization_url()
 verifier = raw_input('PIN: ').strip()
 a.get_access_token(verifier)
@@ -151,3 +152,59 @@ print api.padd(content=u'test from api', clientip='127.0.0.1',
                name=u'yuanfeishu')
 
 
+# TEST: fail, access rate limit
+#print api.recv()
+
+# TEST: fail, access rate limit
+#print api.send()
+
+# TEST: fail, access rate limit
+#print api.user(u'杯具')
+
+# TEST: fail, access rate limit
+#print api.t(u'杯具')
+
+print '-'* 20
+# TEST: fail, access rate limit
+#print api.userbytag(u'python', 15)            
+
+#print api.ht()
+
+# TEST: ok
+#print api.iupdate(op=0)
+
+####################
+
+# TEST: ok
+#print api.list_t()
+
+# TEST: ok
+#print api.addt(42035130239926)
+
+# TEST: ok
+#print api.delt(42035130239926)
+
+####################
+
+# TEST: unkown, server error
+#print api.list_ht()
+
+# TEST: ok
+#print api.addht(12345678)
+
+#print api.delht(12345678)
+
+####################
+
+# TEST: ok
+print api.ids(u'地震')
+
+# TEST: ok
+print api.hinfo(5149259073282301489)
+
+# TEST: fail
+#print api.tadd(u'python')
+#print api.tdel(...)
+
+# TEST: fail
+print api.kownperson(ip='202.118.17.168')

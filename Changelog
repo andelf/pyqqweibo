@@ -1,3 +1,9 @@
+2011-04-07  andelf  <anelf@gmail.com>
+	* qqweibo/api.py
+	加入剩余所有 API, format 参数删除
+	* qqweibo/binder.py
+	加入 format 参数 json
+
 2011-04-05  andelf  <andelf@gmail.com>
 	* qqweibo/api.py
 	加入 关系链相关 私信相关 搜索相关 热度，趋势 数据更新相关 API

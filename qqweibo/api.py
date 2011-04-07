@@ -43,7 +43,7 @@ class API(object):
     home_timeline = bind_api(
         path = '/api/statuses/home_timeline',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum'],
+        allowed_param = ['pageflag', 'pagetime', 'reqnum'],
         require_auth = True
     )
 
@@ -51,7 +51,7 @@ class API(object):
     public_timeline = bind_api(
         path = '/api/statuses/public_timeline',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'pos', 'reqnum'],
+        allowed_param = ['pos', 'reqnum'],
         require_auth = True
     )
 
@@ -59,7 +59,7 @@ class API(object):
     user_timeline = bind_api(
         path = '/api/statuses/user_timeline',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum',
+        allowed_param = ['pageflag', 'pagetime', 'reqnum',
                          'lastid', 'name'],
         require_auth = True
     )
@@ -68,7 +68,7 @@ class API(object):
     mentions_timeline = bind_api(
         path = '/api/statuses/mentions_timeline',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum',
+        allowed_param = ['pageflag', 'pagetime', 'reqnum',
                          'lastid'],
         require_auth = True
     )
@@ -77,18 +77,18 @@ class API(object):
     ht_timeline = bind_api(
         path = '/api/statuses/ht_timeline',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'httext', 'pageflag', 'pageinfo',
+        allowed_param = ['httext', 'pageflag', 'pageinfo',
                          'reqnum'],
         require_auth = True
     )
     # 个人很鄙视 ht_....
-    topic_timeline = ht_timeline
+    #topic_timeline = ht_timeline
 
     """ 6.Statuses/broadcast_timeline 我发表时间线 """
     broadcast_timeline = bind_api(
         path = '/api/statuses/broadcast_timeline',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum',
+        allowed_param = ['pageflag', 'pagetime', 'reqnum',
                          'lastid'],
         require_auth = True
     )
@@ -97,7 +97,7 @@ class API(object):
     special_timeline = bind_api(
         path = '/api/statuses/special_timeline',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum'],
+        allowed_param = ['pageflag', 'pagetime', 'reqnum'],
         require_auth = True
     )
 
@@ -106,7 +106,7 @@ class API(object):
     show = bind_api(
         path = '/api/t/show',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'id'],
+        allowed_param = ['id'],
         require_auth = True
     )
 
@@ -115,7 +115,7 @@ class API(object):
         path = '/api/t/add',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'content', 'clientip',
+        allowed_param = ['content', 'clientip',
                          'jing', 'wei'],
         require_auth = True
     )
@@ -125,7 +125,7 @@ class API(object):
         path = '/api/t/del',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'id'],
+        allowed_param = ['id'],
         require_auth = True
     )
 
@@ -134,7 +134,7 @@ class API(object):
         path = '/api/t/re_add',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'content', 'clientip',
+        allowed_param = ['content', 'clientip',
                          'jing', 'wei', 'reid'],
         require_auth = True
     )
@@ -144,7 +144,7 @@ class API(object):
         path = '/api/t/reply',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'content', 'clientip',
+        allowed_param = ['content', 'clientip',
                          'jing', 'wei', 'reid'],
         require_auth = True
     )
@@ -154,7 +154,7 @@ class API(object):
     #     path = '/api/t/add_pic',
     #     method = 'POST',
     #     payload_type = 'status', payload_list = True,
-    #     allowed_param = ['format', 'content', 'clientip',
+    #     allowed_param = ['content', 'clientip',
     #                      'jing', 'wei', 'pic'],
     #     require_auth = True
     # )
@@ -184,7 +184,7 @@ class API(object):
     re_count = bind_api(
         path = '/api/t/re_count',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'ids', 'flag'],
+        allowed_param = ['ids', 'flag'],
         require_auth = True
     )
 
@@ -192,7 +192,7 @@ class API(object):
     re_list = bind_api(
         path = '/api/t/re_list',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'flag', 'rootid', 'pageflag', 'pagetime',
+        allowed_param = ['flag', 'rootid', 'pageflag', 'pagetime',
                          'reqnum', 'twitterid',],
         require_auth = True
     )
@@ -202,7 +202,7 @@ class API(object):
         path = '/api/t/comment',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'content', 'clientip', 'jing', 'wei',
+        allowed_param = ['content', 'clientip', 'jing', 'wei',
                          'reid'],
         require_auth = True
     )
@@ -212,7 +212,7 @@ class API(object):
         path = '/api/t/add_music',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'content', 'clientip', 'jing', 'wei',
+        allowed_param = ['content', 'clientip', 'jing', 'wei',
                          'url', 'title', 'author'],
         require_auth = True
     )
@@ -222,7 +222,7 @@ class API(object):
         path = '/api/t/add_video',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'content', 'clientip', 'jing', 'wei',
+        allowed_param = ['content', 'clientip', 'jing', 'wei',
                          'url'], # supports: youku,tudou,ku6
         require_auth = True
     )
@@ -232,7 +232,7 @@ class API(object):
         path = '/api/t/getvideoinfo',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'url'], # supports: youku,tudou,ku6
+        allowed_param = ['url'], # supports: youku,tudou,ku6
         require_auth = True
     )
 
@@ -242,7 +242,7 @@ class API(object):
     info = bind_api(
         path = '/api/user/info',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format',],
+        allowed_param = [],
         require_auth = True
     )
 
@@ -251,7 +251,7 @@ class API(object):
         path = '/api/user/update',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'nick', 'sex', 'year', 'month',
+        allowed_param = ['nick', 'sex', 'year', 'month',
                          'day', 'countrycode', 'provincecode',
                          'citycode', 'introduction'],
         require_auth = True
@@ -275,7 +275,7 @@ class API(object):
     other_info = bind_api(
         path = '/api/user/other_info',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'name'],
+        allowed_param = ['name'],
         require_auth = True
     )
 
@@ -285,7 +285,7 @@ class API(object):
     fanslist = bind_api(
         path = '/api/friends/fanslist',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'reqnum', 'startindex'],
+        allowed_param = ['reqnum', 'startindex'],
         require_auth = True
     )
 
@@ -293,7 +293,7 @@ class API(object):
     idollist = bind_api(
         path = '/api/friends/idollist',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'reqnum', 'startindex'],
+        allowed_param = ['reqnum', 'startindex'],
         require_auth = True
     )
 
@@ -301,7 +301,7 @@ class API(object):
     blacklist = bind_api(
         path = '/api/friends/blacklist',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'reqnum', 'startindex'],
+        allowed_param = ['reqnum', 'startindex'],
         require_auth = True
     )    
 
@@ -309,7 +309,7 @@ class API(object):
     speciallist = bind_api(
         path = '/api/friends/speciallist',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'reqnum', 'startindex'],
+        allowed_param = ['reqnum', 'startindex'],
         require_auth = True
     )    
 
@@ -320,7 +320,7 @@ class API(object):
         path = '/api/friends/add',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'name'],
+        allowed_param = ['name'],
         require_auth = True
     )    
 
@@ -330,7 +330,7 @@ class API(object):
         path = '/api/friends/del',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'name'],
+        allowed_param = ['name'],
         require_auth = True
     )    
 
@@ -339,7 +339,7 @@ class API(object):
         path = '/api/friends/addspecial',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'name'],
+        allowed_param = ['name'],
         require_auth = True
     )    
 
@@ -348,7 +348,7 @@ class API(object):
         path = '/api/friends/delspecial',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'name'],
+        allowed_param = ['name'],
         require_auth = True
     )    
 
@@ -357,7 +357,7 @@ class API(object):
         path = '/api/friends/addblacklist',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'name'],
+        allowed_param = ['name'],
         require_auth = True
     )    
 
@@ -366,7 +366,7 @@ class API(object):
         path = '/api/friends/delblacklist',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'name'],
+        allowed_param = ['name'],
         require_auth = True
     )    
 
@@ -375,7 +375,7 @@ class API(object):
     check = bind_api(
         path = '/api/friends/check',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'names', 'flag'],
+        allowed_param = ['names', 'flag'],
         require_auth = True
     )    
 
@@ -383,7 +383,7 @@ class API(object):
     user_fanslist = bind_api(
         path = '/api/friends/user_fanslist',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'reqnum', 'startindex', 'name'],
+        allowed_param = ['reqnum', 'startindex', 'name'],
         require_auth = True
     )
 
@@ -391,7 +391,7 @@ class API(object):
     user_idollist = bind_api(
         path = '/api/friends/user_idollist',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'reqnum', 'startindex', 'name'],
+        allowed_param = ['reqnum', 'startindex', 'name'],
         require_auth = True
     )
 
@@ -399,7 +399,7 @@ class API(object):
     user_speciallist = bind_api(
         path = '/api/friends/user_speciallist',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'reqnum', 'startindex', 'name'],
+        allowed_param = ['reqnum', 'startindex', 'name'],
         require_auth = True
     )    
 
@@ -410,7 +410,7 @@ class API(object):
         path = '/api/private/add',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'content', 'clientip', 'jing',
+        allowed_param = ['content', 'clientip', 'jing',
                          'wei', 'name'],
         require_auth = True
     )
@@ -420,7 +420,7 @@ class API(object):
         path = '/api/private/del',
         method = 'POST',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'id'],
+        allowed_param = ['id'],
         require_auth = True
     )
 
@@ -428,7 +428,7 @@ class API(object):
     recv = bind_api(
         path = '/api/private/recv',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum',
+        allowed_param = ['pageflag', 'pagetime', 'reqnum',
                          'lastid'],
         require_auth = True
     )
@@ -437,7 +437,7 @@ class API(object):
     send = bind_api(
         path = '/api/private/send',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'pageflag', 'pagetime', 'reqnum',
+        allowed_param = ['pageflag', 'pagetime', 'reqnum',
                          'lastid'],
         require_auth = True
     )
@@ -447,7 +447,7 @@ class API(object):
     user = bind_api(
         path = '/api/search/user',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'keyword', 'pagesize', 'page'],
+        allowed_param = ['keyword', 'pagesize', 'page'],
         require_auth = True
     )
 
@@ -455,7 +455,7 @@ class API(object):
     t = bind_api(
         path = '/api/search/t',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'keyword', 'pagesize', 'page'],
+        allowed_param = ['keyword', 'pagesize', 'page'],
         require_auth = True
     )
 
@@ -463,7 +463,7 @@ class API(object):
     userbytag = bind_api(
         path = '/api/search/userbytag',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'keyword', 'pagesize', 'page'],
+        allowed_param = ['keyword', 'pagesize', 'page'],
         require_auth = True
     )
 
@@ -472,7 +472,7 @@ class API(object):
     ht = bind_api(
         path = '/api/trends/ht',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'type', 'reqnum', 'pos'],
+        allowed_param = ['type', 'reqnum', 'pos'],
         require_auth = True
     )
 
@@ -481,10 +481,111 @@ class API(object):
     iupdate = bind_api(
         path = '/api/info/update',
         payload_type = 'status', payload_list = True,
-        allowed_param = ['format', 'op', 'type'],
+        allowed_param = ['op', 'type'],
         require_auth = True
     )
 
+    ## 数据收藏 ##
+    """ 1.fav/addt 收藏一条微博 """
+    addt = bind_api(
+        path = '/api/fav/addt',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['id'],
+        require_auth = True
+    )
+
+    """ 2.fav/delt 删除一条微博从收藏 """
+    delt = bind_api(
+        path = '/api/fav/delt',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['id'],
+        require_auth = True
+    )
+
+    """ 3.fav/list_t 收藏的微博列表 """
+    list_t = bind_api(
+        path = '/api/fav/list_t',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['pageflag', 'nexttime', 'prevtime',
+                         'reqnum', 'lastid'],
+        require_auth = True
+    )
+
+    """ 4.fav/addht 订阅话题 """
+    addht = bind_api(
+        path = '/api/fav/addht',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['id'],
+        require_auth = True
+    )
+
+    """ 5.fav/delht 从收藏删除话题 """
+    delht = bind_api(
+        path = '/api/fav/delht',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['id'],
+        require_auth = True
+    )
+
+    """ 6.fav/list_ht 获取已订阅话题列表 """
+    list_ht = bind_api(
+        path = '/api/fav/list_ht',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['reqnum', 'pageflag', 'pagetime',
+                         'lastid'],
+        require_auth = True
+    )
+
+    ## 话题相关 ##
+    """ 1.ht/ids 根据话题名称查询话题ID """
+    ids = bind_api(
+        path = '/api/ht/ids',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['httexts'],
+        require_auth = True
+    )
+
+    """ 2.ht/info 根据话题ID获取话题相关微博 """
+    hinfo = bind_api(
+        path = '/api/ht/info',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['ids'],
+        require_auth = True
+    )
+
+    ## 标签相关 ##
+    """ 1.tag/add 添加标签 """
+    tadd = bind_api(
+        path = '/api/tag/add',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['tag'],
+        require_auth = True
+    )
+
+    """ 2.tag/del 删除标签 """
+    tdel = bind_api(
+        path = '/api/tag/del',
+        method = 'POST',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['tagid'],
+        require_auth = True
+    )
+
+
+    ## 其他 ##
+    """ 1.other/kownperson 我可能认识的人 """
+    kownperson = bind_api(
+        path = '/api/other/kownperson',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['ip', 'country_code', 'province_code',
+                         'city_code'],
+        require_auth = True
+    )
 
 
     ####################

@@ -59,7 +59,7 @@ def bind_api(**config):
             self.headers['Host'] = self.host
 
         def build_parameters(self, args, kargs):
-            self.parameters = {}
+            self.parameters = {'format': 'json'} # bind here, as default
             for idx, arg in enumerate(args):
                 try:
                     self.parameters[self.allowed_param[idx]] = convert_to_utf8_str(arg)
