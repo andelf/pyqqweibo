@@ -18,14 +18,14 @@ re_path_template = re.compile('{\w+}')
 def bind_api(**config):
 
     class APIMethod(object):
-        
+
         path = config['path']
         payload_type = config.get('payload_type', None)
         payload_list = config.get('payload_list', False)
         allowed_param = config.get('allowed_param', [])
         method = config.get('method', 'GET')
         require_auth = config.get('require_auth', False)
-                
+
         def __init__(self, api, args, kargs):
             # If authentication is required and no credentials
             # are provided, throw an error.
@@ -44,7 +44,7 @@ def bind_api(**config):
             #    self.api_root = api.search_root
             #else:
             self.api_root = api.api_root
-            
+
             # Perform any path variable substitution
             self.build_path()
 
@@ -67,6 +67,8 @@ def bind_api(**config):
                     raise WeibopError('Too many parameters supplied!')
 
             for k, arg in kargs.items():
+                if k not in self.allowed_param:
+                    raise WeibopError('Too many parameters supplied!')
                 if arg is None:
                     continue
                 if k in self.parameters:
@@ -94,14 +96,14 @@ def bind_api(**config):
             url = self.api_root + self.path
             #if self.api.source is not None:
             #    self.parameters.setdefault('source',self.api.source)
-            
+
             if len(self.parameters):
                 if self.method == 'GET':
                     url = '%s?%s' % (url, urllib.urlencode(self.parameters))
                 else:
                     self.headers.setdefault("User-Agent","python")
                     if self.post_data is None:
-                        self.headers.setdefault("Accept","text/html")                        
+                        self.headers.setdefault("Accept","text/html")
                         self.headers.setdefault("Content-Type","application/x-www-form-urlencoded")
                         self.post_data = urllib.urlencode(self.parameters)
             # Query the cache if one is available
@@ -169,7 +171,7 @@ def bind_api(**config):
                 except Exception:
                     error_msg = "Weibo error response: status code = %s" % resp.status
                 raise WeibopError(error_msg)
-            
+
             # Parse the response payload
             result = self.api.parser.parse(self, body)
 
