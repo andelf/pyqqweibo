@@ -30,21 +30,21 @@ pyqqweibo
 	print me.name, me.nick, me.location
 	
 	for t in me.timeline(reqnum=3):  # my timeline
-	print t.nick, t.text, timestamp_to_str(t.timestamp)
+		print t.nick, t.text, timestamp_to_str(t.timestamp)
 	
 	nba = api.user.otherinfo('NBA')
 	for u in nba.followers(reqnum=3):  # got NBA's fans
-	u.follow()
-	break  # follow only 1 fans ;)
+		u.follow()
+		break  # follow only 1 fans ;)
 	u.unfollow()  # then unfollow
 	
 	for t in nba.timeline(reqnum=1):
-	print t.text
-	t.favorite()  # i like this very much
+		print t.text
+		t.favorite()  # i like this very much
 	
 	for fav in api.fav.listt():
-	if fav.id == t.id:
-	fav.unfavorite()
+		if fav.id == t.id:
+			fav.unfavorite()
 
 
 已经完成功能
