@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#  FileName    : example.py 
-#  Author      : Feather.et.ELF <andelf@139.com> 
-#  Created     : Mon Apr 04 01:12:20 2011 by Feather.et.ELF 
-#  Copyright   : Feather Workshop (c) 2011 
-#  Description : A example file 
-#  Time-stamp: <2011-04-07 13:31:59 andelf> 
+#  FileName    : example.py
+#  Author      : Feather.et.ELF <andelf@139.com>
+#  Created     : Mon Apr 04 01:12:20 2011 by Feather.et.ELF
+#  Copyright   : Feather Workshop (c) 2011
+#  Description : A example file
+#  Time-stamp: <2011-04-08 10:43:28 andelf>
 
 
 import sys
@@ -100,7 +100,7 @@ print '=' * 20
 print api.info()
 
 # TEST: unkown, bad, must use all parameter
-#print api.update(introduction=u'just a test') 
+#print api.update(introduction=u'just a test')
 
 # TEST: ok
 #print api.update_head(ur'C:\Documents and Settings\Administrator\My Documents\My Pictures\me\无标题3453.JPG')
@@ -166,7 +166,7 @@ print api.padd(content=u'test from api', clientip='127.0.0.1',
 
 print '-'* 20
 # TEST: fail, access rate limit
-#print api.userbytag(u'python', 15)            
+#print api.userbytag(u'python', 15)
 
 #print api.ht()
 

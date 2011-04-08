@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright 2009-2010 Joshua Roesslein
-# Copyright 2010 andelf<andelf@gmail.com>
+# Copyright 2010 andelf <andelf@gmail.com>
 # See LICENSE for details.
 
 from urllib2 import Request, urlopen
@@ -37,7 +37,7 @@ class BasicAuthHandler(AuthHandler):
 
     def apply_auth(self, url, method, headers, parameters):
         headers['Authorization'] = 'Basic %s' % self._b64up
-        
+
     def get_username(self):
         return self.username
 
@@ -132,20 +132,20 @@ class OAuthHandler(AuthHandler):
             )
             request.sign_request(self._sigmethod, self._consumer, self.request_token)
 
-            # send request                        
+            # send request
             resp = urlopen(Request(request.to_url())) # must
             self.access_token = oauth.OAuthToken.from_string(resp.read())
-            
+
             print 'Access token key: '+ str(self.access_token.key)
             print 'Access token secret: '+ str(self.access_token.secret)
-            
+
             return self.access_token
         except Exception, e:
             raise WeibopError(e)
-        
+
     def setToken(self, token, tokenSecret):
         self.access_token = oauth.OAuthToken(token, tokenSecret)
-        
+
     def get_username(self):
         if self.username is None:
             api = API(self)

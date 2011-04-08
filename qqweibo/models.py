@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright 2009-2010 Joshua Roesslein
-# Copyright 2011 andelf<andelf@gmail.com>
+# Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
 
 from utils import parse_datetime, parse_html_value, parse_a_href, \
@@ -76,7 +76,7 @@ class Tweet(Model):
 
     def comment(self, content, clientip='127.0.0.1', jing=None, wei=None):
         return self._api.comment(content, clientip, reid=self.id)
-        
+
     #def retweets(self):
     #    return self._api.retweets(self.id)
 
@@ -112,7 +112,7 @@ class Source(Model):
             return source
         else:
             return None
-    
+
 class User(Model):
 
     def __repr__(self):
@@ -143,7 +143,7 @@ class User(Model):
             setattr(user, 'self', False) # is this myself?
         else:
             setattr(user, 'self', True)
-        
+
         return user
 
     def update(self, **kwargs):
@@ -169,33 +169,67 @@ class User(Model):
  #   def followers(self, **kargs):
  #       return self._api.followers(user_id=self.id, **kargs)
 
-    def follow(self):
+    def add(self):
+        """收听某个用户"""
         assert not bool(self.self), "you can't follow your self"
         if self.ismyidol:
             return                      # already flollowed
         else:
             self._api.add(name=self.name)
 
-    add = flollow
-    def unfollow(self):
+    follow = add
+    def del_(self):
+        """取消收听某个用户"""
         assert not bool(self.self), "you can't unfollow your self"
         if self.ismyidol:
             self._api.del_(name=self.name)
         else:
             pass
-    del_ = unfollow
+    unfollow = del_
 
+    def addspecial(self):
+        """特别收听某个用户"""
+        assert not bool(self.self), "you can't follow yourself"
+        self._api.addspecial(name=self.name)
+
+    def delspecial(self):
+        """取消特别收听某个用户"""
+        assert not bool(self.self), "you can't follow yourself"
+        self._api.delspecial(name=self.name)
+
+    def addblacklist(self):
+        """添加某个用户到黑名单"""
+        assert not bool(self.self), "you can't block yourself"
+        self._api.addblacklist(name=self.name)
+    block = addblacklist
+    
+    def delblacklist(self):
+        """从黑名单中删除某个用户"""
+        assert not bool(self.self), "you can't block yourself"
+        self._api.delblacklist(name=self.name)
+    unblock = delblacklist
+
+    def fanslist(self, *args, **kwargs):
+        """帐户听众列表, 自己或者别人"""
+        if self.self:
+            return self._api.fanslist(*args, **kwargs)
+        else:
+            return self._api.user_fanslist(self.name, *args, **kwargs)
+
+    def idollist(self, *args, **kwargs):
+        """帐户收听的人列表, 自己或者别人"""
+        if self.self:
+            return self._api.idollist(*args, **kwargs)
+        else:
+            return self._api.user_idollist(self.name, *args, **kwargs)
+
+    def speciallist(self, *args, **kwargs):
+        """帐户特别收听的人列表, 自己或者别人"""
+        if self.self:
+            return self._api.speciallist(*args, **kwargs)
+        else:
+            return self._api.user_speciallist(self.name, *args, **kwargs)
         
-        
-    def lists_subscriptions(self, *args, **kargs):
-        return self._api.lists_subscriptions(user=self.screen_name, *args, **kargs)
-
-    def lists(self, *args, **kargs):
-        return self._api.lists(user=self.screen_name, *args, **kargs)
-
-    def followers_ids(self, *args, **kargs):
-        return self._api.followers_ids(user_id=self.id, *args, **kargs)
-
 class DirectMessage(Model):
     @classmethod
     def parse(cls, api, json):
@@ -213,7 +247,7 @@ class Friendship(Model):
 
     @classmethod
     def parse(cls, api, json):
-       
+
         source = cls(api)
         for k, v in json['source'].items():
             setattr(source, k, v)
@@ -332,17 +366,21 @@ class JSONModel(Model):
     @classmethod
     def parse(cls, api, json):
         lst = JSONModel(api)
-        for k,v in json.items():
-            setattr(lst, k, v)
+        for k, v in json.items():
+            if k == 'tweetid':
+                setattr(lst, k, v)
+                setattr(lst, 'id', v)   # make `id` always useable
+            else:
+                setattr(lst, k, v)
         return lst
 
-class VideoModel(Model):
+class Video(Model):
     def __repr__(self):
-        return "<VideoModel object #%s>" % self.real
+        return "<Video object #%s>" % self.real
 
     @classmethod
     def parse(cls, api, json):
-        lst = VideoModel(api)
+        lst = Video(api)
         for k,v in json.items():
             setattr(lst, k, v)
         return lst
@@ -355,18 +393,18 @@ class IDSModel(Model):
     @classmethod
     def parse(cls, api, json):
         ids = IDSModel(api)
-        for k, v in json.items():            
+        for k, v in json.items():
             setattr(ids, k, v)
         return ids
-    
+
 class Counts(Model):
     @classmethod
     def parse(cls, api, json):
         ids = Counts(api)
-        for k, v in json.items():            
+        for k, v in json.items():
             setattr(ids, k, v)
         return ids
-    
+
 class ModelFactory(object):
     """
     Used by parsers for creating instances
@@ -381,7 +419,7 @@ class ModelFactory(object):
     saved_search = SavedSearch
     search_result = SearchResult
     list = List
-    video = VideoModel
+    video = Video
     json = JSONModel
     ids_list = IDSModel
     counts = Counts

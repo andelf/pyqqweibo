@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright 2010 Joshua Roesslein
-# Copyright 2011 andelf<andelf@gmail.com>
+# Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
 
 from datetime import datetime

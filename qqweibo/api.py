@@ -160,21 +160,21 @@ class API(object):
         headers, post_data = API._pack_image(filename, 1024, content=content, clientip=clientip, jing=jing, wei=wei, contentname="pic")
         args = [content, clientip]
         allowed_param = ['content', 'clientip']
-        
+
         if jing is not None:
             args.append(jing)
             allowed_param.append('jing')
-        
+
         if wei is not None:
             args.append(wei)
             allowed_param.append('wei')
-        
+
         return bind_api(
             path = '/api/t/add_pic',
             method = 'POST',
             payload_type = 'json',
             require_auth = True,
-            allowed_param = allowed_param            
+            allowed_param = allowed_param
             )(self, *args, post_data=post_data, headers=headers)
 
     """ 7.t/re_count 转播数或点评数 """ # FIXME
@@ -224,7 +224,7 @@ class API(object):
                          'url'], # supports: youku,tudou,ku6
         require_auth = True
     )
-    
+
     """ 12.t/getvideoinfo 获取视频信息 """
     getvideoinfo = bind_api(
         path = '/api/t/getvideoinfo',
@@ -258,12 +258,12 @@ class API(object):
         headers, post_data = API._pack_image(filename, 1024, contentname="pic")
         args = []
         allowed_param = []
-        
+
         return bind_api(
             path = '/api/user/update_head',
             method = 'POST',
             require_auth = True,
-            allowed_param = allowed_param            
+            allowed_param = allowed_param
             )(self, *args, post_data=post_data, headers=headers)
 
     """ 4.user/other_info 获取其他人资料 """
@@ -297,7 +297,7 @@ class API(object):
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
         require_auth = True
-    )    
+    )
 
     """ 4.Friends/speciallist 特别收听列表 """
     speciallist = bind_api(
@@ -305,7 +305,7 @@ class API(object):
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
         require_auth = True
-    )    
+    )
 
 
     """ 5.friends/add 收听某个用户 """
@@ -315,7 +315,7 @@ class API(object):
         method = 'POST',
         allowed_param = ['name'],
         require_auth = True
-    )    
+    )
 
     """ 6.friends/del取消收听某个用户 """
     # TODO: fix confilicts with add message
@@ -324,7 +324,7 @@ class API(object):
         method = 'POST',
         allowed_param = ['name'],
         require_auth = True
-    )    
+    )
 
     """ 7.friends/addspecial 特别收听某个用户 """
     addspecial = bind_api(
@@ -332,7 +332,7 @@ class API(object):
         method = 'POST',
         allowed_param = ['name'],
         require_auth = True
-    )    
+    )
 
     """ 8.friends/delspecial 取消特别收听某个用户 """
     delspecial = bind_api(
@@ -340,7 +340,7 @@ class API(object):
         method = 'POST',
         allowed_param = ['name'],
         require_auth = True
-    )    
+    )
 
     """ 9.friends/addblacklist 添加某个用户到黑名单 """
     addblacklist = bind_api(
@@ -348,7 +348,7 @@ class API(object):
         method = 'POST',
         allowed_param = ['name'],
         require_auth = True
-    )    
+    )
 
     """ 10.friends/delblacklist 从黑名单中删除某个用户 """
     delblacklist = bind_api(
@@ -356,8 +356,7 @@ class API(object):
         method = 'POST',
         allowed_param = ['name'],
         require_auth = True
-    )    
-
+    )
 
     """ 11.friends/check 检测是否我的听众或收听的人 """
     check = bind_api(
@@ -365,7 +364,7 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['names', 'flag'],
         require_auth = True
-    )    
+    )
 
     """ 12.friends/user_fanslist 其他帐户听众列表 """
     user_fanslist = bind_api(
@@ -389,15 +388,15 @@ class API(object):
         payload_type = 'user', payload_list = True,
         allowed_param = ['name', 'reqnum', 'startindex'],
         require_auth = True
-    )    
+    )
 
 
-    ## 私信相关 ""
+    ## 私信相关 ##
     """ 1.private/add 发私信 """
     padd = bind_api(
         path = '/api/private/add',
         method = 'POST',
-        payload_type = 'tweet', payload_list = True,
+        payload_type = 'json',
         allowed_param = ['content', 'clientip', 'jing',
                          'wei', 'name'],
         require_auth = True
@@ -407,7 +406,7 @@ class API(object):
     pdel = bind_api(
         path = '/api/private/del',
         method = 'POST',
-        payload_type = 'tweet', payload_list = True,
+        payload_type = 'json',
         allowed_param = ['id'],
         require_auth = True
     )
@@ -416,8 +415,7 @@ class API(object):
     recv = bind_api(
         path = '/api/private/recv',
         payload_type = 'tweet', payload_list = True,
-        allowed_param = ['pageflag', 'pagetime', 'reqnum',
-                         'lastid'],
+        allowed_param = ['pageflag', 'pagetime', 'reqnum', 'lastid'],
         require_auth = True
     )
 
@@ -434,7 +432,7 @@ class API(object):
     """ 1.Search/user 搜索用户 """
     user = bind_api(
         path = '/api/search/user',
-        payload_type = 'tweet', payload_list = True,
+        payload_type = 'user', payload_list = True,
         allowed_param = ['keyword', 'pagesize', 'page'],
         require_auth = True
     )
@@ -450,11 +448,12 @@ class API(object):
     """ 3.Search/userbytag 通过标签搜索用户 """
     userbytag = bind_api(
         path = '/api/search/userbytag',
-        payload_type = 'tweet', payload_list = True,
+        payload_type = 'user', payload_list = True,
         allowed_param = ['keyword', 'pagesize', 'page'],
         require_auth = True
     )
 
+    # TODO: model parser
     ## 热度，趋势 ##
     """ 1.trends/ht 话题热榜 """
     ht = bind_api(
@@ -577,7 +576,7 @@ class API(object):
 
 
     ####################
-    
+
     """ Get the authenticated user """
     def me(self):
         return self.get_user(screen_name=self.auth.get_username())
@@ -607,7 +606,7 @@ class API(object):
         fp = open(filename, 'rb')
         BOUNDARY = 'QqWeIbObYaNdElF'
         body = []
-        if content is not None:            
+        if content is not None:
             body.append('--' + BOUNDARY)
             body.append('Content-Disposition: form-data; name="content"')
             body.append('Content-Type: text/plain; charset=UTF-8')
@@ -616,21 +615,21 @@ class API(object):
             if isinstance(content, unicode):
                 content = content.encode('utf-8')
             body.append(content)
-        if clientip is not None:            
+        if clientip is not None:
             body.append('--' + BOUNDARY)
             body.append('Content-Disposition: form-data; name="clientip"')
             body.append('Content-Type: text/plain; charset=US-ASCII')
             body.append('Content-Transfer-Encoding: 8bit')
             body.append('')
             body.append(clientip)
-        if jing is not None:            
+        if jing is not None:
             body.append('--' + BOUNDARY)
             body.append('Content-Disposition: form-data; name="jing"')
             body.append('Content-Type: text/plain; charset=US-ASCII')
             body.append('Content-Transfer-Encoding: 8bit')
             body.append('')
             body.append(jing)
-        if wei is not None:            
+        if wei is not None:
             body.append('--' + BOUNDARY)
             body.append('Content-Disposition: form-data; name="wei"')
             body.append('Content-Type: text/plain; charset=US-ASCII')
@@ -645,7 +644,7 @@ class API(object):
         body.append(fp.read())
         body.append('--' + BOUNDARY + '--')
         body.append('')
-        fp.close()        
+        fp.close()
         body.append('--' + BOUNDARY + '--')
         body.append('')
         body = '\r\n'.join(body)

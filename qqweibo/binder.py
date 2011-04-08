@@ -18,14 +18,14 @@ re_path_template = re.compile('{\w+}')
 def bind_api(**config):
 
     class APIMethod(object):
-        
+
         path = config['path']
         payload_type = config.get('payload_type', None)
         payload_list = config.get('payload_list', False)
         allowed_param = config.get('allowed_param', [])
         method = config.get('method', 'GET')
         require_auth = config.get('require_auth', False)
-                
+
         def __init__(self, api, args, kargs):
             # If authentication is required and no credentials
             # are provided, throw an error.
@@ -44,7 +44,7 @@ def bind_api(**config):
             #    self.api_root = api.search_root
             #else:
             self.api_root = api.api_root
-            
+
             # Perform any path variable substitution
             self.build_path()
 
@@ -94,14 +94,14 @@ def bind_api(**config):
             url = self.api_root + self.path
             #if self.api.source is not None:
             #    self.parameters.setdefault('source',self.api.source)
-            
+
             if len(self.parameters):
                 if self.method == 'GET':
                     url = '%s?%s' % (url, urllib.urlencode(self.parameters))
                 else:
                     self.headers.setdefault("User-Agent","python")
                     if self.post_data is None:
-                        self.headers.setdefault("Accept","text/html")                        
+                        self.headers.setdefault("Accept","text/html")
                         self.headers.setdefault("Content-Type","application/x-www-form-urlencoded")
                         self.post_data = urllib.urlencode(self.parameters)
             # Query the cache if one is available
@@ -167,9 +167,9 @@ def bind_api(**config):
                 ret_code =  json['ret']
                 error =  json['msg']
                 errcode = json.get('errcode', 0)
-                error_msg = 'ret_code: %s, %s ' % (errcode, error)
+                error_msg = 'ret_code: %s, %s' % (errcode, error)
                 if errcode:
-                    error_msg += 'errcode: %s' % errcode
+                    error_msg += ' errcode: %s' % errcode
             except Exception as e:
                 ret_code = -1
                 print e
@@ -177,7 +177,7 @@ def bind_api(**config):
             finally:
                 if ret_code!= 0:          # fixed
                     raise WeibopError(error_msg)
-            
+
             # Parse the response payload
             result = self.api.parser.parse(self, body)
 
