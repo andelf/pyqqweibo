@@ -31,147 +31,162 @@ class Model(object):
     def parse_list(cls, api, json_list):
         """Parse a list of JSON objects into a result set of model instances."""
         results = ResultSet()
-        for obj in json_list:
-            results.append(cls.parse(api, obj))
+        if json_list:                   # or return empty ResultSet
+            for obj in json_list:
+                results.append(cls.parse(api, obj))
         return results
 
 
-class Status(Model):
+class Tweet(Model):
+
+    def __repr__(self):
+        return '<Tweet object #%s>' % (self.id or 'unkownID')
 
     @classmethod
     def parse(cls, api, json):
-        status = cls(api); print json
+        tweet = cls(api)  # ; __import__('pprint').pprint(json)
         for k, v in json.items():
-            if k == 'user':
-                user = User.parse(api, v)
-                setattr(status, 'author', user)
-                setattr(status, 'user', user)  # DEPRECIATED
-            elif k == 'screen_name':
-                setattr(status, k, v)
-            elif k == 'created_at':
-                setattr(status, k, parse_datetime(v))
-            elif k == 'source':
-                if '<' in v:
-                    setattr(status, k, parse_html_value(v))
-                    setattr(status, 'source_url', parse_a_href(v))
-                else:
-                    setattr(status, k, v)
-            elif k == 'retweeted_status':
-                setattr(status, k, User.parse(api, v))
-            elif k == 'geo':
-                setattr(status, k, Geo.parse(api, v))
+            if k == 'source':
+                source = Source.parse(api, v)
+                setattr(tweet, 'source', source)
+                #user = User.parse(api, v)
+                #setattr(tweet, 'author', user)
+                #setattr(tweet, 'user', user)  # DEPRECIATED
+            elif k in ('isvip', 'self'):
+                setattr(tweet, k, bool(v))
+            elif k == 'from':
+                setattr(tweet, 'from_', v) # avoid use py keyword
             else:
-                setattr(status, k, v)
-        return status
+                setattr(tweet, k, v)
+        return tweet
 
-    def destroy(self):
-        return self._api.destroy_status(self.id)
+    def delete(self):
+        if self.self:
+            return self._api.delete(self.id)
+        else:
+            raise WeibopError("You can't delete others tweet")
 
-    def retweet(self):
-        return self._api.retweet(self.id)
+    def retweet(self, content, clientip='127.0.0.1', jing=None, wei=None):
+        # TODO: add jing, wei
+        return self._api.re_add(content, clientip, reid=self.id)
 
-    def retweets(self):
-        return self._api.retweets(self.id)
+    def reply(self, content, clientip='127.0.0.1', jing=None, wei=None):
+        # TODO: add jing, wei
+        return self._api.reply(content, clientip, reid=self.id)
+
+    def comment(self, content, clientip='127.0.0.1', jing=None, wei=None):
+        return self._api.comment(content, clientip, reid=self.id)
+        
+    #def retweets(self):
+    #    return self._api.retweets(self.id)
 
     def favorite(self):
         return self._api.create_favorite(self.id)
+
 class Geo(Model):
 
     @classmethod
     def parse(cls, api, json):
         geo = cls(api)
-        if json is not None:
+        if json:                        # may be 0
             for k, v in json.items():
                 setattr(geo, k, v)
         return geo
-    
-class Comments(Model):
+
+class Source(Model):
+    def __repr__(self):
+        return '<Source object #%s>' % hex(self)
 
     @classmethod
     def parse(cls, api, json):
-        comments = cls(api)
-        for k, v in json.items():
-            if k == 'user':
-                user = User.parse(api, v)
-                setattr(comments, 'author', user)
-                setattr(comments, 'user', user)
-            elif k == 'status':
-                status = Status.parse(api, v)
-                setattr(comments, 'user', status)
-            elif k == 'created_at':
-                setattr(comments, k, parse_datetime(v))
-            elif k == 'reply_comment':
-                setattr(comments, k, User.parse(api, v))
-            else:
-                setattr(comments, k, v)
-        return comments
-
-    def destroy(self):
-        return self._api.destroy_status(self.id)
-
-    def retweet(self):
-        return self._api.retweet(self.id)
-
-    def retweets(self):
-        return self._api.retweets(self.id)
-
-    def favorite(self):
-        return self._api.create_favorite(self.id)
-
+        source = cls(api)
+        if json:
+            for k, v in json.items():
+                if k in ('isvip', 'self'):
+                    setattr(source, k, bool(v))
+                elif k == 'from':
+                    setattr(source, 'from_', v)
+                #elif k == 'geo':
+                else:
+                    setattr(source, k, v)
+            return source
+        else:
+            return None
+    
 class User(Model):
+
+    def __repr__(self):
+        return '<User object #%s>' % self.name # no uid
 
     @classmethod
     def parse(cls, api, json):
         user = cls(api)
         for k, v in json.items():
-            if k == 'created_at':
-                setattr(user, k, parse_datetime(v))
-            elif k == 'status':
-                setattr(user, k, Status.parse(api, v))
-            elif k == 'screen_name':
-                setattr(user, k, v)
-            elif k == 'following':
-                # twitter sets this to null if it is false
-                if v is True:
-                    setattr(user, k, True)
-                else:
-                    setattr(user, k, False)
+            if k in ('isvip', 'isent',):
+                setattr(user, k, bool(v))
+            elif k == 'tag':
+                tags = TagModel.parse_list(api, v)
+                setattr(user, k, tags)
+            elif k in ('Ismyblack', 'Ismyfans', 'Ismyidol'):
+                # fix name bug
+                setattr(user, k.lower(), bool(v))
+            elif k == 'isidol':
+                setattr(user, 'ismyidol', bool(v))
+            elif k == 'tweet':
+                tweet = Tweet.parse_list(api, v) # only 1 item
+                setattr(user, k, tweet[0] if tweet else tweet)
             else:
                 setattr(user, k, v)
+
+        # FIXME, need better way
+        if hasattr(user, 'ismyidol'):
+            setattr(user, 'self', False) # is this myself?
+        else:
+            setattr(user, 'self', True)
+        
         return user
 
-    @classmethod
-    def parse_list(cls, api, json_list):
-        if isinstance(json_list, list):
-            item_list = json_list
-        else:
-            item_list = json_list['users']
-
-        results = ResultSet()
-        for obj in item_list:
-            results.append(cls.parse(api, obj))
-        return results
+    def update(self, **kwargs):
+        assert bool(self.self), "you can only update youself's profile"
+        nick = self.nick =  kwargs.get('nick', self.nick)
+        sex = self.sex = kwargs.get('sex', self.sex)
+        year = self.birth_year = kwargs.get('year', self.birth_year)
+        month = self.birth_month = kwargs.get('month', self.birth_month)
+        day = self.birth_day = kwargs.get('day', self.birth_day)
+        countrycode = self.country_code = kwargs.get('countrycode', self.country_code)
+        provincecode = self.province_code = kwargs.get('provincecode', self.province_code)
+        citycode = self.city_code = kwargs.get('citycode', self.city_code)
+        introduction = self.introduction = kwargs.get('introduction', self.introduction)
+        self._api.update(nick, sex, year, month, day,
+                         countrycode, provincecode, citycode, introduction)
 
     def timeline(self, **kargs):
-        return self._api.user_timeline(user_id=self.id, **kargs)
+        return self._api.user_timeline(name=self.name, **kargs)
 
-    def friends(self, **kargs):
-        return self._api.friends(user_id=self.id, **kargs)
+#    def friends(self, **kargs):
+#        return self._api.friends(user_id=self.id, **kargs)
 
-    def followers(self, **kargs):
-        return self._api.followers(user_id=self.id, **kargs)
+ #   def followers(self, **kargs):
+ #       return self._api.followers(user_id=self.id, **kargs)
 
     def follow(self):
-        self._api.create_friendship(user_id=self.id)
-        self.following = True
+        assert not bool(self.self), "you can't follow your self"
+        if self.ismyidol:
+            return                      # already flollowed
+        else:
+            self._api.add(name=self.name)
 
+    add = flollow
     def unfollow(self):
-        self._api.destroy_friendship(user_id=self.id)
-        self.following = False
+        assert not bool(self.self), "you can't unfollow your self"
+        if self.ismyidol:
+            self._api.del_(name=self.name)
+        else:
+            pass
+    del_ = unfollow
 
-    def lists_memberships(self, *args, **kargs):
-        return self._api.lists_memberships(user=self.screen_name, *args, **kargs)
-
+        
+        
     def lists_subscriptions(self, *args, **kargs):
         return self._api.lists_subscriptions(user=self.screen_name, *args, **kargs)
 
@@ -180,9 +195,6 @@ class User(Model):
 
     def followers_ids(self, *args, **kargs):
         return self._api.followers_ids(user_id=self.id, *args, **kargs)
-
-
-
 
 class DirectMessage(Model):
     @classmethod
@@ -314,12 +326,30 @@ class List(Model):
 
 class JSONModel(Model):
 
+    def __repr__(self):
+        return "<%s object #%s>" % (type(self).__name__, self.id)
+
     @classmethod
     def parse(cls, api, json):
         lst = JSONModel(api)
         for k,v in json.items():
             setattr(lst, k, v)
         return lst
+
+class VideoModel(Model):
+    def __repr__(self):
+        return "<VideoModel object #%s>" % self.real
+
+    @classmethod
+    def parse(cls, api, json):
+        lst = VideoModel(api)
+        for k,v in json.items():
+            setattr(lst, k, v)
+        return lst
+
+class TagModel(JSONModel):
+    def __repr__(self):
+        return '<Tag object #%s>' % self.id
 
 class IDSModel(Model):
     @classmethod
@@ -344,14 +374,14 @@ class ModelFactory(object):
     to add your own extended models.
     """
 
-    status = Status
-    comments = Comments
+    tweet = Tweet
     user = User
     direct_message = DirectMessage
     friendship = Friendship
     saved_search = SavedSearch
     search_result = SearchResult
     list = List
+    video = VideoModel
     json = JSONModel
     ids_list = IDSModel
     counts = Counts

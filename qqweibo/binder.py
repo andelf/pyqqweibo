@@ -160,15 +160,23 @@ def bind_api(**config):
                 if self.post_data is not None:
                     postData = ",post:"+ self.post_data[0:500]
                 self.api.log.debug(requestUrl +",time:"+ str(eTime)+ postData+",result:"+ body )
-            if resp.code != 200:
-                try:
-                    json = self.api.parser.parse_error(self, body)
-                    error_code =  json['ret']
-                    error =  json['msg']
-                    error_msg = 'error_code:' + error_code +','+ error
-                except Exception:
-                    error_msg = "Weibo error response: status code = %s" % resp.status
-                raise WeibopError(error_msg)
+            #if resp.code != 200:
+            ret_code = 0
+            try:
+                json = self.api.parser.parse_error(self, body)
+                ret_code =  json['ret']
+                error =  json['msg']
+                errcode = json.get('errcode', 0)
+                error_msg = 'ret_code: %s, %s ' % (errcode, error)
+                if errcode:
+                    error_msg += 'errcode: %s' % errcode
+            except Exception as e:
+                ret_code = -1
+                print e
+                error_msg = "Weibo error response: Error = %s" % e
+            finally:
+                if ret_code!= 0:          # fixed
+                    raise WeibopError(error_msg)
             
             # Parse the response payload
             result = self.api.parser.parse(self, body)

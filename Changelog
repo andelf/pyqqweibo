@@ -1,4 +1,11 @@
-2011-04-07  andelf  <anelf@gmail.com>
+2011-04-08  andelf  <andelf@gmail.com>
+	* qqweibo/api.py
+	修改部分参数顺序(主要参数提至第一位)
+	Code Clean
+	* qqweibo/models.py
+	加入部分 model parser
+
+2011-04-07  andelf  <andelf@gmail.com>
 	* qqweibo/api.py
 	加入剩余所有 API, format 参数删除
 	* qqweibo/binder.py

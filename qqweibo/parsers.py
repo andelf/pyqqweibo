@@ -1,6 +1,10 @@
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Copyright 2009-2010 Joshua Roesslein
-# See LICENSE for details.
+# Copyright 2011 andelf <andelf@gmail.com>
+#  Description : description 
+#  Time-stamp: <2011-04-07 19:56:31 andelf> 
+
 
 from models import ModelFactory
 from utils import import_simplejson
@@ -63,17 +67,18 @@ class ModelParser(JSONParser):
             raise WeibopError('No model for this payload type: %s' % method.payload_type)
 
         json = JSONParser.parse(self, method, payload)
-        if isinstance(json, tuple):
-            json, cursors = json
-        else:
-            cursors = None
+        json = json['data']             # got data
+        hasnext = False
+        if isinstance(json, dict):      # has data, not None
+            if 'info' in json:
+                hasnext = json['hasnext'] == 0
+                json = json['info']         # got data list or data
 
         if method.payload_list:
             result = model.parse_list(method.api, json)
         else:
             result = model.parse(method.api, json)
-        if cursors:
-            return result, cursors
-        else:
-            return result
+        if hasnext:                     # 0 表示还有微博可拉取 1 已拉取完毕
+            print 'hasnext', hasnext
+        return result
 
