@@ -7,13 +7,11 @@
 from urllib2 import Request, urlopen
 import base64
 
-import oauth
+from qqweibo import oauth
+from qqweibo.error import WeibopError
 
 #from weibopy.api import PPI
 
-class WeibopError(Exception):
-    """basic weibo error class"""
-    pass
 
 class AuthHandler(object):
 
@@ -102,7 +100,7 @@ class OAuthHandler(AuthHandler):
         try:
             # get the request token
             self.request_token = self._get_request_token()
-            print self.request_token
+
             # build auth request and return as url
             if signin_with_weibo:
                 url = self._get_oauth_url('authenticate')

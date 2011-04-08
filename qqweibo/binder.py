@@ -9,8 +9,8 @@ import urllib
 import time
 import re
 from urllib2 import urlopen, Request
-from error import WeibopError
-from utils import convert_to_utf8_str
+from qqweibo.error import WeibopError
+from qqweibo.utils import convert_to_utf8_str
 
 re_path_template = re.compile('{\w+}')
 
@@ -167,7 +167,7 @@ def bind_api(**config):
                 ret_code =  json['ret']
                 error =  json['msg']
                 errcode = json.get('errcode', 0)
-                error_msg = 'ret_code: %s, %s' % (errcode, error)
+                error_msg = 'ret_code: %s, %s' % (ret_code, error)
                 if errcode:
                     error_msg += ' errcode: %s' % errcode
             except Exception as e:
@@ -175,7 +175,7 @@ def bind_api(**config):
                 print e
                 error_msg = "Weibo error response: Error = %s" % e
             finally:
-                if ret_code!= 0:          # fixed
+                if ret_code!= 0:
                     raise WeibopError(error_msg)
 
             # Parse the response payload

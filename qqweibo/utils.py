@@ -81,3 +81,7 @@ def import_simplejson():
 
     return json
 
+
+def timestamp_to_str(tm):
+    return time.ctime(tm)
+

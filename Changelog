@@ -1,9 +1,12 @@
 2011-04-08  andelf  <andelf@gmail.com>
-	* qqweibo/api.py
-	修改部分参数顺序(主要参数提至第一位)
-	Code Clean
-	* qqweibo/models.py
-	加入部分 model parser
+	* qqweibo/*.py
+	全部 API 重构, 修改部分名字, ModelParser 支持完成
+	* example/*.py
+	相关例子
+	* setup.py
+	实验性安装脚本, 请不要用在生产环境
+	* LICENSE
+	加入  MIT LICENSE
 
 2011-04-07  andelf  <andelf@gmail.com>
 	* qqweibo/api.py

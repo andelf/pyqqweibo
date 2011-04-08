@@ -5,8 +5,10 @@
 #  Created     : Fri Apr 08 15:35:36 2011 by Feather.et.ELF 
 #  Copyright   : andelf <andelf@gmail.com> (c) 2011 
 #  Description : example to show how to do authentication
-#  Time-stamp: <2011-04-08 15:45:54 andelf> 
+#  Time-stamp: <2011-04-08 16:51:44 andelf> 
 
+import sys
+sys.path.insert(0, "..")
 
 from qqweibo.auth import OAuthHandler
 from qqweibo.api import API

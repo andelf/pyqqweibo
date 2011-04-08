@@ -5,7 +5,11 @@
 #  Created     : Fri Apr 08 15:44:25 2011 by Feather.et.ELF 
 #  Copyright   : andelf <andelf@gmail.com> (c) 2011 
 #  Description : example to show how to post or del
-#  Time-stamp: <2011-04-08 16:05:43 andelf> 
+#  Time-stamp: <2011-04-08 16:52:22 andelf> 
+
+
+import sys
+sys.path.insert(0, "..")
 
 from qqweibo.auth import OAuthHandler
 from qqweibo.api import API

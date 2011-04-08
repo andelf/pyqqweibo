@@ -5,8 +5,11 @@
 #  Created     : Fri Apr 08 15:37:46 2011 by Feather.et.ELF 
 #  Copyright   : andelf <andelf@gmail.com> (c) 2011 
 #  Description : example file to show how to get timeline 
-#  Time-stamp: <2011-04-08 15:51:09 andelf> 
+#  Time-stamp: <2011-04-08 16:52:14 andelf> 
 
+
+import sys
+sys.path.insert(0, "..")
 
 from qqweibo.auth import OAuthHandler
 from qqweibo.api import API

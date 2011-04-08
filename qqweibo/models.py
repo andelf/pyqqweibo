@@ -4,7 +4,7 @@
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
 
-from utils import parse_datetime, parse_html_value, parse_a_href, \
+from qqweibo.utils import parse_datetime, parse_html_value, parse_a_href, \
      parse_search_datetime, unescape_html
 
 class ResultSet(list):
@@ -21,6 +21,15 @@ class Model(object):
         pickle = dict(self.__dict__)
         del pickle['_api']  # do not pickle the API reference
         return pickle
+
+    def as_dict(self):
+        ret = dict(self.__dict__)
+        for k in ret.keys():
+            if k.startswith('_'):
+                del ret[k]
+            elif k == 'as_dict':
+                del ret[k]
+        return ret
 
     @classmethod
     def parse(cls, api, json):
@@ -56,39 +65,49 @@ class Tweet(Model):
                 setattr(tweet, k, bool(v))
             elif k == 'from':
                 setattr(tweet, 'from_', v) # avoid use py keyword
+            elif k == 'tweetid':
+                setattr(tweetid, k, v)
+                setattr(tweetid, 'id', v)
             else:
                 setattr(tweet, k, v)
         return tweet
 
     def delete(self):
         if self.self:
-            return self._api.delete(self.id)
+            return self._api.t.delete(self.id)
         else:
             raise WeibopError("You can't delete others tweet")
 
     def retweet(self, content, clientip='127.0.0.1', jing=None, wei=None):
         # TODO: add jing, wei
-        return self._api.re_add(content, clientip, reid=self.id)
+        return self._api.t.retweet(content, clientip, jing, wei, reid=self.id)
 
     def reply(self, content, clientip='127.0.0.1', jing=None, wei=None):
         # TODO: add jing, wei
-        return self._api.reply(content, clientip, reid=self.id)
+        return self._api.t.reply(content, clientip, jing, wei, reid=self.id)
 
     def comment(self, content, clientip='127.0.0.1', jing=None, wei=None):
-        return self._api.comment(content, clientip, reid=self.id)
+        return self._api.t.comment(content, clientip, jing, wei, reid=self.id)
 
-    #def retweets(self):
-    #    return self._api.retweets(self.id)
+    def retweets(self, *args, **kwargs):
+        return self._api.t.retweets(self.id, *args, **kwargs)
 
-    def favorite(self):
-        return self._api.create_favorite(self.id)
+    def favorite(self, fav=True):
+        if fav:
+            return self._api.fav.addt(self.id)
+        else:
+            return self.unfavorite()
+
+    def unfavorite(self):
+        return self._api.fav.delt(self.id)
+
 
 class Geo(Model):
-
+    """ current useless"""
     @classmethod
     def parse(cls, api, json):
         geo = cls(api)
-        if json:                        # may be 0
+        if json:
             for k, v in json.items():
                 setattr(geo, k, v)
         return geo
@@ -157,17 +176,12 @@ class User(Model):
         provincecode = self.province_code = kwargs.get('provincecode', self.province_code)
         citycode = self.city_code = kwargs.get('citycode', self.city_code)
         introduction = self.introduction = kwargs.get('introduction', self.introduction)
-        self._api.update(nick, sex, year, month, day,
-                         countrycode, provincecode, citycode, introduction)
+        self._api.user.update(nick, sex, year, month, day,
+                              countrycode, provincecode, citycode,
+                              introduction)
 
     def timeline(self, **kargs):
-        return self._api.user_timeline(name=self.name, **kargs)
-
-#    def friends(self, **kargs):
-#        return self._api.friends(user_id=self.id, **kargs)
-
- #   def followers(self, **kargs):
- #       return self._api.followers(user_id=self.id, **kargs)
+        return self._api.timeline.user(name=self.name, **kargs)
 
     def add(self):
         """收听某个用户"""
@@ -175,193 +189,76 @@ class User(Model):
         if self.ismyidol:
             return                      # already flollowed
         else:
-            self._api.add(name=self.name)
-
+            self._api.friends.add(name=self.name)
     follow = add
-    def del_(self):
+
+    def delete(self):
         """取消收听某个用户"""
         assert not bool(self.self), "you can't unfollow your self"
         if self.ismyidol:
-            self._api.del_(name=self.name)
+            self._api.friends.delete(name=self.name)
         else:
             pass
-    unfollow = del_
+    unfollow = delete
 
     def addspecial(self):
         """特别收听某个用户"""
         assert not bool(self.self), "you can't follow yourself"
-        self._api.addspecial(name=self.name)
+        self._api.friends.addspecial(name=self.name)
 
     def delspecial(self):
         """取消特别收听某个用户"""
         assert not bool(self.self), "you can't follow yourself"
-        self._api.delspecial(name=self.name)
+        self._api.friends.delspecial(name=self.name)
 
     def addblacklist(self):
         """添加某个用户到黑名单"""
         assert not bool(self.self), "you can't block yourself"
-        self._api.addblacklist(name=self.name)
+        self._api.friends.addblacklist(name=self.name)
     block = addblacklist
-    
+
     def delblacklist(self):
         """从黑名单中删除某个用户"""
         assert not bool(self.self), "you can't block yourself"
-        self._api.delblacklist(name=self.name)
+        self._api.friends.delblacklist(name=self.name)
     unblock = delblacklist
 
     def fanslist(self, *args, **kwargs):
         """帐户听众列表, 自己或者别人"""
         if self.self:
-            return self._api.fanslist(*args, **kwargs)
+            return self._api.friends.fanslist(*args, **kwargs)
         else:
-            return self._api.user_fanslist(self.name, *args, **kwargs)
+            return self._api.friends.otherfanslist(self.name, *args, **kwargs)
+    followers = fanslist
 
     def idollist(self, *args, **kwargs):
         """帐户收听的人列表, 自己或者别人"""
         if self.self:
-            return self._api.idollist(*args, **kwargs)
+            return self._api.friends.idollist(*args, **kwargs)
         else:
-            return self._api.user_idollist(self.name, *args, **kwargs)
+            return self._api.friends.otheridollist(self.name, *args, **kwargs)
+    followees = idollist
 
     def speciallist(self, *args, **kwargs):
         """帐户特别收听的人列表, 自己或者别人"""
         if self.self:
-            return self._api.speciallist(*args, **kwargs)
+            return self._api.friends.speciallist(*args, **kwargs)
         else:
-            return self._api.user_speciallist(self.name, *args, **kwargs)
-        
-class DirectMessage(Model):
-    @classmethod
-    def parse(cls, api, json):
-        dm = cls(api)
-        for k, v in json.items():
-            if k == 'sender' or k == 'recipient':
-                setattr(dm, k, User.parse(api, v))
-            elif k == 'created_at':
-                setattr(dm, k, parse_datetime(v))
-            else:
-                setattr(dm, k, v)
-        return dm
+            return self._api.friends.otherspeciallist(self.name, *args, **kwargs)
 
-class Friendship(Model):
+    def pm(self, content, clientip='127.0.0.1', jing=None, wei=None):
+        """发私信"""
+        assert not bool(self.self), "you can't pm yourself"
+        return self._api.private.add(self.name, content, clientip, jing, wei)
 
-    @classmethod
-    def parse(cls, api, json):
-
-        source = cls(api)
-        for k, v in json['source'].items():
-            setattr(source, k, v)
-
-        # parse target
-        target = cls(api)
-        for k, v in json['target'].items():
-            setattr(target, k, v)
-
-        return source, target
-
-
-class SavedSearch(Model):
-
-    @classmethod
-    def parse(cls, api, json):
-        ss = cls(api)
-        for k, v in json.items():
-            if k == 'created_at':
-                setattr(ss, k, parse_datetime(v))
-            else:
-                setattr(ss, k, v)
-        return ss
-
-    def destroy(self):
-        return self._api.destroy_saved_search(self.id)
-
-
-class SearchResult(Model):
-
-    @classmethod
-    def parse(cls, api, json):
-        result = cls()
-        for k, v in json.items():
-            if k == 'created_at':
-                setattr(result, k, parse_search_datetime(v))
-            elif k == 'source':
-                setattr(result, k, parse_html_value(unescape_html(v)))
-            else:
-                setattr(result, k, v)
-        return result
-
-    @classmethod
-    def parse_list(cls, api, json_list, result_set=None):
-        results = ResultSet()
-        results.max_id = json_list.get('max_id')
-        results.since_id = json_list.get('since_id')
-        results.refresh_url = json_list.get('refresh_url')
-        results.next_page = json_list.get('next_page')
-        results.results_per_page = json_list.get('results_per_page')
-        results.page = json_list.get('page')
-        results.completed_in = json_list.get('completed_in')
-        results.query = json_list.get('query')
-
-        for obj in json_list['results']:
-            results.append(cls.parse(api, obj))
-        return results
-
-class List(Model):
-
-    @classmethod
-    def parse(cls, api, json):
-        lst = List(api)
-        for k,v in json.items():
-            if k == 'user':
-                setattr(lst, k, User.parse(api, v))
-            else:
-                setattr(lst, k, v)
-        return lst
-
-    @classmethod
-    def parse_list(cls, api, json_list, result_set=None):
-        results = ResultSet()
-        for obj in json_list['lists']:
-            results.append(cls.parse(api, obj))
-        return results
-
-    def update(self, **kargs):
-        return self._api.update_list(self.slug, **kargs)
-
-    def destroy(self):
-        return self._api.destroy_list(self.slug)
-
-    def timeline(self, **kargs):
-        return self._api.list_timeline(self.user.screen_name, self.slug, **kargs)
-
-    def add_member(self, id):
-        return self._api.add_list_member(self.slug, id)
-
-    def remove_member(self, id):
-        return self._api.remove_list_member(self.slug, id)
-
-    def members(self, **kargs):
-        return self._api.list_members(self.user.screen_name, self.slug, **kargs)
-
-    def is_member(self, id):
-        return self._api.is_list_member(self.user.screen_name, self.slug, id)
-
-    def subscribe(self):
-        return self._api.subscribe_list(self.user.screen_name, self.slug)
-
-    def unsubscribe(self):
-        return self._api.unsubscribe_list(self.user.screen_name, self.slug)
-
-    def subscribers(self, **kargs):
-        return self._api.list_subscribers(self.user.screen_name, self.slug, **kargs)
-
-    def is_subscribed(self, id):
-        return self._api.is_subscribed_list(self.user.screen_name, self.slug, id)
 
 class JSONModel(Model):
 
     def __repr__(self):
-        return "<%s object #%s>" % (type(self).__name__, self.id)
+        if 'id' in self.__dict__:
+            return "<%s object #%s>" % (type(self).__name__, self.id)
+        else:
+            return object.__repr__(self)
 
     @classmethod
     def parse(cls, api, json):
@@ -373,6 +270,25 @@ class JSONModel(Model):
             else:
                 setattr(lst, k, v)
         return lst
+
+class RetId(Model):
+    def __repr__(self):
+        return "<RetId id:%s>" % self.id
+
+    @classmethod
+    def parse(cls, api, json):
+        lst = RetId(api)
+        for k, v in json.items():
+            if k == 'tweetid':
+                setattr(lst, k, v)
+                setattr(lst, 'id', v)   # make `id` always useable
+            elif k == 'time':
+                setattr(lst, k, v)
+                setattr(lst, 'timestamp', v)
+            else:
+                setattr(lst, k, v)
+        return lst
+
 
 class Video(Model):
     def __repr__(self):
@@ -389,21 +305,23 @@ class TagModel(JSONModel):
     def __repr__(self):
         return '<Tag object #%s>' % self.id
 
-class IDSModel(Model):
     @classmethod
     def parse(cls, api, json):
-        ids = IDSModel(api)
+        tag = TagModel(api)
         for k, v in json.items():
-            setattr(ids, k, v)
-        return ids
+                setattr(tag, k, v)
+        return tag
 
-class Counts(Model):
+class Topic(JSONModel):
+    def __repr__(self):
+        return '<Topic object #%s>' % self.id
+
     @classmethod
     def parse(cls, api, json):
-        ids = Counts(api)
+        tag = Topic(api)
         for k, v in json.items():
-            setattr(ids, k, v)
-        return ids
+                setattr(tag, k, v)
+        return tag
 
 class ModelFactory(object):
     """
@@ -414,12 +332,6 @@ class ModelFactory(object):
 
     tweet = Tweet
     user = User
-    direct_message = DirectMessage
-    friendship = Friendship
-    saved_search = SavedSearch
-    search_result = SearchResult
-    list = List
     video = Video
     json = JSONModel
-    ids_list = IDSModel
-    counts = Counts
+    retid = RetId

@@ -3,12 +3,12 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 #  Description : description 
-#  Time-stamp: <2011-04-07 19:56:31 andelf> 
+#  Time-stamp: <2011-04-08 17:07:19 andelf> 
 
 
-from models import ModelFactory
-from utils import import_simplejson
-from error import WeibopError
+from qqweibo.models import ModelFactory
+from qqweibo.utils import import_simplejson
+from qqweibo.error import WeibopError
 
 class Parser(object):
 
@@ -71,7 +71,7 @@ class ModelParser(JSONParser):
         hasnext = False
         if isinstance(json, dict):      # has data, not None
             if 'info' in json:
-                hasnext = json['hasnext'] == 0
+                hasnext = json.get('hasnext', 1) == 0
                 json = json['info']         # got data list or data
 
         if method.payload_list:
@@ -79,6 +79,7 @@ class ModelParser(JSONParser):
         else:
             result = model.parse(method.api, json)
         if hasnext:                     # 0 表示还有微博可拉取 1 已拉取完毕
-            print 'hasnext', hasnext
+            #print 'hasnext', hasnext
+            pass
         return result
 
