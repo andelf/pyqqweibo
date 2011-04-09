@@ -58,6 +58,7 @@ pyqqweibo
 Further TODO
 ------------
 
+* 翻页支持
 * Document
 * fix bugs
 * add more examples

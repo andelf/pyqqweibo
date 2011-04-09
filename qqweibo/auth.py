@@ -8,7 +8,7 @@ from urllib2 import Request, urlopen
 import base64
 
 from qqweibo import oauth
-from qqweibo.error import WeibopError
+from qqweibo.error import QWeiboError
 
 #from weibopy.api import PPI
 
@@ -87,7 +87,7 @@ class OAuthHandler(AuthHandler):
             resp = urlopen( Request(request.to_url()) )  # must
             return oauth.OAuthToken.from_string(resp.read())
         except RuntimeError, e:
-            raise WeibopError(e)
+            raise QWeiboError(e)
 
     def set_request_token(self, key, secret):
         self.request_token = oauth.OAuthToken(key, secret)
@@ -112,7 +112,7 @@ class OAuthHandler(AuthHandler):
 
             return request.to_url()
         except RuntimeError, e:
-            raise WeibopError(e)
+            raise QWeiboError(e)
 
     def get_access_token(self, verifier=None):
         """
@@ -139,7 +139,7 @@ class OAuthHandler(AuthHandler):
 
             return self.access_token
         except Exception, e:
-            raise WeibopError(e)
+            raise QWeiboError(e)
 
     def setToken(self, token, tokenSecret):
         self.access_token = oauth.OAuthToken(token, tokenSecret)
@@ -151,5 +151,5 @@ class OAuthHandler(AuthHandler):
             if user:
                 self.username = user.screen_name
             else:
-                raise WeibopError("Unable to get username, invalid oauth token!")
+                raise QWeiboError("Unable to get username, invalid oauth token!")
         return self.username

@@ -6,6 +6,7 @@
 
 from qqweibo.utils import parse_datetime, parse_html_value, parse_a_href, \
      parse_search_datetime, unescape_html
+from qqweibo.error import assertion
 
 class ResultSet(list):
     """A list like object that holds results from a Twitter API query."""
@@ -166,7 +167,8 @@ class User(Model):
         return user
 
     def update(self, **kwargs):
-        assert bool(self.self), "you can only update youself's profile"
+        assertion(self.self, "you can only update youself's profile")
+        
         nick = self.nick =  kwargs.get('nick', self.nick)
         sex = self.sex = kwargs.get('sex', self.sex)
         year = self.birth_year = kwargs.get('year', self.birth_year)
@@ -185,7 +187,7 @@ class User(Model):
 
     def add(self):
         """收听某个用户"""
-        assert not bool(self.self), "you can't follow your self"
+        assertion(not bool(self.self), "you can't follow your self")
         if self.ismyidol:
             return                      # already flollowed
         else:
@@ -194,7 +196,7 @@ class User(Model):
 
     def delete(self):
         """取消收听某个用户"""
-        assert not bool(self.self), "you can't unfollow your self"
+        assertion(not bool(self.self), "you can't unfollow your self")
         if self.ismyidol:
             self._api.friends.delete(name=self.name)
         else:
@@ -203,23 +205,23 @@ class User(Model):
 
     def addspecial(self):
         """特别收听某个用户"""
-        assert not bool(self.self), "you can't follow yourself"
+        assertion( not bool(self.self), "you can't follow yourself")
         self._api.friends.addspecial(name=self.name)
 
     def delspecial(self):
         """取消特别收听某个用户"""
-        assert not bool(self.self), "you can't follow yourself"
+        assertion( not bool(self.self), "you can't follow yourself")
         self._api.friends.delspecial(name=self.name)
 
     def addblacklist(self):
         """添加某个用户到黑名单"""
-        assert not bool(self.self), "you can't block yourself"
+        assertion( not bool(self.self), "you can't block yourself")
         self._api.friends.addblacklist(name=self.name)
     block = addblacklist
 
     def delblacklist(self):
         """从黑名单中删除某个用户"""
-        assert not bool(self.self), "you can't block yourself"
+        assertion( not bool(self.self), "you can't block yourself")
         self._api.friends.delblacklist(name=self.name)
     unblock = delblacklist
 
@@ -248,7 +250,7 @@ class User(Model):
 
     def pm(self, content, clientip='127.0.0.1', jing=None, wei=None):
         """发私信"""
-        assert not bool(self.self), "you can't pm yourself"
+        assertion( not bool(self.self), "you can't pm yourself")
         return self._api.private.add(self.name, content, clientip, jing, wei)
 
 

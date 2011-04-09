@@ -9,7 +9,7 @@ import urllib
 import time
 import re
 from urllib2 import urlopen, Request
-from qqweibo.error import WeibopError
+from qqweibo.error import QWeiboError
 from qqweibo.utils import convert_to_utf8_str
 
 re_path_template = re.compile('{\w+}')
@@ -30,7 +30,7 @@ def bind_api(**config):
             # If authentication is required and no credentials
             # are provided, throw an error.
             if self.require_auth and not api.auth:
-                raise WeibopError('Authentication required!')
+                raise QWeiboError('Authentication required!')
 
             self.api = api
             self.post_data = kargs.pop('post_data', None)
@@ -64,13 +64,13 @@ def bind_api(**config):
                 try:
                     self.parameters[self.allowed_param[idx]] = convert_to_utf8_str(arg)
                 except IndexError:
-                    raise WeibopError('Too many parameters supplied!')
+                    raise QWeiboError('Too many parameters supplied!')
 
             for k, arg in kargs.items():
                 if arg is None:
                     continue
                 if k in self.parameters:
-                    raise WeibopError('Multiple values for parameter %s supplied!' % k)
+                    raise QWeiboError('Multiple values for parameter %s supplied!' % k)
 
                 self.parameters[k] = convert_to_utf8_str(arg)
 
@@ -84,7 +84,7 @@ def bind_api(**config):
                     try:
                         value = urllib.quote(self.parameters[name])
                     except KeyError:
-                        raise WeibopError('No parameter value found for path variable: %s' % name)
+                        raise QWeiboError('No parameter value found for path variable: %s' % name)
                     del self.parameters[name]
 
                 self.path = self.path.replace(variable, value)
@@ -138,7 +138,7 @@ def bind_api(**config):
                         req = Request(url)
                     resp = urlopen(req)
                 except Exception, e:
-                    raise WeibopError('Failed to send request: %s' % e + "url=" + str(url) +",self.headers="+ str(self.headers))
+                    raise QWeiboError('Failed to send request: %s' % e + "url=" + str(url) +",self.headers="+ str(self.headers))
 
                 # Exit request loop if non-retry error code
                 if self.retry_errors:
@@ -176,7 +176,7 @@ def bind_api(**config):
                 error_msg = "Weibo error response: Error = %s" % e
             finally:
                 if ret_code!= 0:
-                    raise WeibopError(error_msg)
+                    raise QWeiboError(error_msg)
 
             # Parse the response payload
             result = self.api.parser.parse(self, body)

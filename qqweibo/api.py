@@ -8,7 +8,7 @@ import os
 import mimetypes
 
 from qqweibo.binder import bind_api
-from qqweibo.error import WeibopError
+from qqweibo.error import QWeiboError
 from qqweibo.parsers import ModelParser
 
 
@@ -681,18 +681,18 @@ class API(object):
         # image must be less than 700kb in size
         try:
             if os.path.getsize(filename) > (max_size * 1024):
-                raise WeibopError('File is too big, must be less than 700kb.')
+                raise QWeiboError('File is too big, must be less than 700kb.')
         #except os.error, e:
         except os.error:
-            raise WeibopError('Unable to access file')
+            raise QWeiboError('Unable to access file')
 
         # image must be gif, jpeg, or png
         file_type = mimetypes.guess_type(filename)
         if file_type is None:
-            raise WeibopError('Could not determine file type')
+            raise QWeiboError('Could not determine file type')
         file_type = file_type[0]
         if file_type.split('/')[0] != 'image': # dummy
-            raise WeibopError('Invalid file type for image: %s' % file_type)
+            raise QWeiboError('Invalid file type for image: %s' % file_type)
 
         # build the mulitpart-formdata body
         BOUNDARY = 'QqWeIbObYaNdElF----' # qqweibo by andelf
