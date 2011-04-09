@@ -3,12 +3,12 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 #  Description : description 
-#  Time-stamp: <2011-04-08 17:07:19 andelf> 
+#  Time-stamp: <2011-04-09 19:37:14 andelf> 
 
 
 from qqweibo.models import ModelFactory
 from qqweibo.utils import import_simplejson
-from qqweibo.error import WeibopError
+from qqweibo.error import QWeiboError
 
 class Parser(object):
 
@@ -41,7 +41,7 @@ class JSONParser(Parser):
             json = self.json_lib.loads(payload)
         except Exception, e:
             print "Failed to parse JSON payload:"+ str(payload)
-            raise WeibopError('Failed to parse JSON payload: %s' % e)
+            raise QWeiboError('Failed to parse JSON payload: %s' % e)
 
         #if isinstance(json, dict) and 'previous_cursor' in json and 'next_cursor' in json:
         #    cursors = json['previous_cursor'], json['next_cursor']
@@ -64,7 +64,7 @@ class ModelParser(JSONParser):
             if method.payload_type is None: return
             model = getattr(self.model_factory, method.payload_type)
         except AttributeError:
-            raise WeibopError('No model for this payload type: %s' % method.payload_type)
+            raise QWeiboError('No model for this payload type: %s' % method.payload_type)
 
         json = JSONParser.parse(self, method, payload)
         json = json['data']             # got data
