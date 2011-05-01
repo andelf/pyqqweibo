@@ -5,7 +5,7 @@
 #  Created     : Fri Apr 08 16:53:09 2011 by Feather.et.ELF 
 #  Copyright   : andelf <andelf@gmail.com> (c) 2011 
 #  Description : example to show how to use user api 
-#  Time-stamp: <2011-04-08 17:06:52 andelf> 
+#  Time-stamp: <2011-04-21 14:19:37 andelf> 
 
 
 import sys
@@ -29,7 +29,7 @@ tokenSecret = 'yourr tokenSecret'
 auth.setToken(token, tokenSecret)
 
 # this time we use ModelParser()
-api = API(auth, parser=ModelParser)
+api = API(auth) # ModelParser is the default option
 
 
 """

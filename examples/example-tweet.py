@@ -5,7 +5,7 @@
 #  Created     : Fri Apr 08 15:44:25 2011 by Feather.et.ELF 
 #  Copyright   : andelf <andelf@gmail.com> (c) 2011 
 #  Description : example to show how to post or del
-#  Time-stamp: <2011-04-08 16:52:22 andelf> 
+#  Time-stamp: <2011-04-21 14:18:52 andelf> 
 
 
 import sys
@@ -29,7 +29,7 @@ tokenSecret = 'yourr tokenSecret'
 auth.setToken(token, tokenSecret)
 
 # this time we use ModelParser()
-api = API(auth, parser=ModelParser)
+api = API(auth, parser=ModelParser())
 
 
 """
