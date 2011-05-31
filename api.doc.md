@@ -7,11 +7,13 @@ pyqqweibo document
 
 ## timeline 时间线
 * home 主页时间线
+
   (pageflag, pagetime, reqnum, type, contenttype)
   翻页: pageflag+pagetime
       api.timeline.home()
       > [Tweet]
 * public 广播大厅时间线
+
   (reqnum, pos)
       api.timeline.public()
       > [Tweet]
@@ -64,8 +66,6 @@ pyqqweibo document
       api.timeline.usersids(['name1,'name2','andelf'])
       > [Tweet]
 
-* * *
-
 ## tweet 微博相关(t)
 * show 获取一条微博数据
   (id*)
@@ -106,8 +106,6 @@ pyqqweibo document
       api.tweet.list(ids=[45018014630554,20575117830267])
       > [Tweet]
 
-* * *
-
 ## user 帐户相关
 * info 获取自己的详细资料
   ()
@@ -118,8 +116,6 @@ pyqqweibo document
   (filename*)
 * userinfo 获取其他人资料
   (name*)
-
-* * *
 
 ## friends 关系链相关
 * fanslist 我的听众列表
@@ -154,8 +150,6 @@ pyqqweibo document
 * userspeciallist 其他帐户特别收听的人列表
   (name*, reqnum, startindex)
 
-* * *
-
 ## private 私信相关
 * add 发私信
   (name*, content*, clientip*, jing, wei)
@@ -166,8 +160,6 @@ pyqqweibo document
 * outbox 发件箱
   (pageflag, pagetime, reqnum, lastid)
 
-* * *
-
 ## search 搜索相关
 * user 搜索用户
   (keyword*, pagesize, page)
@@ -175,8 +167,6 @@ pyqqweibo document
   (keyword*, pagesize, page)
 * userbytag 通过标签搜索用户
   (keyword*, pagesize, page)
-
-* * *
 
 ## trends 热度，趋势
 * topic 话题热榜
@@ -186,15 +176,11 @@ pyqqweibo document
     api.trends.tweet()
     [Tweet]
 
-* * *
-
 ## info 数据更新相关
 * update 查看数据更新条数
   (op, type)
     api.info.update().as_dict()
     > {u'home': 21, u'create': 12, ...}
-
-* * *
 
 ## fav 数据收藏
 * addtweet 收藏一条微博
@@ -210,8 +196,6 @@ pyqqweibo document
 * listtopic 获取已订阅话题列表
   (reqnum, pageflag, pagetime, lastid)
 
-* * *
-
 ## topic 话题相关
 * ids 根据话题名称查询话题ID
   (httexts*)
@@ -221,16 +205,12 @@ pyqqweibo document
       t = api.topic.info(5149259073282301489)[0]
       print t.text, t.tweetnum
 
-* * *
-
 ## tag 标签相关
 TODO: don't have a test account
 * add 添加标签
   (tag*)
 * delete 删除标签
   (tagid*)
-
-* * *
 
 ## other 其他
 * kownperson 我可能认识的人
@@ -247,15 +227,13 @@ TODO: don't have a test account
       api.other.videokey().as_dict()
       > {'uid': u'VNcmwzbqxdu=', 'videokey': u'$xMcNnpvswmmftd5pPkm'}
 
-* * *
-
 # Model 列表
 ## Tweet
     t = api.tweet.show(20574076418461)
     t.retweet("test")
     > <RetId id:15108001017434>
     api.tweet.show(_.id)
-    <Tweet object #15108001017434>
+    > <Tweet object #15108001017434>
 
 * delete()
 * retweet(content, clientip, jing=None, wei=None)
@@ -281,8 +259,6 @@ TODO: don't have a test account
 * idollist(##kwargs) / followers()
 * speciallist(##kwargs)
 * pm(content, clientip, jing=None, wei=None)
-
-* * *
 
 # 翻页教程
 ## pageflag + pagetime
