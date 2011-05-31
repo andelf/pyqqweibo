@@ -1,6 +1,7 @@
 2011-05-31  andelf  <andelf@gmail.com>
 	* qqweibo/api.py
 	加入 5.27 API 支持
+	感谢论坛ID: 空无一人 找出的BUG
 	* example/api.list
 	简单参考列表
 

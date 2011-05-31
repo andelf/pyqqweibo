@@ -813,7 +813,7 @@ class API(object):
                 body.append('')
                 if isinstance(val, unicode):
                     val = val.encode('utf-8')
-                body.append(str(content))
+                body.append(str(val))
         fp = open(filename, 'rb')
         body.append('--' + BOUNDARY)
         body.append('Content-Disposition: form-data; name="'+ contentname +'"; filename="%s"' % filename.encode('utf-8'))
