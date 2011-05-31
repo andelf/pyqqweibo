@@ -179,7 +179,7 @@ class API(object):
     )
 
     """ 3.t/del 删除一条微博 """
-    _t_del = bind_api(                  # del cofilicts with del in python
+    _t_del = bind_api(
         path = '/api/t/del',
         method = 'POST',
         payload_type = 'retid',
@@ -192,8 +192,7 @@ class API(object):
         path = '/api/t/re_add',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['content', 'clientip',
-                         'jing', 'wei', 'reid'],
+        allowed_param = ['reid', 'content', 'clientip', 'jing', 'wei'],
         require_auth = True
     )
 
@@ -202,8 +201,7 @@ class API(object):
         path = '/api/t/reply',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['content', 'clientip',
-                         'jing', 'wei', 'reid'],
+        allowed_param = ['reid', 'content', 'clientip', 'jing', 'wei'],
         require_auth = True
     )
 
@@ -244,7 +242,7 @@ class API(object):
         path = '/api/t/re_list',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['rootid', 'flag', 'pageflag', 'pagetime',
-                         'reqnum', 'twitterid',],
+                         'reqnum', 'twitterid'],
         require_auth = True
     )
 
@@ -253,8 +251,7 @@ class API(object):
         path = '/api/t/comment',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['content', 'clientip', 'jing', 'wei',
-                         'reid'],
+        allowed_param = ['reid', 'content', 'clientip', 'jing', 'wei'],
         require_auth = True
     )
 
@@ -263,8 +260,8 @@ class API(object):
         path = '/api/t/add_music',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['content', 'clientip', 'jing', 'wei',
-                         'url', 'title', 'author'],
+        allowed_param = ['content', 'url', 'title', 'author',
+                         'clientip', 'jing', 'wei'],
         require_auth = True
     )
 
@@ -273,8 +270,7 @@ class API(object):
         path = '/api/t/add_video',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['content', 'clientip', 'jing', 'wei',
-                         'url'], # supports: youku,tudou,ku6
+        allowed_param = ['content', 'url', 'clientip', 'jing', 'wei'],
         require_auth = True
     )
 

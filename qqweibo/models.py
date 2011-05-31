@@ -80,15 +80,16 @@ class Tweet(Model):
             raise WeibopError("You can't delete others tweet")
 
     def retweet(self, content, clientip='127.0.0.1', jing=None, wei=None):
-        # TODO: add jing, wei
-        return self._api.t.retweet(content, clientip, jing, wei, reid=self.id)
+        return self._api.t.retweet(content=content, clientip=clientip, jing=jing, wei=wei,
+                                   reid=self.id)
 
     def reply(self, content, clientip='127.0.0.1', jing=None, wei=None):
-        # TODO: add jing, wei
-        return self._api.t.reply(content, clientip, jing, wei, reid=self.id)
+        return self._api.t.reply(content=content, clientip=clientip, jing=jing, wei=wei,
+                                   reid=self.id)
 
     def comment(self, content, clientip='127.0.0.1', jing=None, wei=None):
-        return self._api.t.comment(content, clientip, jing, wei, reid=self.id)
+        return self._api.t.comment(content=content, clientip=clientip, jing=jing, wei=wei,
+                                   reid=self.id)
 
     def retweetlist(self, *args, **kwargs):
         return self._api.t.retweetlist(self.id, *args, **kwargs)
