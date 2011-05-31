@@ -6,8 +6,38 @@ pyqqweibo 参考文档
 Auth 教程
 ---------
 
-TODO
+::
 
+  from qqweibo import OAuthHandler, API, JSONParser, ModelParser
+  auth = OAuthHandler('API_KEY', 'API_SECRET')
+
+获取用户 Access Token
+---------------------
+
+::
+
+  print auth.get_authorization_url()
+  verifier = raw_input('PIN: ').strip()
+  auth.get_access_token(verifier)
+
+使用已保存的 Token
+------------------
+
+::
+
+  token = 'your token'
+  tokenSecret = 'your secret'
+  auth.setToken(token, tokenSecret)
+
+建立 API 对象
+-------------
+
+::
+
+  api = API(a)
+  # test
+  me = api.user.info()
+  print me.name, me.nick, me.location
 
 --------
 API 参考
@@ -545,16 +575,18 @@ videokey 获取视频上传的KEY
 Model 列表
 ----------
 
+.. _Tweet:
+
 Tweet
 -----
 
 ::
 
-    t = api.tweet.show(20574076418461)
-    t.retweet("test")
-    > <RetId id:15108001017434>
-    api.tweet.show(_.id)
-    > <Tweet object #15108001017434>
+    > t = api.tweet.show(20574076418461)
+    > t.retweet("test")
+    <RetId id:15108001017434>
+    > api.tweet.show(_.id)
+    <Tweet object #15108001017434>
 
 * delete()
 * retweet(content, clientip, jing=None, wei=None)
@@ -564,6 +596,8 @@ Tweet
 * retweetcount(flag=0)
 * favorite()
 * unfavorite()
+
+.. _User:
 
 User
 ----
@@ -583,6 +617,8 @@ User
 * speciallist(\*\*kwargs)
 * pm(content, clientip, jing=None, wei=None)
 
+.. _Video:
+
 Video
 -----
 
@@ -591,6 +627,8 @@ Video
 * palyer
 * real
 * short
+
+.. _RetId:
 
 RetId
 -----
@@ -607,14 +645,14 @@ pageflag + pagetime
 
 ::
 
-    api.timeline.home(reqnum=1)
-    > [<Tweet object #76501075355511>]
+    > api.timeline.home(reqnum=1)
+    [<Tweet object #76501075355511>]
 
-    api.timeline.home(reqnum=1, pageflag=1, pagetime=_[-1].timestamp)
-    > [<Tweet object #29107120390232>]
+    > api.timeline.home(reqnum=1, pageflag=1, pagetime=_[-1].timestamp)
+    [<Tweet object #29107120390232>]
 
-    api.timeline.home(reqnum=1, pageflag=1, pagetime=_[-1].timestamp)
-    > [<Tweet object #78001074250068>]
+    > api.timeline.home(reqnum=1, pageflag=1, pagetime=_[-1].timestamp)
+    [<Tweet object #78001074250068>]
 
 pos
 ---
