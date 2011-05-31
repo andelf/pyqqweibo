@@ -1,3 +1,9 @@
+2011-05-31  andelf  <andelf@gmail.com>
+	* qqweibo/api.py
+	加入 5.27 API 支持
+	* example/api.list
+	简单参考列表
+
 2011-04-08  andelf  <andelf@gmail.com>
 	* qqweibo/*.py
 	全部 API 重构, 修改部分名字, ModelParser 支持完成

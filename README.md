@@ -12,6 +12,8 @@ pyqqweibo
 
 相关例子请参考 `examples` 目录.
 
+api.list 文件包含简单参考内容.
+
 	# simple use
 	from qqweibo import OAuthHandler, API, JSONParser, ModelParser
 	from qqweibo.utils import timestamp_to_str
@@ -30,13 +32,13 @@ pyqqweibo
 
 	api = API(a)
 
-	me = api.me()  # also api.info(), api.user.info()
+	me = api.user.info()
 	print me.name, me.nick, me.location
 
 	for t in me.timeline(reqnum=3):  # my timeline
 		print t.nick, t.text, timestamp_to_str(t.timestamp)
 
-	nba = api.user.otherinfo('NBA')
+	nba = api.user.userinfo('NBA')
 	for u in nba.followers(reqnum=3):  # got NBA's fans
 		u.follow()
 		break  # follow only 1 fans ;)
@@ -46,7 +48,7 @@ pyqqweibo
 		print t.text
 		t.favorite()  # i like this very much
 
-	for fav in api.fav.listt():
+	for fav in api.fav.listtweet():
 		if fav.id == t.id:
 			fav.unfavorite()
 
@@ -54,10 +56,11 @@ pyqqweibo
 已经完成功能
 ------------
 
+* 5.27 API 版本
 * 授权
 * 所有 API json 请求返回
 * API model parser
-* 部分 API 名字修正, 比如替换 ht 为 topic
+* 全部 API 名字修正, 比如替换 ht 为 topic
 
 Further TODO
 ------------
