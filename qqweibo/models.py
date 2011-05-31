@@ -90,17 +90,20 @@ class Tweet(Model):
     def comment(self, content, clientip='127.0.0.1', jing=None, wei=None):
         return self._api.t.comment(content, clientip, jing, wei, reid=self.id)
 
-    def retweets(self, *args, **kwargs):
-        return self._api.t.retweets(self.id, *args, **kwargs)
+    def retweetlist(self, *args, **kwargs):
+        return self._api.t.retweetlist(self.id, *args, **kwargs)
+
+    def retweetcount(self, *args, **kwargs):
+        return self._api.t.retweetcount(self.id, *args, **kwargs)[str(self.id)]
 
     def favorite(self, fav=True):
         if fav:
-            return self._api.fav.addt(self.id)
+            return self._api.fav.addtweet(self.id)
         else:
             return self.unfavorite()
 
     def unfavorite(self):
-        return self._api.fav.delt(self.id)
+        return self._api.fav.deletetweet(self.id)
 
 
 class Geo(Model):
@@ -168,7 +171,7 @@ class User(Model):
 
     def update(self, **kwargs):
         assertion(self.self, "you can only update youself's profile")
-        
+
         nick = self.nick =  kwargs.get('nick', self.nick)
         sex = self.sex = kwargs.get('sex', self.sex)
         year = self.birth_year = kwargs.get('year', self.birth_year)
@@ -208,10 +211,10 @@ class User(Model):
         assertion( not bool(self.self), "you can't follow yourself")
         self._api.friends.addspecial(name=self.name)
 
-    def delspecial(self):
+    def deletespecial(self):
         """取消特别收听某个用户"""
         assertion( not bool(self.self), "you can't follow yourself")
-        self._api.friends.delspecial(name=self.name)
+        self._api.friends.deletespecial(name=self.name)
 
     def addblacklist(self):
         """添加某个用户到黑名单"""
@@ -219,18 +222,18 @@ class User(Model):
         self._api.friends.addblacklist(name=self.name)
     block = addblacklist
 
-    def delblacklist(self):
+    def deleteblacklist(self):
         """从黑名单中删除某个用户"""
         assertion( not bool(self.self), "you can't block yourself")
-        self._api.friends.delblacklist(name=self.name)
-    unblock = delblacklist
+        self._api.friends.deleteblacklist(name=self.name)
+    unblock = deleteblacklist
 
     def fanslist(self, *args, **kwargs):
         """帐户听众列表, 自己或者别人"""
         if self.self:
             return self._api.friends.fanslist(*args, **kwargs)
         else:
-            return self._api.friends.otherfanslist(self.name, *args, **kwargs)
+            return self._api.friends.userfanslist(self.name, *args, **kwargs)
     followers = fanslist
 
     def idollist(self, *args, **kwargs):
@@ -238,7 +241,7 @@ class User(Model):
         if self.self:
             return self._api.friends.idollist(*args, **kwargs)
         else:
-            return self._api.friends.otheridollist(self.name, *args, **kwargs)
+            return self._api.friends.useridollist(self.name, *args, **kwargs)
     followees = idollist
 
     def speciallist(self, *args, **kwargs):
@@ -246,7 +249,7 @@ class User(Model):
         if self.self:
             return self._api.friends.speciallist(*args, **kwargs)
         else:
-            return self._api.friends.otherspeciallist(self.name, *args, **kwargs)
+            return self._api.friends.userspeciallist(self.name, *args, **kwargs)
 
     def pm(self, content, clientip='127.0.0.1', jing=None, wei=None):
         """发私信"""
@@ -254,7 +257,7 @@ class User(Model):
         return self._api.private.add(self.name, content, clientip, jing, wei)
 
 
-class JSONModel(Model):
+class JSON(Model):
 
     def __repr__(self):
         if 'id' in self.__dict__:
@@ -264,7 +267,7 @@ class JSONModel(Model):
 
     @classmethod
     def parse(cls, api, json):
-        lst = JSONModel(api)
+        lst = JSON(api)
         for k, v in json.items():
             if k == 'tweetid':
                 setattr(lst, k, v)
@@ -303,7 +306,7 @@ class Video(Model):
             setattr(lst, k, v)
         return lst
 
-class TagModel(JSONModel):
+class TagModel(JSON):
     def __repr__(self):
         return '<Tag object #%s>' % self.id
 
@@ -314,7 +317,7 @@ class TagModel(JSONModel):
                 setattr(tag, k, v)
         return tag
 
-class Topic(JSONModel):
+class Topic(JSON):
     def __repr__(self):
         return '<Topic object #%s>' % self.id
 
@@ -335,5 +338,5 @@ class ModelFactory(object):
     tweet = Tweet
     user = User
     video = Video
-    json = JSONModel
+    json = JSON
     retid = RetId

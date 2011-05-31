@@ -176,6 +176,7 @@ class OAuthRequest(object):
         self.http_method = http_method
         self.http_url = http_url
         self.parameters = parameters or {}
+
     def set_parameter(self, parameter, value):
         self.parameters[parameter] = value
 
@@ -254,7 +255,8 @@ class OAuthRequest(object):
         self.set_parameter('oauth_signature_method',
             signature_method.get_name())
         # Set the signature.
-        self.set_parameter('oauth_signature',self.build_signature(signature_method, consumer, token))
+        self.set_parameter('oauth_signature',
+            self.build_signature(signature_method, consumer, token))
 
     def build_signature(self, signature_method, consumer, token):
         """Calls the build signature method within the signature method."""
@@ -305,7 +307,7 @@ class OAuthRequest(object):
         defaults = {
             'oauth_consumer_key': oauth_consumer.key,
             'oauth_timestamp': generate_timestamp(),
-            'oauth_nonce': generate_nonce(32), # fixme in qq weibo
+            'oauth_nonce': generate_nonce(),
             'oauth_version': OAuthRequest.version,
         }
 
@@ -615,7 +617,6 @@ class OAuthSignatureMethod_HMAC_SHA1(OAuthSignatureMethod):
         key = '%s&' % escape(consumer.secret)
         if token:
             key += escape(token.secret)
-        #print "OAuth base string:" + str(sig)
         raw = '&'.join(sig)
         return key, raw
 
