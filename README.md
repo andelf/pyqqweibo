@@ -12,7 +12,7 @@ pyqqweibo
 
 相关例子请参考 `examples` 目录.
 
-`api.doc.md` 文件为参考文档.
+`api.doc.rst` 文件为参考文档.
 
 	# simple use
 	from qqweibo import OAuthHandler, API, JSONParser, ModelParser
