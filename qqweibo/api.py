@@ -40,9 +40,8 @@ class API(object):
     _statuses_home_timeline = bind_api(
         path = '/api/statuses/home_timeline',
         payload_type = 'tweet', payload_list = True,
-        allowed_param = ['pageflag', 'pagetime', 'reqnum',],
-        # FIXME seems useless parameters
-        #'type', 'contenttype', 'accesslevel'],
+        allowed_param = ['pageflag', 'pagetime', 'reqnum',
+                         'type', 'contenttype'],
         require_auth = True
     )
 
@@ -59,7 +58,7 @@ class API(object):
         path = '/api/statuses/user_timeline',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['name', 'pageflag', 'pagetime', 'reqnum',
-                         'lastid', 'type', 'contenttype', 'accesslevel'],
+                         'lastid', 'type', 'contenttype'],
         require_auth = True
     )
 
@@ -76,8 +75,7 @@ class API(object):
     _statuses_ht_timeline = bind_api(
         path = '/api/statuses/ht_timeline',
         payload_type = 'tweet', payload_list = True,
-        allowed_param = ['httext', 'pageflag', 'pageinfo',
-                         'reqnum'],
+        allowed_param = ['httext', 'pageflag', 'pageinfo', 'reqnum'],
         require_auth = True
     )
 
@@ -86,8 +84,7 @@ class API(object):
         path = '/api/statuses/broadcast_timeline',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['pageflag', 'pagetime', 'reqnum',
-                         'lastid', 'type', 'contenttype',
-                         'accesslevel'],
+                         'lastid', 'type', 'contenttype'],
         require_auth = True
     )
 
@@ -113,7 +110,7 @@ class API(object):
         path = '/api/statuses/home_timeline_ids',
         payload_type = 'retid', payload_list = True,
         allowed_param = ['pageflag', 'pagetime', 'reqnum', 'type',
-                         'contenttype', 'accesslevel'],
+                         'contenttype'],
         require_auth = True
     )
 
@@ -123,7 +120,7 @@ class API(object):
         path = '/api/statuses/user_timeline_ids',
         payload_type = 'retid', payload_list = True,
         allowed_param = ['name', 'pageflag', 'pagetime', 'reqnum', 'type',
-                         'contenttype', 'accesslevel'],
+                         'contenttype'],
         require_auth = True
     )
 
@@ -132,7 +129,7 @@ class API(object):
         path = '/api/statuses/broadcast_timeline_ids',
         payload_type = 'retid', payload_list = True,
         allowed_param = ['pageflag', 'pagetime', 'reqnum', 'lastid', 'type',
-                         'contenttype', 'accesslevel'],
+                         'contenttype'],
         require_auth = True
     )
 
@@ -141,7 +138,7 @@ class API(object):
         path = '/api/statuses/mentions_timeline_ids',
         payload_type = 'retid', payload_list = True,
         allowed_param = ['pageflag', 'pagetime', 'reqnum', 'lastid', 'type',
-                         'contenttype', 'accesslevel'],
+                         'contenttype'],
         require_auth = True
     )
 
@@ -150,7 +147,7 @@ class API(object):
         path = '/api/statuses/users_timeline',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['names', 'pageflag', 'pagetime', 'reqnum',
-                         'lastid', 'type', 'contenttype', 'accesslevel'],
+                         'lastid', 'type', 'contenttype'],
         require_auth = True
     )
 
@@ -159,7 +156,7 @@ class API(object):
         path = '/api/statuses/users_timeline_ids',
         payload_type = 'retid', payload_list = True,
         allowed_param = ['names', 'pageflag', 'pagetime', 'reqnum',
-                         'lastid', 'type', 'contenttype', 'accesslevel'],
+                         'lastid', 'type', 'contenttype'],
         require_auth = True
     )
 

@@ -1,18 +1,18 @@
 pyqqweibo
 =========
 
-腾讯微博 API. 无力吐槽......
-
-你们有见过这么垃圾的 API 么? 有木有?
-
 腾讯微博 API Python 绑定, 基于 Twitter API 绑定库 tweepy 改写. 目前在不断完善中.
+
+已经更新到 5.27 日 API 版本.
+
+我就不吐槽腾讯的 API 了.
 
 使用方法
 --------
 
 相关例子请参考 `examples` 目录.
 
-api.list 文件包含简单参考内容.
+`api.doc.md` 文件为参考文档.
 
 	# simple use
 	from qqweibo import OAuthHandler, API, JSONParser, ModelParser
@@ -80,8 +80,8 @@ About
 License: MIT
 
 环境依赖:
-	Python 2.7 测试通过
-	Python 2.5 及之前可能需要安装 simplejson 支持包
-	Python-OAuth <http://code.google.com/p/oauth> 已经包含
+* Python 2.7 测试通过
+* Python 2.5 及之前可能需要安装 simplejson 支持包
+* Python-OAuth <http://code.google.com/p/oauth> 已经包含
 
 欢迎和我讨论相关问题 :)

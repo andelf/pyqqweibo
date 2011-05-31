@@ -11,25 +11,21 @@ import re
 
 
 def parse_datetime(str):
-
     # We must parse datetime this way to work in python 2.4
     return datetime(*(time.strptime(str, '%a %b %d %H:%M:%S +0800 %Y')[0:6]))
 
 
 def parse_html_value(html):
-
     return html[html.find('>')+1:html.rfind('<')]
 
 
 def parse_a_href(atag):
-
     start = atag.find('"') + 1
     end = atag.find('"', start)
     return atag[start:end]
 
 
 def parse_search_datetime(str):
-
     # python 2.4
     return datetime(*(time.strptime(str, '%a, %d %b %Y %H:%M:%S +0000')[0:6]))
 
@@ -61,6 +57,8 @@ def convert_to_utf8_str(arg):
     # written by Michael Norton (http://docondev.blogspot.com/)
     if isinstance(arg, unicode):
         arg = arg.encode('utf-8')
+    elif hasattr(arg, '__iter__'):      # FIX list param
+        arg = ','.join(map(convert_to_utf8_str, arg))
     elif not isinstance(arg, str):
         arg = str(arg)
     return arg

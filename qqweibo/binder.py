@@ -39,10 +39,6 @@ def bind_api(**config):
             self.retry_errors = kargs.pop('retry_errors', api.retry_errors)
             self.headers = kargs.pop('headers', {})
             self.build_parameters(args, kargs)
-            # Pick correct URL root to use
-            #if self.search_api:
-            #    self.api_root = api.search_root
-            #else:
             self.api_root = api.api_root
 
             # Perform any path variable substitution
@@ -67,11 +63,12 @@ def bind_api(**config):
                     raise QWeiboError('Too many parameters supplied!')
 
             for k, arg in kargs.items():
-                if arg is None:
+                if bool(arg) == False:
                     continue
                 if k in self.parameters:
-                    raise QWeiboError('Multiple values for parameter %s supplied!' % k)
-
+                    raise QWeiboError('Multiple values for parameter `%s` supplied!' % k)
+                #if k not in self.allowed_param:
+                #    raise QWeiboError('`%s` is not allowd in this API function.' % k)
                 self.parameters[k] = convert_to_utf8_str(arg)
 
         def build_path(self):
