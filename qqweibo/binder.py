@@ -123,16 +123,21 @@ def bind_api(**config):
                 # Open connection
                 # FIXME: add timeout
                 # Apply authentication
-                if self.api.auth:
-                    url = self.api.auth.get_applied_url(
+                if self.require_auth and self.api.auth:
+                    url_new = self.api.auth.get_authed_url(
+                        self.scheme + self.host + url,
+                        self.method, self.headers, self.parameters
+                    )
+                else:
+                    url_new = self.api.auth.get_signed_url(
                         self.scheme + self.host + url,
                         self.method, self.headers, self.parameters
                     )
                 try:
                     if self.method == 'POST':
-                        req = Request(url, data=self.post_data, headers=self.headers)
+                        req = Request(url_new, data=self.post_data, headers=self.headers)
                     else:
-                        req = Request(url)
+                        req = Request(url_new)
                     resp = urlopen(req)
                 except Exception, e:
                     raise QWeiboError('Failed to send request: %s' % e + "url=" + str(url) +",self.headers="+ str(self.headers))
@@ -157,7 +162,7 @@ def bind_api(**config):
                 if self.post_data is not None:
                     postData = ",post:"+ self.post_data[0:500]
                 self.api.log.debug(requestUrl +",time:"+ str(eTime)+ postData+",result:"+ body )
-            #if resp.code != 200:
+
             ret_code = 0
             try:
                 json = self.api.parser.parse_error(self, body)

@@ -7,6 +7,16 @@ pyqqweibo
 
 我就不吐槽腾讯的 API 了.
 
+特色
+----
+
+* 缓存支持
+* 友好的 Model 支持, 返回对象(对象列表)支持简单方法
+* 可以返回 JSON 数据
+* 删除所有 API 函数中下划线, 全小写
+
+具体参考 `api.doc.rst` 及　`Changelog`
+
 使用方法
 --------
 
@@ -52,21 +62,10 @@ pyqqweibo
 		if fav.id == t.id:
 			fav.unfavorite()
 
-
-已经完成功能
-------------
-
-* 5.27 API 版本
-* 授权
-* 所有 API json 请求返回
-* API model parser
-* 全部 API 名字修正, 比如替换 ht 为 topic
-
 Further TODO
 ------------
 
 * 翻页支持
-* Document
 * fix bugs
 * add more examples
 
@@ -80,6 +79,7 @@ About
 License: MIT
 
 环境依赖:
+
 * Python 2.7 测试通过
 * Python 2.5 及之前可能需要安装 simplejson 支持包
 * Python-OAuth <http://code.google.com/p/oauth> 已经包含

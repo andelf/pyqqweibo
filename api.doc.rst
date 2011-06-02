@@ -35,9 +35,10 @@ Auth 教程
 ::
 
   api = API(a)
-  # test
   me = api.user.info()
   print me.name, me.nick, me.location
+  # api = API(a, parser=JSONParser())
+  print api.timeline.home()
 
 --------
 API 参考
@@ -50,7 +51,7 @@ timeline 时间线
 
 home 主页时间线
   :参数:
-    (pageflag, pagetime, reqnum, type, contenttype)
+    (reqnum, pageflag, pagetime, type, contenttype)
   :返回:
     [Tweet_]
   :翻页:
@@ -72,7 +73,7 @@ public 广播大厅时间线
     [Tweet]
 user 其他用户发表时间线
   :参数:
-    (name*, pageflag, pagetime, reqnum, lastid, type, contenttype)
+    (name*, reqnum, pageflag, pagetime, lastid, type, contenttype)
   :返回:
     [Tweet_]
 
@@ -82,7 +83,7 @@ user 其他用户发表时间线
     [Tweet]
 mentions 用户提及时间线
   :参数:
-    (pageflag, pagetime, reqnum, lastid, type, contenttype, accesslevel)
+    (reqnum, pageflag, pagetime, lastid, type, contenttype, accesslevel)
   :返回:
     [Tweet_]
 
@@ -102,7 +103,7 @@ topic 话题时间线
     [Tweet]
 broadcast 我发表时间线
   :参数:
-    (pageflag, pagetime, reqnum, lastid, type, contenttype)
+    (reqnum, pageflag, pagetime, lastid, type, contenttype)
   :返回:
     [Tweet_]
 
@@ -112,7 +113,7 @@ broadcast 我发表时间线
     [Tweet]
 special 特别收听的人发表时间线
   :参数:
-    (pageflag, pagetime, reqnum)
+    (reqnum, pageflag, pagetime)
   :返回:
     [Tweet_]
 
@@ -122,7 +123,7 @@ special 特别收听的人发表时间线
     [Tweet]
 area 地区发表时间线
   :参数:
-    (country*, province*, city*, pos, reqnum)
+    (country*, province*, city*, reqnum, pos)
   :返回:
     [Tweet_]
 
@@ -132,7 +133,7 @@ area 地区发表时间线
     [Tweet]
 homeids 主页时间线索引
   :参数:
-    (pageflag, pagetime, reqnum, type, contenttype)
+    (reqnum, pageflag, pagetime, type, contenttype)
   :返回:
     [RetId_]
 
@@ -142,7 +143,7 @@ homeids 主页时间线索引
     [RetId] # RetId 可通过 ret.id, ret.timestamp 获取属性
 userids 其他用户发表时间线索引
   :参数:
-    (name*, pageflag, pagetime, reqnum, type, contenttype)
+    (name*, reqnum, pageflag, pagetime, type, contenttype)
   :返回:
     [RetId_]
 
@@ -152,7 +153,7 @@ userids 其他用户发表时间线索引
     [RetId]
 broadcastids 我发表时间线索引
   :参数:
-    (pageflag, pagetime, reqnum, lastid, type, contenttype)
+    (reqnum, pageflag, pagetime, lastid, type, contenttype)
   :返回:
     [RetId_]
 
@@ -162,7 +163,7 @@ broadcastids 我发表时间线索引
     [RetId]
 mentionsids 用户提及时间线索引
   :参数:
-    (pageflag, pagetime, reqnum, lastid, type, contenttype)
+    (reqnum, pageflag, pagetime, lastid, type, contenttype)
   :返回:
     [RetId_]
 
@@ -172,7 +173,7 @@ mentionsids 用户提及时间线索引
     [RetId]
 users 多用户发表时间线
   :参数:
-    (names*, pageflag, pagetime, reqnum, lastid, type, contenttype)
+    (names*, reqnum, pageflag, pagetime, lastid, type, contenttype)
   :返回:
     [Tweet_]
 
@@ -182,7 +183,7 @@ users 多用户发表时间线
     [Tweet]
 usersids 多用户发表时间线索引
   :参数:
-    (names*, pageflag, pagetime, reqnum, lastid, type, contenttype)
+    (names*, reqnum, pageflag, pagetime, lastid, type, contenttype)
   :返回:
     [RetId_]
 
@@ -244,6 +245,11 @@ addpic 发表一条带图片的微博
     (filename*, content*, clientip*, jing, wei)
   :返回:
     RetId_
+
+  ::
+
+    > api.tweet.addpic("f:/tutu.jpg", "TOO~~~", '127.0.0.1')
+    <RetId id:42571104628123>
 retweetcount 转播数或点评数
   :参数:
     (ids*, flag)
@@ -256,7 +262,7 @@ retweetcount 转播数或点评数
     {'34243234242': 0, ...}
 retweetlist 获取单条微博的转发或点评列表
   :参数:
-    (rootid*, flag, pageflag, pagetime, reqnum, twitterid)
+    (rootid*, reqnum, flag, pageflag, pagetime, twitterid)
   :返回:
     [Tweet_]
 comment 点评一条微博
@@ -266,26 +272,26 @@ comment 点评一条微博
     RetId_
 addmusic 发表音乐微博
   :参数:
-    (content*, url*, title*, author*, clientip*, jing, wei)
+    (url*, title*, author*, content*, clientip*, jing, wei)
   :返回:
     RetId_
 addvideo 发表视频微博
   :说明:
-    后台自动分析视频信息，支持youku,tudou,ku6
+    后台自动分析视频信息.
   :参数:
-    (content*, url*, clientip*, jing, wei)
+    (url*, content*, clientip*, jing, wei)
   :返回:
     RetId_
-getvideoinfo 获取视频信息
-  :参数:
-    (url*)
-  :返回:
-    Video_
 
   ::
 
-    > api.tweet.getvideoinfo('http://v.youku.com/v_show/id_XMjcxNjEwMzI4.html')
-    Video
+    > api.tweet.addvideo(content='Connie Talbot-<If I Were A Boy >',
+      url= 'http://www.yinyuetai.com/video/181478', clientip='127.0.0.1')
+    <RetId id:86001096476081>
+    > _.as_tweet()
+    <Tweet object #...>
+    > _.video
+    <Video #...>
 list 根据微博ID批量获取微博内容（与索引合起来用）
   :参数:
     (ids*)
@@ -404,17 +410,19 @@ delete 删除一条私信
     RetId_
 inbox 收件箱
   :参数:
-    (pageflag, pagetime, reqnum, lastid)
+    (reqnum, pageflag, pagetime, lastid)
   :返回:
     [Tweet_]
 outbox 发件箱
   :参数:
-    (pageflag, pagetime, reqnum, lastid)
+    (reqnum, pageflag, pagetime, lastid)
   :返回:
     [Tweet_]
 
 search 搜索相关
 ---------------
+
+均需要特殊权限. 未测试.
 
 user 搜索用户
   :参数:
@@ -437,10 +445,10 @@ trends 热度，趋势
 
 topic 话题热榜
   :参数:
-    (type, reqnum, pos)
+    (reqnum, type, pos)
 tweet 转播热榜
   :参数:
-    (type, reqnum, pos)
+    (reqnum, type, pos)
   :返回:
     [Tweet_]
 
@@ -478,7 +486,7 @@ deletetweet 从收藏删除一条微博
     RetId_
 listtweet 收藏的微博列表
   :参数:
-    (pageflag, nexttime, prevtime, reqnum, lastid)
+    (reqnum, pageflag, nexttime, prevtime, lastid)
   :返回:
     [Tweet_]
 addtopic 订阅话题
@@ -570,6 +578,16 @@ videokey 获取视频上传的KEY
 
     api.other.videokey().as_dict()
     > {'uid': u'VNcmwzbqxdu=', 'videokey': u'$xMcNnpvswmmftd5pPkm'}
+videoinfo 获取视频信息
+  :参数:
+    (url*)
+  :返回:
+    Video_
+
+  ::
+
+    > api.tweet.videoinfo('http://v.youku.com/v_show/id_XMjcxNjEwMzI4.html')
+    Video
 
 ----------
 Model 列表
@@ -622,26 +640,31 @@ User
 Video
 -----
 
+修正在部分情况下返回参数名字不同的问题. 去掉了 minipic, real, short.
+
 * title
-* minipic
+* picurl
 * palyer
-* real
-* short
+* realurl
+* shorturl
 
 .. _RetId:
 
 RetId
 -----
 
+id 属性可能是各种返回结果的 id, 不一定是 Tweet.
+
 * id
 * timestamp 某些情况下没有
+* as_tweet() 返回 api.tweet.show(id)
 
 --------
 翻页教程
 --------
 
-pageflag + pagetime
--------------------
+pageflag+pagetime
+-----------------
 
 ::
 
@@ -657,7 +680,7 @@ pageflag + pagetime
 pos
 ---
 
-不推荐使用使用 pos 翻页.
+某些 API 使用 pos 翻页会由于更新内容过快而无法获取实时信息. 例如 `timeline.public`.
 
 ::
 
@@ -669,15 +692,76 @@ pos
     pos += len(ret)
     ret = api.timeline.public(reqnum=reqnum, pos=pos)
 
+startindex
+----------
+
+类似 pos.
+
+::
+
+    api.friends.fanslist(reqnum=5, startindex=0)
+    # 根据 reqnum 及返回长度累加 startindex.
+    api.friends.fanslist(reqnum=5, startindex=5)
+
+pageflag+nexttime+prevtime
+--------------------------
+
+没用明白. 从说明看类似 pageflag+pagetime
+
+pagesize + page
+---------------
+
+未能使用成功.
+
 lastid
 ------
 
-至今未成功过, 可见腾讯之垃圾.
+至今未成功过, 可见腾讯之垃圾. 后来发现这个参数是没有用的.
 
 pageflag + pageinfo
 -------------------
 
 TODO
 
+twitterid
+---------
 
+根据猜测, 功能应该和 lastid 相同. 也就是完全没用.
 
+--------
+缓存支持
+--------
+
+::
+
+  from qqweibo import MemoryCache
+  # build your auth obj
+  auth = ...
+  memcache = MemoryCache(timeout=30)
+  api = API(auth, cache=memcache)
+
+---------------
+腾讯微博吐槽点
+---------------
+
+* 命名规范类
+
+  * api.user.userinfo 返回的 JSON 数据 Ismyblack, Ismyfans, Ismyidol 是首字母大写的.
+  * getvideoinfo 和 tweet 数据中视频信息域不对应. real 和 realurl 类似这样.
+  * 返回 JSON 中命名不统一. 比如 time 和 timestamp. 这个超级多.
+  * 英文和拼音混用, ht, jing, wei...
+  * twitterid 竟然还能出现.
+  * 同一功能变量名有时有 `_` 有时没有. 比如 birth_day 等. 这个太多.
+  * 变量和函数命名实在是不想多骂了.
+* 功能设计类
+
+  * lastid 参数几乎无用.
+  * accesslevel 目前没发现到底是什么个东西. 有些 API 无效果, 有些 API 看不出什么规律.
+  * api.trends.tweet 通过翻页 API 检查后发现返回顺序是乱的.
+  * getvideoinfo 不应该在 tweet 类 API 中.
+  * geo, jing, wei 无用
+  * 翻页方法..... 快十种了.... 传说腾讯微博有多少翻页方法就有多少开发人员
+  * Tweet 信息不同 API 返回时详细程度不同. 这个很奇怪. 偶尔出现过.
+  * 偶尔会请求错误. 重新请求后正常. 服务器返回没有任何价值的错误信息.
+  * videokey 是干嘛的?
+  * "对一些公共信息不需要用户鉴权". 经尝试, 基本上都会 access rate limit.

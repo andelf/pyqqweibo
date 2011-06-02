@@ -62,6 +62,9 @@ class Tweet(Model):
                 #user = User.parse(api, v)
                 #setattr(tweet, 'author', user)
                 #setattr(tweet, 'user', user)  # DEPRECIATED
+            elif k == 'video':
+                video = Video.parse(api, v) if v else None
+                setattr(tweet, 'video', video)
             elif k in ('isvip', 'self'):
                 setattr(tweet, k, bool(v))
             elif k == 'from':
@@ -140,7 +143,7 @@ class Source(Model):
 class User(Model):
 
     def __repr__(self):
-        return '<User object #%s>' % self.name # no uid
+        return '<User object #%s>' % self.name
 
     @classmethod
     def parse(cls, api, json):
@@ -295,15 +298,25 @@ class RetId(Model):
                 setattr(lst, k, v)
         return lst
 
+    def as_tweet(self):
+        return self._api.tweet.show(self.id)
+
 
 class Video(Model):
     def __repr__(self):
-        return "<Video object #%s>" % self.real
+        return "<Video object #%s>" % self.realurl
 
     @classmethod
     def parse(cls, api, json):
         lst = Video(api)
-        for k,v in json.items():
+        for k, v in json.items():
+            # FIX bug names
+            if k == 'real':
+                k = 'realurl'
+            elif k == 'short':
+                k = 'shorturl'
+            elif k == 'minipic':
+                k = 'picurl'
             setattr(lst, k, v)
         return lst
 

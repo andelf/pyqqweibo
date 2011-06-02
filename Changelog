@@ -1,6 +1,18 @@
+2011-06-01  andelf  <andelf@gmail.com>
+	* qqweibo/api.py
+	reqnum 提前到非必须参数的第一个
+	getvideoinfo 从 tweet 类移动到 other 类, 更名为 videoinfo
+	* qqweibo/auth.py
+	清理参数
+	* api.doc.rst
+	参考文档
+	* qqweibo/cache.py
+	缓存支持
+
 2011-05-31  andelf  <andelf@gmail.com>
 	* qqweibo/api.py
 	加入 5.27 API 支持
+	修改 addvideo, addmusic 等 API 参数顺序, 建议使用时全部采用关键字参数.
 	感谢论坛ID: 空无一人 找出的BUG
 	* example/api.list
 	简单参考列表

@@ -64,7 +64,6 @@ def convert_to_utf8_str(arg):
     return arg
 
 
-
 def import_simplejson():
     try:
         import simplejson as json
@@ -83,3 +82,5 @@ def import_simplejson():
 def timestamp_to_str(tm):
     return time.ctime(tm)
 
+
+#

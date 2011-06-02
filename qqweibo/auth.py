@@ -10,12 +10,11 @@ import base64
 from qqweibo import oauth
 from qqweibo.error import QWeiboError
 
-#from weibopy.api import PPI
-
+from qqweibo.api import API
 
 class AuthHandler(object):
 
-    def apply_auth(self, url, method, headers, parameters):
+    def apply_auth_headers(self, url, method, headers, parameters):
         """Apply authentication headers to request"""
         raise NotImplementedError
 
@@ -23,21 +22,9 @@ class AuthHandler(object):
         """Return the username of the authenticated user"""
         raise NotImplementedError
 
-    def get_applied_url(self, url, method, headers, parameters):
+    def get_signed_url(self, url, method, headers, parameters):
         raise NotImplementedError
 
-
-class BasicAuthHandler(AuthHandler):
-    """useless"""
-    def __init__(self, username, password):
-        self.username = username
-        self._b64up = base64.b64encode('%s:%s' % (username, password))
-
-    def apply_auth(self, url, method, headers, parameters):
-        headers['Authorization'] = 'Basic %s' % self._b64up
-
-    def get_username(self):
-        return self.username
 
 class OAuthHandler(AuthHandler):
     """OAuth authentication handler"""
@@ -45,14 +32,13 @@ class OAuthHandler(AuthHandler):
     OAUTH_HOST = 'open.t.qq.com'
     OAUTH_ROOT = '/cgi-bin/'
 
-    def __init__(self, consumer_key, consumer_secret, callback=None, secure=False):
+    def __init__(self, consumer_key, consumer_secret, callback=None):
         self._consumer = oauth.OAuthConsumer(consumer_key, consumer_secret)
         self._sigmethod = oauth.OAuthSignatureMethod_HMAC_SHA1()
         self.request_token = None
         self.access_token = None
         self.callback = callback or 'null' # fixed
         self.username = None
-        self.secure = secure
 
     def _get_oauth_url(self, endpoint):
         if endpoint in ('request_token', 'access_token'):
@@ -61,7 +47,10 @@ class OAuthHandler(AuthHandler):
             prefix = 'http://'
         return prefix + self.OAUTH_HOST + self.OAUTH_ROOT + endpoint
 
-    def apply_auth(self, url, method, headers, parameters):
+    def apply_auth_headers(self, url, method, headers, parameters):
+        """applay auth to request headers
+        QQ weibo doesn't support it.
+        """
         request = oauth.OAuthRequest.from_consumer_and_token(
             self._consumer, http_url=url, http_method=method,
             token=self.access_token, parameters=parameters
@@ -69,7 +58,15 @@ class OAuthHandler(AuthHandler):
         request.sign_request(self._sigmethod, self._consumer, self.access_token)
         headers.update(request.to_header())
 
-    def get_applied_url(self, url, method, headers, parameters):
+    def get_signed_url(self, url, method, headers, parameters):
+        """only sign url, no authentication"""
+        # OAuthRequest(http_method, http_url, parameters)
+        request = oauth.OAuthRequest( http_method=method, http_url=url, parameters=parameters)
+        request.sign_request(self._sigmethod, self._consumer, self.access_token)
+        return request.to_url()
+
+    def get_authed_url(self, url, method, headers, parameters):
+        """auth + sign"""
         request = oauth.OAuthRequest.from_consumer_and_token(
             self._consumer, http_url=url, http_method=method,
             token=self.access_token, parameters=parameters
@@ -147,9 +144,9 @@ class OAuthHandler(AuthHandler):
     def get_username(self):
         if self.username is None:
             api = API(self)
-            user = api.verify_credentials()
+            user = api.user.info()
             if user:
-                self.username = user.screen_name
+                self.username = user.name
             else:
                 raise QWeiboError("Unable to get username, invalid oauth token!")
         return self.username

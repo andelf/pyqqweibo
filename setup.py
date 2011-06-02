@@ -5,7 +5,7 @@
 from setuptools import setup, find_packages
 
 setup(name="qqweibo",
-      version="0.1",
+      version="0.2",
       description="QQ Weibo library for python",
       license="MIT",
       author="andelf",
