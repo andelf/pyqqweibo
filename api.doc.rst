@@ -33,7 +33,7 @@ Quickstart
 		print t.nick, t.text, timestamp_to_str(t.timestamp)
 
 	nba = api.user.userinfo('NBA')
-	for u in nba.followers(reqnum=3):  # got NBA's fans
+	for u in nba.followers(reqnum=3):  # get NBA's fans
 		u.follow()
 		break  # follow only 1 fans ;)
 	u.unfollow()  # then unfollow
@@ -108,11 +108,11 @@ Parser 教程
 
   api = API(auth, parser=JSONParser())
   print api.user.info()
-  # will got a json obj
+  # will be a json obj
 
   api = API(auth, parser=XMLRawParser())
   print api.user.info()
-  # will got '<root><data><birth_day>6</birth_da....'
+  # will be '<root><data><birth_day>6</birth_da....'
 
   api = API(auth, parser=XMLDomParser())
   print api.user.info()
