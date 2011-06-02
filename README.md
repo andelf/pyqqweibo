@@ -15,7 +15,7 @@ By @andelf <andelf@gmail.com>
 * 缓存支持
 * 友好的 Model 支持, 返回对象(对象列表)支持简单方法
 * 可以返回 JSON 或 XML 数据(多 Parser 支持)
-* 删除所有 API 函数中下划线, 全小写
+* 修改所有 API 绑定组织结构参数顺序及返回等
 
 具体参考 `api.doc.rst` 及　`Changelog`
 

@@ -105,6 +105,7 @@ Parser 教程
 目前支持 ModelParser, JSONParser, XMLRawParser, XMLDomParser, XMLETreeParser.
 
 ::
+
   api = API(auth, parser=JSONParser())
   print api.user.info()
   # will got a json obj
