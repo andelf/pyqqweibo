@@ -2,6 +2,51 @@
 pyqqweibo 参考文档
 ==================
 
+----------
+Quickstart
+----------
+
+::
+
+	# simple use
+	from qqweibo import OAuthHandler, API, JSONParser, ModelParser
+	from qqweibo.utils import timestamp_to_str
+
+	a = OAuthHandler('API_KEY', 'API_SECRET')
+
+	# use this
+	print a.get_authorization_url()
+	verifier = raw_input('PIN: ').strip()
+	a.get_access_token(verifier)
+
+	# or directly use:
+	#token = 'your token'
+	#tokenSecret = 'your secret'
+	#a.setToken(token, tokenSecret)
+
+	api = API(a)
+
+	me = api.user.info()
+	print me.name, me.nick, me.location
+
+	for t in me.timeline(reqnum=3):  # my timeline
+		print t.nick, t.text, timestamp_to_str(t.timestamp)
+
+	nba = api.user.userinfo('NBA')
+	for u in nba.followers(reqnum=3):  # got NBA's fans
+		u.follow()
+		break  # follow only 1 fans ;)
+	u.unfollow()  # then unfollow
+
+	for t in nba.timeline(reqnum=1):
+		print t.text
+		t.favorite()  # i like this very much
+
+	for fav in api.fav.listtweet():
+		if fav.id == t.id:
+			fav.unfavorite()
+
+
 ---------
 Auth 教程
 ---------
@@ -37,8 +82,45 @@ Auth 教程
   api = API(a)
   me = api.user.info()
   print me.name, me.nick, me.location
+  # 返回 JSON
   # api = API(a, parser=JSONParser())
   print api.timeline.home()
+
+------------
+缓存支持教程
+------------
+
+::
+
+  from qqweibo import MemoryCache
+  # build your auth obj
+  auth = ...
+  memcache = MemoryCache(timeout=30)
+  api = API(auth, cache=memcache)
+
+-----------
+Parser 教程
+-----------
+
+目前支持 ModelParser, JSONParser, XMLRawParser, XMLDomParser, XMLETreeParser.
+
+::
+  api = API(auth, parser=JSONParser())
+  print api.user.info()
+  # will got a json obj
+
+  api = API(auth, parser=XMLRawParser())
+  print api.user.info()
+  # will got '<root><data><birth_day>6</birth_da....'
+
+  api = API(auth, parser=XMLDomParser())
+  print api.user.info()
+  # will be a minidom object
+
+  api = API(auth, parser=XMLETreeParser())
+  et = api.user.info()
+  # a helpful et object
+  print et.findtext('data/name')
 
 --------
 API 参考
@@ -586,8 +668,8 @@ videoinfo 获取视频信息
 
   ::
 
-    > api.tweet.videoinfo('http://v.youku.com/v_show/id_XMjcxNjEwMzI4.html')
-    Video
+    api.tweet.videoinfo('http://v.youku.com/v_show/id_XMjcxNjEwMzI4.html')
+    > Video
 
 ----------
 Model 列表
@@ -727,18 +809,6 @@ twitterid
 ---------
 
 根据猜测, 功能应该和 lastid 相同. 也就是完全没用.
-
---------
-缓存支持
---------
-
-::
-
-  from qqweibo import MemoryCache
-  # build your auth obj
-  auth = ...
-  memcache = MemoryCache(timeout=30)
-  api = API(auth, cache=memcache)
 
 ---------------
 腾讯微博吐槽点

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
-#  Description : description 
-#  Time-stamp: <2011-04-09 19:37:14 andelf> 
+#  Description : description
+#  Time-stamp: <2011-06-02 13:46:23 andelf>
 
 
 from qqweibo.models import ModelFactory
@@ -27,6 +27,30 @@ class Parser(object):
         and default error message will be used.
         """
         raise NotImplementedError
+
+class XMLRawParser(Parser):
+    """return string of xml"""
+    payload_format = 'xml'
+
+    def parse(self, method, payload):
+        return payload
+
+    def parse_error(self, method, payload):
+        return payload
+
+
+class XMLDomParser(XMLRawParser):
+    """return xml.dom.minidom object"""
+    def parse(self, method, payload):
+        import xml.dom.minidom as dom
+        return dom.parseString(payload)
+
+
+class XMLETreeParser(XMLRawParser):
+    """return elementtree object"""
+    def parse(self, method, payload):
+        import xml.etree.ElementTree as ET
+        return ET.fromstring(payload)
 
 
 class JSONParser(Parser):

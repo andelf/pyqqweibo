@@ -33,6 +33,7 @@ def bind_api(**config):
                 raise QWeiboError('Authentication required!')
 
             self.api = api
+            self.payload_format = api.parser.payload_format
             self.post_data = kargs.pop('post_data', None)
             self.retry_count = kargs.pop('retry_count', api.retry_count)
             self.retry_delay = kargs.pop('retry_delay', api.retry_delay)
@@ -40,6 +41,7 @@ def bind_api(**config):
             self.headers = kargs.pop('headers', {})
             self.build_parameters(args, kargs)
             self.api_root = api.api_root
+
 
             # Perform any path variable substitution
             self.build_path()
@@ -55,7 +57,7 @@ def bind_api(**config):
             self.headers['Host'] = self.host
 
         def build_parameters(self, args, kargs):
-            self.parameters = {'format': 'json'} # bind here, as default
+            self.parameters = {'format': self.payload_format} # bind here, as default
             for idx, arg in enumerate(args):
                 try:
                     self.parameters[self.allowed_param[idx]] = convert_to_utf8_str(arg)
@@ -124,20 +126,20 @@ def bind_api(**config):
                 # FIXME: add timeout
                 # Apply authentication
                 if self.require_auth and self.api.auth:
-                    url_new = self.api.auth.get_authed_url(
+                    url_full = self.api.auth.get_authed_url(
                         self.scheme + self.host + url,
                         self.method, self.headers, self.parameters
                     )
                 else:
-                    url_new = self.api.auth.get_signed_url(
+                    url_full = self.api.auth.get_signed_url(
                         self.scheme + self.host + url,
                         self.method, self.headers, self.parameters
                     )
                 try:
                     if self.method == 'POST':
-                        req = Request(url_new, data=self.post_data, headers=self.headers)
+                        req = Request(url_full, data=self.post_data, headers=self.headers)
                     else:
-                        req = Request(url_new)
+                        req = Request(url_full)
                     resp = urlopen(req)
                 except Exception, e:
                     raise QWeiboError('Failed to send request: %s' % e + "url=" + str(url) +",self.headers="+ str(self.headers))
@@ -165,16 +167,16 @@ def bind_api(**config):
 
             ret_code = 0
             try:
-                json = self.api.parser.parse_error(self, body)
-                ret_code =  json['ret']
-                error =  json['msg']
-                errcode = json.get('errcode', 0)
-                error_msg = 'ret_code: %s, %s' % (ret_code, error)
-                if errcode:
-                    error_msg += ' errcode: %s' % errcode
+                if self.api.parser.payload_format == 'json':
+                    json = self.api.parser.parse_error(self, body)
+                    ret_code =  json['ret']
+                    error =  json['msg']
+                    errcode = json.get('errcode', 0)
+                    error_msg = 'ret_code: %s, %s' % (ret_code, error)
+                    if errcode:
+                        error_msg += ' errcode: %s' % errcode
             except Exception as e:
                 ret_code = -1
-                print e
                 error_msg = "Weibo error response: Error = %s" % e
             finally:
                 if ret_code!= 0:
@@ -195,8 +197,8 @@ def bind_api(**config):
 
 
     # Set pagination mode
-    if 'cursor' in APIMethod.allowed_param:
-        _call.pagination_mode = 'cursor'
+    if 'pagetime' in APIMethod.allowed_param:
+        _call.pagination_mode = 'pagetime'
     elif 'page' in APIMethod.allowed_param:
         _call.pagination_mode = 'page'
 

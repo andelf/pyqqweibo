@@ -1,3 +1,7 @@
+2011-06-02  andelf  <andelf@gmail.com>
+	* qqweibo/parsers.py
+	加入 XML 相关 Parser
+
 2011-06-01  andelf  <andelf@gmail.com>
 	* qqweibo/api.py
 	reqnum 提前到非必须参数的第一个
