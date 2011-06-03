@@ -1,3 +1,9 @@
+2011-06-03  andelf  <andelf@gmail.com>
+	* setup.py
+	包命名为 pyqqweibo
+	* *.py
+	Python 3.x 兼容性修改
+
 2011-06-02  andelf  <andelf@gmail.com>
 	* qqweibo/parsers.py
 	加入 XML 相关 Parser

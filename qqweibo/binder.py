@@ -4,11 +4,18 @@
 # Copyright 2011 andelf<andelf@gmail.com>
 # See LICENSE for details.
 
-import httplib
-import urllib
+
+try:
+    import httplib
+    from urllib import quote, urlencode
+    from urllib2 import Request, urlopen
+except ImportError:
+    import http.client as httplib
+    from urllib.parse import quote, urlencode
+    from urllib.request import Request, urlopen
 import time
 import re
-from urllib2 import urlopen, Request
+
 from qqweibo.error import QWeiboError
 from qqweibo.utils import convert_to_utf8_str
 
@@ -81,7 +88,7 @@ def bind_api(**config):
                     value = self.api.auth.get_username()
                 else:
                     try:
-                        value = urllib.quote(self.parameters[name])
+                        value = quote(self.parameters[name])
                     except KeyError:
                         raise QWeiboError('No parameter value found for path variable: %s' % name)
                     del self.parameters[name]
@@ -96,13 +103,13 @@ def bind_api(**config):
 
             if len(self.parameters):
                 if self.method == 'GET':
-                    url = '%s?%s' % (url, urllib.urlencode(self.parameters))
+                    url = '%s?%s' % (url, urlencode(self.parameters))
                 else:
                     self.headers.setdefault("User-Agent","python")
                     if self.post_data is None:
                         self.headers.setdefault("Accept","text/html")
                         self.headers.setdefault("Content-Type","application/x-www-form-urlencoded")
-                        self.post_data = urllib.urlencode(self.parameters)
+                        self.post_data = urlencode(self.parameters).encode('ascii') # asure in bytes format
             # Query the cache if one is available
             # and this request uses a GET method.
             if self.api.cache and self.method == 'GET':
@@ -130,7 +137,7 @@ def bind_api(**config):
                         self.scheme + self.host + url,
                         self.method, self.headers, self.parameters
                     )
-                else:
+                else:                   # this brunch is never accoured
                     url_full = self.api.auth.get_signed_url(
                         self.scheme + self.host + url,
                         self.method, self.headers, self.parameters
@@ -141,8 +148,9 @@ def bind_api(**config):
                     else:
                         req = Request(url_full)
                     resp = urlopen(req)
-                except Exception, e:
-                    raise QWeiboError('Failed to send request: %s' % e + "url=" + str(url) +",self.headers="+ str(self.headers))
+                except Exception as e:
+                    raise QWeiboError("Failed to send request: %s url=%s headers=%s" % \
+                                      (e, url, self.headers))
 
                 # Exit request loop if non-retry error code
                 if self.retry_errors:
@@ -166,6 +174,9 @@ def bind_api(**config):
                 self.api.log.debug(requestUrl +",time:"+ str(eTime)+ postData+",result:"+ body )
 
             ret_code = 0
+            # for py3k, ^_^
+            if not hasattr(body, 'encode'):
+                body = str(body, 'utf-8')
             try:
                 if self.api.parser.payload_format == 'json':
                     json = self.api.parser.parse_error(self, body)

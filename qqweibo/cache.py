@@ -5,13 +5,12 @@
 import time
 import threading
 import os
-import cPickle as pickle
-
 try:
-    import hashlib
-except ImportError:
-    # python 2.4
-    import md5 as hashlib
+    import cPickle as pickle
+except:
+    import pickle
+
+import hashlib
 
 try:
     import fcntl
@@ -150,7 +149,7 @@ class FileCache(Cache):
             self._lock_file = self._lock_file_win32
             self._unlock_file = self._unlock_file_win32
         else:
-            print 'Warning! FileCache locking not supported on this system!'
+            print ('Warning! FileCache locking not supported on this system!')
             self._lock_file = self._lock_file_dummy
             self._unlock_file = self._unlock_file_dummy
 

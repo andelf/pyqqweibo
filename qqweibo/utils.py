@@ -4,9 +4,14 @@
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
 
+
+try:
+    import htmlentitydefs
+except ImportError:
+    import html.entities as htmlentitydefs
 from datetime import datetime
 import time
-import htmlentitydefs
+
 import re
 
 
@@ -55,14 +60,22 @@ def unescape_html(text):
 
 def convert_to_utf8_str(arg):
     # written by Michael Norton (http://docondev.blogspot.com/)
-    if isinstance(arg, unicode):
-        arg = arg.encode('utf-8')
+    # modified by andelf ^_^
+    if type(arg) == str:
+        return arg
+    elif hasattr(arg, 'decode'):
+        arg = arg.decode('utf-8')
     elif hasattr(arg, '__iter__'):      # FIX list param
         arg = ','.join(map(convert_to_utf8_str, arg))
     elif not isinstance(arg, str):
         arg = str(arg)
     return arg
 
+def convert_to_utf8_bytes(arg):
+    if type(arg) == bytes:
+        return arg
+    ret = convert_to_utf8_str(arg)
+    return ret.encode('utf-8')
 
 def import_simplejson():
     try:
@@ -74,7 +87,7 @@ def import_simplejson():
             try:
                 from django.utils import simplejson as json  # Google App Engine
             except ImportError:
-                raise ImportError, "Can't load a json library"
+                raise ImportError("Can't load a json library")
 
     return json
 
@@ -83,4 +96,3 @@ def timestamp_to_str(tm):
     return time.ctime(tm)
 
 
-#

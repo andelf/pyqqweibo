@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 #  Description : description
-#  Time-stamp: <2011-06-02 13:46:23 andelf>
+#  Time-stamp: <2011-06-03 10:45:18 andelf>
 
 
 from qqweibo.models import ModelFactory
@@ -62,9 +62,9 @@ class JSONParser(Parser):
 
     def parse(self, method, payload):
         try:
-            json = self.json_lib.loads(payload)
-        except Exception, e:
-            print "Failed to parse JSON payload:"+ str(payload)
+            json = self.json_lib.loads(payload, encoding='utf-8')
+        except Exception as e:
+            print ("Failed to parse JSON payload:"+ str(payload))
             raise QWeiboError('Failed to parse JSON payload: %s' % e)
 
         #if isinstance(json, dict) and 'previous_cursor' in json and 'next_cursor' in json:
@@ -74,7 +74,7 @@ class JSONParser(Parser):
         return json
 
     def parse_error(self, method, payload):
-        return self.json_lib.loads(payload)
+        return self.json_lib.loads(payload, encoding='utf-8')
 
 
 class ModelParser(JSONParser):
@@ -103,7 +103,6 @@ class ModelParser(JSONParser):
         else:
             result = model.parse(method.api, json)
         if hasnext:                     # 0 表示还有微博可拉取 1 已拉取完毕
-            #print 'hasnext', hasnext
             pass
         return result
 

@@ -4,7 +4,10 @@
 # Copyright 2010 andelf <andelf@gmail.com>
 # See LICENSE for details.
 
-from urllib2 import Request, urlopen
+try:
+    from urllib2 import Request, urlopen
+except ImportError:
+    from urllib.request import Request, urlopen
 import base64
 
 from qqweibo import oauth
@@ -83,7 +86,7 @@ class OAuthHandler(AuthHandler):
             request.sign_request(self._sigmethod, self._consumer, None)
             resp = urlopen( Request(request.to_url()) )  # must
             return oauth.OAuthToken.from_string(resp.read())
-        except RuntimeError, e:
+        except RuntimeError as e:
             raise QWeiboError(e)
 
     def set_request_token(self, key, secret):
@@ -108,7 +111,7 @@ class OAuthHandler(AuthHandler):
             )
 
             return request.to_url()
-        except RuntimeError, e:
+        except RuntimeError as e:
             raise QWeiboError(e)
 
     def get_access_token(self, verifier=None):
@@ -131,11 +134,11 @@ class OAuthHandler(AuthHandler):
             resp = urlopen(Request(request.to_url())) # must
             self.access_token = oauth.OAuthToken.from_string(resp.read())
 
-            print 'Access token key: '+ str(self.access_token.key)
-            print 'Access token secret: '+ str(self.access_token.secret)
+            print ('Access token key: '+ str(self.access_token.key))
+            print ('Access token secret: '+ str(self.access_token.secret))
 
             return self.access_token
-        except Exception, e:
+        except Exception as e:
             raise QWeiboError(e)
 
     def setToken(self, token, tokenSecret):

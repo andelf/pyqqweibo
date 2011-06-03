@@ -9,6 +9,7 @@ import mimetypes
 from qqweibo.binder import bind_api
 from qqweibo.error import QWeiboError
 from qqweibo.parsers import ModelParser
+from qqweibo.utils import convert_to_utf8_bytes
 
 
 class API(object):
@@ -790,22 +791,24 @@ class API(object):
                 body.append('Content-Type: text/plain; charset=UTF-8')
                 body.append('Content-Transfer-Encoding: 8bit')
                 body.append('')
-                if isinstance(val, unicode):
-                    val = val.encode('utf-8')
-                body.append(str(val))
+                val = convert_to_utf8_bytes(val)
+                body.append(val)
         fp = open(filename, 'rb')
         body.append('--' + BOUNDARY)
-        body.append('Content-Disposition: form-data; name="'+ contentname +'"; filename="%s"' % filename.encode('utf-8'))
+        body.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (contentname, filename.encode('utf-8')))
         body.append('Content-Type: %s' % file_type)
         body.append('Content-Transfer-Encoding: binary')
         body.append('')
         body.append(fp.read())
-        body.append('--' + BOUNDARY + '--')
+        body.append('--%s--' % BOUNDARY)
         body.append('')
         fp.close()
-        body.append('--' + BOUNDARY + '--')
+        body.append('--%s--' % BOUNDARY)
         body.append('')
-        body = '\r\n'.join(body)
+        # fix py3k
+        for i in range(len(body)):
+            body[i] = convert_to_utf8_bytes(body[i])
+        body = b'\r\n'.join(body)
         # build headers
         headers = {
             'Content-Type': 'multipart/form-data; boundary=%s' % BOUNDARY,

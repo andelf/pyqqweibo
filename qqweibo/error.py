@@ -8,5 +8,5 @@ class QWeiboError(Exception):
 def assertion(condition, msg):
     try:
         assert condition, msg
-    except AssertionError, e:
+    except AssertionError as e:
         raise QWeiboError(e.message)
