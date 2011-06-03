@@ -5,13 +5,9 @@
 import time
 import threading
 import os
-try:
-    import cPickle as pickle
-except:
-    import pickle
-
 import hashlib
 
+from qqweibo.compat import pickle
 try:
     import fcntl
 except ImportError:

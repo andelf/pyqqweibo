@@ -4,8 +4,9 @@
 #from distutils.core import setup
 from setuptools import setup, find_packages
 
+
 setup(name = "pyqqweibo",
-      version = "0.3.0",
+      version = "0.3.1",
       author = "andelf",
       author_email = "andelf@gmail.com",
       description = ("QQ weibo API SDK for python"),

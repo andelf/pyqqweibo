@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+
 class QWeiboError(Exception):
     """basic weibo error class"""
     pass
+
 
 def assertion(condition, msg):
     try:

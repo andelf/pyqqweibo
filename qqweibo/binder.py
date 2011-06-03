@@ -5,19 +5,13 @@
 # See LICENSE for details.
 
 
-try:
-    import httplib
-    from urllib import quote, urlencode
-    from urllib2 import Request, urlopen
-except ImportError:
-    import http.client as httplib
-    from urllib.parse import quote, urlencode
-    from urllib.request import Request, urlopen
 import time
 import re
 
+from qqweibo.compat import Request, urlopen, quote, urlencode
 from qqweibo.error import QWeiboError
 from qqweibo.utils import convert_to_utf8_str
+
 
 re_path_template = re.compile('{\w+}')
 
@@ -49,7 +43,6 @@ def bind_api(**config):
             self.build_parameters(args, kargs)
             self.api_root = api.api_root
 
-
             # Perform any path variable substitution
             self.build_path()
 
@@ -64,7 +57,8 @@ def bind_api(**config):
             self.headers['Host'] = self.host
 
         def build_parameters(self, args, kargs):
-            self.parameters = {'format': self.payload_format} # bind here, as default
+            # bind here, as default
+            self.parameters = {'format': self.payload_format}
             for idx, arg in enumerate(args):
                 try:
                     self.parameters[self.allowed_param[idx]] = convert_to_utf8_str(arg)
@@ -105,11 +99,11 @@ def bind_api(**config):
                 if self.method == 'GET':
                     url = '%s?%s' % (url, urlencode(self.parameters))
                 else:
-                    self.headers.setdefault("User-Agent","python")
+                    self.headers.setdefault("User-Agent", "python")
                     if self.post_data is None:
-                        self.headers.setdefault("Accept","text/html")
-                        self.headers.setdefault("Content-Type","application/x-www-form-urlencoded")
-                        self.post_data = urlencode(self.parameters).encode('ascii') # asure in bytes format
+                        self.headers.setdefault("Accept", "text/html")
+                        self.headers.setdefault("Content-Type", "application/x-www-form-urlencoded")
+                        self.post_data = urlencode(self.parameters).encode('ascii')  # asure in bytes format
             # Query the cache if one is available
             # and this request uses a GET method.
             if self.api.cache and self.method == 'GET':
@@ -154,9 +148,11 @@ def bind_api(**config):
 
                 # Exit request loop if non-retry error code
                 if self.retry_errors:
-                    if resp.code not in self.retry_errors: break
+                    if resp.code not in self.retry_errors:
+                        break
                 else:
-                    if resp.code == 200: break
+                    if resp.code == 200:
+                        break
 
                 # Sleep before retrying request again
                 time.sleep(self.retry_delay)
@@ -166,12 +162,12 @@ def bind_api(**config):
             body = resp.read()
             self.api.last_response = resp
             if self.api.log is not None:
-                requestUrl = "URL:http://"+ self.host + url
+                requestUrl = "URL:http://" + self.host + url
                 eTime = '%.0f' % ((time.time() - sTime) * 1000)
                 postData = ""
                 if self.post_data is not None:
-                    postData = ",post:"+ self.post_data[0:500]
-                self.api.log.debug(requestUrl +",time:"+ str(eTime)+ postData+",result:"+ body )
+                    postData = ",post:" + self.post_data[0:500]
+                self.api.log.debug("%s, time: %s, %s result: %s" % (requestUrl, eTime, postData, body))
 
             ret_code = 0
             # for py3k, ^_^
@@ -180,8 +176,8 @@ def bind_api(**config):
             try:
                 if self.api.parser.payload_format == 'json':
                     json = self.api.parser.parse_error(self, body)
-                    ret_code =  json['ret']
-                    error =  json['msg']
+                    ret_code = json['ret']
+                    error = json['msg']
                     errcode = json.get('errcode', 0)
                     error_msg = 'ret_code: %s, %s' % (ret_code, error)
                     if errcode:
@@ -190,7 +186,7 @@ def bind_api(**config):
                 ret_code = -1
                 error_msg = "Weibo error response: Error = %s" % e
             finally:
-                if ret_code!= 0:
+                if ret_code != 0:
                     raise QWeiboError(error_msg)
 
             # Parse the response payload
@@ -205,7 +201,6 @@ def bind_api(**config):
 
         method = APIMethod(api, args, kargs)
         return method.execute()
-
 
     # Set pagination mode
     if 'pagetime' in APIMethod.allowed_param:

@@ -5,14 +5,11 @@
 # See LICENSE for details.
 
 
-try:
-    import htmlentitydefs
-except ImportError:
-    import html.entities as htmlentitydefs
 from datetime import datetime
 import time
-
 import re
+
+from qqweibo.compat import htmlentitydefs
 
 
 def parse_datetime(str):
@@ -21,7 +18,7 @@ def parse_datetime(str):
 
 
 def parse_html_value(html):
-    return html[html.find('>')+1:html.rfind('<')]
+    return html[html.find('>') + 1:html.rfind('<')]
 
 
 def parse_a_href(atag):
@@ -54,7 +51,7 @@ def unescape_html(text):
                 text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
             except KeyError:
                 pass
-        return text # leave as is
+        return text  # leave as is
     return re.sub("&#?\w+;", fixup, text)
 
 
@@ -71,28 +68,14 @@ def convert_to_utf8_str(arg):
         arg = str(arg)
     return arg
 
+
 def convert_to_utf8_bytes(arg):
     if type(arg) == bytes:
         return arg
     ret = convert_to_utf8_str(arg)
     return ret.encode('utf-8')
 
-def import_simplejson():
-    try:
-        import simplejson as json
-    except ImportError:
-        try:
-            import json  # Python 2.6+
-        except ImportError:
-            try:
-                from django.utils import simplejson as json  # Google App Engine
-            except ImportError:
-                raise ImportError("Can't load a json library")
-
-    return json
-
 
 def timestamp_to_str(tm):
     return time.ctime(tm)
-
 

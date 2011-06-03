@@ -3,12 +3,16 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 #  Description : description
-#  Time-stamp: <2011-06-03 10:45:18 andelf>
+#  Time-stamp: <2011-06-03 13:12:57 andelf>
 
 
+import xml.dom.minidom as dom
+import xml.etree.ElementTree as ET
+
+from qqweibo.compat import json
 from qqweibo.models import ModelFactory
-from qqweibo.utils import import_simplejson
 from qqweibo.error import QWeiboError
+
 
 class Parser(object):
 
@@ -28,6 +32,7 @@ class Parser(object):
         """
         raise NotImplementedError
 
+
 class XMLRawParser(Parser):
     """return string of xml"""
     payload_format = 'xml'
@@ -42,14 +47,12 @@ class XMLRawParser(Parser):
 class XMLDomParser(XMLRawParser):
     """return xml.dom.minidom object"""
     def parse(self, method, payload):
-        import xml.dom.minidom as dom
         return dom.parseString(payload)
 
 
 class XMLETreeParser(XMLRawParser):
     """return elementtree object"""
     def parse(self, method, payload):
-        import xml.etree.ElementTree as ET
         return ET.fromstring(payload)
 
 
@@ -58,19 +61,15 @@ class JSONParser(Parser):
     payload_format = 'json'
 
     def __init__(self):
-        self.json_lib = import_simplejson()
+        self.json_lib = json
 
     def parse(self, method, payload):
         try:
             json = self.json_lib.loads(payload, encoding='utf-8')
         except Exception as e:
-            print ("Failed to parse JSON payload:"+ str(payload))
+            print ("Failed to parse JSON payload:" + str(payload))
             raise QWeiboError('Failed to parse JSON payload: %s' % e)
 
-        #if isinstance(json, dict) and 'previous_cursor' in json and 'next_cursor' in json:
-        #    cursors = json['previous_cursor'], json['next_cursor']
-        #    return json, cursors
-        #else:
         return json
 
     def parse_error(self, method, payload):
@@ -85,7 +84,8 @@ class ModelParser(JSONParser):
 
     def parse(self, method, payload):
         try:
-            if method.payload_type is None: return
+            if method.payload_type is None:
+                return
             model = getattr(self.model_factory, method.payload_type)
         except AttributeError:
             raise QWeiboError('No model for this payload type: %s' % method.payload_type)

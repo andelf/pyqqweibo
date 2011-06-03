@@ -1,19 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright 2009-2010 Joshua Roesslein
-# Copyright 2010 andelf <andelf@gmail.com>
-# See LICENSE for details.
 
-try:
-    from urllib2 import Request, urlopen
-except ImportError:
-    from urllib.request import Request, urlopen
-import base64
 
+from qqweibo.compat import Request, urlopen
 from qqweibo import oauth
 from qqweibo.error import QWeiboError
-
 from qqweibo.api import API
+
 
 class AuthHandler(object):
 
@@ -40,7 +34,7 @@ class OAuthHandler(AuthHandler):
         self._sigmethod = oauth.OAuthSignatureMethod_HMAC_SHA1()
         self.request_token = None
         self.access_token = None
-        self.callback = callback or 'null' # fixed
+        self.callback = callback or 'null'  # fixed
         self.username = None
 
     def _get_oauth_url(self, endpoint):
@@ -64,7 +58,7 @@ class OAuthHandler(AuthHandler):
     def get_signed_url(self, url, method, headers, parameters):
         """only sign url, no authentication"""
         # OAuthRequest(http_method, http_url, parameters)
-        request = oauth.OAuthRequest( http_method=method, http_url=url, parameters=parameters)
+        request = oauth.OAuthRequest(http_method=method, http_url=url, parameters=parameters)
         request.sign_request(self._sigmethod, self._consumer, self.access_token)
         return request.to_url()
 
@@ -84,7 +78,7 @@ class OAuthHandler(AuthHandler):
                 self._consumer, http_url=url, callback=self.callback
             )
             request.sign_request(self._sigmethod, self._consumer, None)
-            resp = urlopen( Request(request.to_url()) )  # must
+            resp = urlopen(Request(request.to_url()))  # must
             return oauth.OAuthToken.from_string(resp.read())
         except RuntimeError as e:
             raise QWeiboError(e)
@@ -131,11 +125,11 @@ class OAuthHandler(AuthHandler):
             request.sign_request(self._sigmethod, self._consumer, self.request_token)
 
             # send request
-            resp = urlopen(Request(request.to_url())) # must
+            resp = urlopen(Request(request.to_url()))  # must
             self.access_token = oauth.OAuthToken.from_string(resp.read())
 
-            print ('Access token key: '+ str(self.access_token.key))
-            print ('Access token secret: '+ str(self.access_token.secret))
+            print ('Access token key: ' + str(self.access_token.key))
+            print ('Access token secret: ' + str(self.access_token.secret))
 
             return self.access_token
         except Exception as e:

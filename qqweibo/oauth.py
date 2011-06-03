@@ -26,23 +26,17 @@ THE SOFTWARE.
 
 
 import cgi
-
 import time
 import random
 import hmac
 import binascii
+# drop support for py2.5-
+import hashlib
 
-try:
-    import urlparse
-    from urllib import quote, unquote, urlencode
-except ImportError:
-    import urllib.parse as urlparse
-    from urllib.parse import quote, unquote, urlencode
+from qqweibo.compat import (urlparse, quote, unquote, urlencode)
 
 
-
-
-VERSION = '1.0' # Hi Blaine!
+VERSION = '1.0'  # Hi Blaine!
 HTTP_METHOD = 'GET'
 SIGNATURE_METHOD = 'PLAINTEXT'
 
@@ -52,13 +46,16 @@ class OAuthError(RuntimeError):
     def __init__(self, message='OAuth error occured.'):
         self.message = message
 
+
 def build_authenticate_header(realm=''):
     """Optional WWW-Authenticate header (401 error)"""
     return {'WWW-Authenticate': 'OAuth realm="%s"' % realm}
 
+
 def escape(s):
     """Escape a URL including any /."""
     return quote(s, safe='~')
+
 
 def _utf8_str(s):
     """Convert unicode to utf-8."""
@@ -69,13 +66,16 @@ def _utf8_str(s):
         return s.encode("utf-8")
     return str(s)
 
+
 def generate_timestamp():
     """Get seconds since epoch (UTC)."""
     return int(time.time())
 
+
 def generate_nonce(length=8):
     """Generate pseudorandom number."""
     return ''.join([str(random.randint(0, 9)) for i in range(length)])
+
 
 def generate_verifier(length=8):
     """Generate pseudorandom number."""
@@ -98,8 +98,8 @@ class OAuthConsumer(object):
 
 
 class OAuthToken(object):
-    """OAuthToken is a data type that represents an End User via either an access
-    or request token.
+    """OAuthToken is a data type that represents an End User via either
+    an access or request token.
 
     key -- the token
     secret -- the token secret
@@ -158,7 +158,7 @@ class OAuthToken(object):
         try:
             token.callback_confirmed = params['oauth_callback_confirmed'][0]
         except KeyError:
-            pass # 1.0, no callback confirmed.
+            pass  # 1.0, no callback confirmed.
         return token
     from_string = staticmethod(from_string)
 
@@ -180,7 +180,7 @@ class OAuthRequest(object):
         - oauth_verifier
         ... any additional parameters, as defined by the Service Provider.
     """
-    parameters = None # OAuth parameters.
+    parameters = None  # OAuth parameters.
     http_method = HTTP_METHOD
     http_url = None
     version = VERSION
@@ -241,7 +241,7 @@ class OAuthRequest(object):
             pass
         # Escape key values before sorting.
         key_values = [(escape(_utf8_str(k)), escape(_utf8_str(v))) \
-            for k,v in params.items()]
+            for k, v in params.items()]
         # Sort lexicographically, first after key, then after value.
         key_values.sort()
         # Combine key value pairs into a string.
@@ -301,7 +301,7 @@ class OAuthRequest(object):
             parameters.update(query_params)
 
         # URL parameters.
-        param_str = urlparse.urlparse(http_url)[4] # query
+        param_str = urlparse.urlparse(http_url)[4]  # query
         url_params = OAuthRequest._split_url_string(param_str)
         parameters.update(url_params)
 
@@ -379,9 +379,10 @@ class OAuthRequest(object):
         return parameters
     _split_url_string = staticmethod(_split_url_string)
 
+
 class OAuthServer(object):
     """A worker to check the validity of a request against a data store."""
-    timestamp_threshold = 300 # In seconds, five minutes.
+    timestamp_threshold = 300  # In seconds, five minutes.
     version = VERSION
     signature_methods = None
     data_store = None
@@ -409,12 +410,11 @@ class OAuthServer(object):
             token = self._get_token(oauth_request, 'request')
         except OAuthError:
             # No token required for the initial token request.
-            version = self._get_version(oauth_request)
             consumer = self._get_consumer(oauth_request)
             try:
                 callback = self.get_callback(oauth_request)
             except OAuthError:
-                callback = None # 1.0, no callback specified.
+                callback = None  # 1.0, no callback specified.
             self._check_signature(oauth_request, consumer, None)
             # Fetch a new token.
             token = self.data_store.fetch_request_token(consumer, callback)
@@ -424,7 +424,6 @@ class OAuthServer(object):
         """Processes an access_token request and returns the
         access token on success.
         """
-        version = self._get_version(oauth_request)
         consumer = self._get_consumer(oauth_request)
         try:
             verifier = self._get_verifier(oauth_request)
@@ -439,7 +438,6 @@ class OAuthServer(object):
     def verify_request(self, oauth_request):
         """Verifies an api call and checks all the parameters."""
         # -> consumer and token
-        version = self._get_version(oauth_request)
         consumer = self._get_consumer(oauth_request)
         # Get the access token.
         token = self._get_token(oauth_request, 'access')
@@ -521,7 +519,7 @@ class OAuthServer(object):
                 oauth_request, consumer, token)
             raise OAuthError('Invalid signature. Expected signature base '
                 'string: %s' % base)
-        built = signature_method.build_signature(oauth_request, consumer, token)
+        signature_method.build_signature(oauth_request, consumer, token)
 
     def _check_timestamp(self, timestamp):
         """Verify that timestamp is recentish."""
@@ -637,18 +635,12 @@ class OAuthSignatureMethod_HMAC_SHA1(OAuthSignatureMethod):
         key, raw = self.build_signature_base_string(oauth_request, consumer,
             token)
         # HMAC object.
-        try:
-            import hashlib # 2.5+
-            hashed = hmac.new(bytes(key, 'ascii'), bytes(raw, 'ascii'), hashlib.sha1)
-        except Exception as e:
-            import sha # Deprecated
-            hashed = hmac.new(key, raw, sha)
+        hashed = hmac.new(key.encode('ascii'), raw.encode('ascii'), hashlib.sha1)
         # Calculate the digest base 64.
         #return binascii.b2a_base64(hashed.digest())[:-1]
         # fix py3k, str() on a bytes obj will be a "b'...'"
         ret = binascii.b2a_base64(hashed.digest())[:-1]
         return ret.decode('ascii')
-
 
 
 class OAuthSignatureMethod_PLAINTEXT(OAuthSignatureMethod):

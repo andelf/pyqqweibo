@@ -4,9 +4,10 @@
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
 
-from qqweibo.utils import parse_datetime, parse_html_value, parse_a_href, \
-     parse_search_datetime, unescape_html
-from qqweibo.error import assertion
+from qqweibo.utils import (parse_datetime, parse_html_value, parse_a_href,
+                           parse_search_datetime, unescape_html)
+from qqweibo.error import assertion, QWeiboError
+
 
 class ResultSet(list):
     """A list like object that holds results from a Twitter API query."""
@@ -68,10 +69,10 @@ class Tweet(Model):
             elif k in ('isvip', 'self'):
                 setattr(tweet, k, bool(v))
             elif k == 'from':
-                setattr(tweet, 'from_', v) # avoid use py keyword
+                setattr(tweet, 'from_', v)  # avoid use py keyword
             elif k == 'tweetid':
-                setattr(tweetid, k, v)
-                setattr(tweetid, 'id', v)
+                setattr(tweet, k, v)
+                setattr(tweet, 'id', v)
             else:
                 setattr(tweet, k, v)
         return tweet
@@ -80,7 +81,7 @@ class Tweet(Model):
         if self.self:
             return self._api.t.delete(self.id)
         else:
-            raise WeibopError("You can't delete others tweet")
+            raise QWeiboError("You can't delete others tweet")
 
     def retweet(self, content, clientip='127.0.0.1', jing=None, wei=None):
         return self._api.t.retweet(content=content, clientip=clientip, jing=jing, wei=wei,
@@ -120,6 +121,7 @@ class Geo(Model):
                 setattr(geo, k, v)
         return geo
 
+
 class Source(Model):
     def __repr__(self):
         return '<Source object #%s>' % hex(self)
@@ -139,6 +141,7 @@ class Source(Model):
             return source
         else:
             return None
+
 
 class User(Model):
 
@@ -160,14 +163,14 @@ class User(Model):
             elif k == 'isidol':
                 setattr(user, 'ismyidol', bool(v))
             elif k == 'tweet':
-                tweet = Tweet.parse_list(api, v) # only 1 item
+                tweet = Tweet.parse_list(api, v)  # only 1 item
                 setattr(user, k, tweet[0] if tweet else tweet)
             else:
                 setattr(user, k, v)
 
         # FIXME, need better way
         if hasattr(user, 'ismyidol'):
-            setattr(user, 'self', False) # is this myself?
+            setattr(user, 'self', False)  # is this myself?
         else:
             setattr(user, 'self', True)
 
@@ -176,7 +179,7 @@ class User(Model):
     def update(self, **kwargs):
         assertion(self.self, "you can only update youself's profile")
 
-        nick = self.nick =  kwargs.get('nick', self.nick)
+        nick = self.nick = kwargs.get('nick', self.nick)
         sex = self.sex = kwargs.get('sex', self.sex)
         year = self.birth_year = kwargs.get('year', self.birth_year)
         month = self.birth_month = kwargs.get('month', self.birth_month)
@@ -212,23 +215,23 @@ class User(Model):
 
     def addspecial(self):
         """特别收听某个用户"""
-        assertion( not bool(self.self), "you can't follow yourself")
+        assertion(not bool(self.self), "you can't follow yourself")
         self._api.friends.addspecial(name=self.name)
 
     def deletespecial(self):
         """取消特别收听某个用户"""
-        assertion( not bool(self.self), "you can't follow yourself")
+        assertion(not bool(self.self), "you can't follow yourself")
         self._api.friends.deletespecial(name=self.name)
 
     def addblacklist(self):
         """添加某个用户到黑名单"""
-        assertion( not bool(self.self), "you can't block yourself")
+        assertion(not bool(self.self), "you can't block yourself")
         self._api.friends.addblacklist(name=self.name)
     block = addblacklist
 
     def deleteblacklist(self):
         """从黑名单中删除某个用户"""
-        assertion( not bool(self.self), "you can't block yourself")
+        assertion(not bool(self.self), "you can't block yourself")
         self._api.friends.deleteblacklist(name=self.name)
     unblock = deleteblacklist
 
@@ -257,7 +260,7 @@ class User(Model):
 
     def pm(self, content, clientip='127.0.0.1', jing=None, wei=None):
         """发私信"""
-        assertion( not bool(self.self), "you can't pm yourself")
+        assertion(not bool(self.self), "you can't pm yourself")
         return self._api.private.add(self.name, content, clientip, jing, wei)
 
 
@@ -279,6 +282,7 @@ class JSON(Model):
             else:
                 setattr(lst, k, v)
         return lst
+
 
 class RetId(Model):
     def __repr__(self):
@@ -320,6 +324,7 @@ class Video(Model):
             setattr(lst, k, v)
         return lst
 
+
 class TagModel(JSON):
     def __repr__(self):
         return '<Tag object #%s>' % self.id
@@ -331,6 +336,7 @@ class TagModel(JSON):
                 setattr(tag, k, v)
         return tag
 
+
 class Topic(JSON):
     def __repr__(self):
         return '<Topic object #%s>' % self.id
@@ -341,6 +347,7 @@ class Topic(JSON):
         for k, v in json.items():
                 setattr(tag, k, v)
         return tag
+
 
 class ModelFactory(object):
     """

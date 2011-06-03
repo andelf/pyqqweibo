@@ -16,9 +16,9 @@ class API(object):
     """Weibo API"""
     # TODO: remove unsupported params
     def __init__(self, auth_handler=None, retry_count=0,
-                 host='open.t.qq.com', api_root='/api' , cache=None, secure=False,
-                 retry_delay=0, retry_errors=None,
-                 source=None, parser=None, log = None):
+                 host='open.t.qq.com', api_root='/api', cache=None,
+                 secure=False, retry_delay=0, retry_errors=None,
+                 source=None, parser=None, log=None):
         self.auth = auth_handler
         self.host = host
         self.api_root = api_root
@@ -204,7 +204,8 @@ class API(object):
     )
 
     """ 6.t/add_pic 发表一条带图片的微博 """
-    def _t_add_pic(self, filename, content, clientip='127.0.0.1', jing=None, wei=None):
+    def _t_add_pic(self, filename, content, clientip='127.0.0.1',
+                   jing=None, wei=None):
         headers, post_data = API._pack_image(filename, contentname="pic",
             content=content, clientip=clientip, jing=jing, wei=wei, )
         args = [content, clientip]
@@ -289,10 +290,9 @@ class API(object):
         require_auth = True
     )
 
-
     ## 帐户相关 ##
     """ 1.User/info获取自己的详细资料 """
-    _user_info = bind_api(                  # info confilicts with api namespace
+    _user_info = bind_api(
         path = '/user/info',
         payload_type = 'user',
         allowed_param = [],
@@ -362,7 +362,6 @@ class API(object):
         allowed_param = ['reqnum', 'startindex'],
         require_auth = True
     )
-
 
     """ 5.friends/add 收听某个用户 """
     _friends_add = bind_api(
@@ -444,7 +443,6 @@ class API(object):
         require_auth = True
     )
 
-
     ## 私信相关 ##
     """ 1.private/add 发私信 """
     _private_add = bind_api(
@@ -510,7 +508,7 @@ class API(object):
     """ 1.trends/ht 话题热榜 """
     _trends_ht = bind_api(
         path = '/trends/ht',
-        payload_type = 'json', #payload_list = True,
+        payload_type = 'json',
         allowed_param = ['reqnum', 'type', 'pos'],
         require_auth = True
     )
@@ -522,7 +520,6 @@ class API(object):
         allowed_param = ['reqnum', 'type', 'pos'],
         require_auth = True
     )
-
 
     ## 数据更新相关 ##
     """ 1.info/update 查看数据更新条数 """
@@ -623,7 +620,6 @@ class API(object):
         require_auth = True
     )
 
-
     ## 其他 ##
     """ 1.other/kownperson 我可能认识的人 """
     _other_kownperson = bind_api(
@@ -648,7 +644,6 @@ class API(object):
         allowed_param = [],
         require_auth = True
     )
-
 
     """ Get the authenticated user """
     def me(self):
@@ -778,11 +773,11 @@ class API(object):
         if file_type is None:
             raise QWeiboError('Could not determine file type')
         file_type = file_type[0]
-        if file_type.split('/')[0] != 'image': # dummy
+        if file_type.split('/')[0] != 'image':
             raise QWeiboError('Invalid file type for image: %s' % file_type)
 
         # build the mulitpart-formdata body
-        BOUNDARY = 'QqWeIbObYaNdElF----' # qqweibo by andelf
+        BOUNDARY = 'QqWeIbObYaNdElF----'  # qqweibo by andelf
         body = []
         for key, val in params.items():
             if val is not None:
@@ -816,5 +811,4 @@ class API(object):
         }
 
         return headers, body
-
 
