@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-04 08:58:52 andelf>
+# Time-stamp: <2011-06-05 01:02:22 andelf>
 
 from qqweibo.utils import (parse_datetime, parse_html_value, parse_a_href,
                            parse_search_datetime, unescape_html)
@@ -27,7 +27,8 @@ class Model(object):
 
     def as_dict(self):
         ret = dict(self.__dict__)
-        for k in ret.keys():
+        # py3k fixed, in py3k, .keys() will be a dict_keys obj
+        for k in list(ret.keys()):
             if k.startswith('_'):
                 del ret[k]
             elif k == 'as_dict':
@@ -320,6 +321,12 @@ class TagModel(JSON):
         for k, v in json.items():
                 setattr(tag, k, v)
         return tag
+
+    def add(self):
+        return self._api.tag.add(self.id)
+
+    def delete(self):
+        return self._api.tag.delete(self.id)
 
 
 class Topic(JSON):

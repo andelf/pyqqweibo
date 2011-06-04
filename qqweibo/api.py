@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-03 13:29:36 andelf>
+# Time-stamp: <2011-06-04 19:33:54 andelf>
 
 import os
 import mimetypes
@@ -597,7 +597,7 @@ class API(object):
     """ 2.ht/info 根据话题ID获取话题相关微博 """
     _ht_info = bind_api(
         path = '/ht/info',
-        payload_type = 'tweet', payload_list = True,
+        payload_type = 'json', payload_list = True,
         allowed_param = ['ids'],
         require_auth = True
     )
@@ -607,7 +607,7 @@ class API(object):
     _tag_add = bind_api(
         path = '/tag/add',
         method = 'POST',
-        payload_type = 'tweet', payload_list = True,
+        payload_type = 'retid',
         allowed_param = ['tag'],
         require_auth = True
     )
@@ -616,7 +616,7 @@ class API(object):
     _tag_del = bind_api(
         path = '/tag/del',
         method = 'POST',
-        payload_type = 'tweet', payload_list = True,
+        payload_type = 'retid',
         allowed_param = ['tagid'],
         require_auth = True
     )

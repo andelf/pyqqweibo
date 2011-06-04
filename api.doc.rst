@@ -494,6 +494,13 @@ add 发私信
     (name*, content*, clientip*, jing, wei)
   :返回:
     RetId_
+
+  ::
+
+    > api.private.add('fledna',
+      unicode('请问下您的qqweibo 可以用了么', 'gbk'),
+      'must_use_real_ip')
+    <RetId id:495...>
 delete 删除一条私信
   :参数:
     (id*)
@@ -560,7 +567,7 @@ update 查看数据更新条数
   ::
 
     > api.info.update().as_dict()
-    {u'home': 21, u'create': 12, ...}
+    {'home': 21, 'create': 12, ...}
 
 fav 数据收藏
 ------------
@@ -607,7 +614,7 @@ ids 根据话题名称查询话题ID
 
   ::
 
-    > api.topic.ids(u"地震")[0].id
+    > api.topic.ids("python")[0].id
 info 根据话题ID获取话题相关情况
   :参数:
     (ids*)
@@ -629,6 +636,11 @@ add 添加标签
     (tag*)
   :返回:
     TODO
+
+::
+
+  > api.tag.add('python')
+  <RetId id:7769480420947389987>
 delete 删除标签
   :参数:
     (tagid*)
@@ -658,7 +670,7 @@ shorturl 短URL变长URL
 
     # like http://url.cn/0jkApX
     api.other.shorturl('0jkApX').as_dict()
-    > {'ctime': 0, 'longurl': u'http://...', 'secu': 3}
+    > {'ctime': 0, 'longurl': 'http://...', 'secu': 3}
 videokey 获取视频上传的KEY
   :参数:
     ()
@@ -668,7 +680,7 @@ videokey 获取视频上传的KEY
   ::
 
     api.other.videokey().as_dict()
-    > {'uid': u'VNcmwzbqxdu=', 'videokey': u'$xMcNnpvswmmftd5pPkm'}
+    > {'uid': 'VNcmwzbqxdu=', 'videokey': '$xMcNnpvswmmftd5pPkm'}
 videoinfo 获取视频信息
   :参数:
     (url*)
@@ -844,6 +856,8 @@ twitterid
   * 偶尔会请求错误. 重新请求后正常. 服务器返回没有任何价值的错误信息.
   * videokey 是干嘛的?
   * "对一些公共信息不需要用户鉴权". 经尝试, 基本上都会 access rate limit.
+  * 已知 tagid 无法获得 tagtext
+  * 别看文档啦! 那是错的
 
 ------
 FAQ
@@ -852,3 +866,18 @@ FAQ
 或者说你会遇到的问题.
 
 我还不知道.
+
+-------------
+错误代码查询
+-------------
+
+- errcode=0 表示成功
+- errcode=4 表示有过多脏话
+- errcode=5 禁止访问，如城市，uin黑名单限制等
+- errcode=6 删除时：该记录不存在。发表时：父节点已不存在
+- errcode=8 内容超过最大长度：420字节 （以进行短url处理后的长度计）
+- errcode=9 包含垃圾信息：广告，恶意链接、黑名单号码等
+- errcode=10 发表太快，被频率限制
+- errcode=11 源消息已删除，如转播或回复时
+- errcode=12 源消息审核中 errcode=13 重复发表
+- errcode=18 Tag不存在

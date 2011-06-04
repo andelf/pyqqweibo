@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright 2011 andelf <andelf@gmail.com>
-# Time-stamp: <2011-06-03 13:32:18 andelf>
+# Time-stamp: <2011-06-05 01:22:32 andelf>
 
 #from distutils.core import setup
 from setuptools import setup, find_packages
 
 
 setup(name = "pyqqweibo",
-      version = "0.3.2",
+      version = "0.3.3",
       author = "andelf",
       author_email = "andelf@gmail.com",
       description = ("QQ weibo API SDK for python"),
@@ -18,6 +18,7 @@ setup(name = "pyqqweibo",
       packages = find_packages(),
       long_description = """
       QQ weibo API SDK, python version.
+
       QQ weibo is a microblog service that is popular among Chinese.
 
       * fix the bad offical api names and arangement.
