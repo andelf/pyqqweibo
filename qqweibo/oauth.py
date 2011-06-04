@@ -1,3 +1,6 @@
+# Copyright 2007 Leah Culver
+# Copyright 2011 andelf <andelf@gmail.com>
+# Time-stamp: <2011-06-04 10:08:18 andelf>
 """
 The MIT License
 
@@ -21,11 +24,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
-# Copyright 2007 Leah Culver
-# Copyright 2011 andelf <andelf@gmail.com>
 
 
-import cgi
 import time
 import random
 import hmac
@@ -33,7 +33,8 @@ import binascii
 # drop support for py2.5-
 import hashlib
 
-from qqweibo.compat import (urlparse, quote, unquote, urlencode)
+from qqweibo.compat import (urlparse, quote, unquote, urlencode, parse_qs)
+from qqweibo.utils import convert_to_utf8_str
 
 
 VERSION = '1.0'  # Hi Blaine!
@@ -53,8 +54,17 @@ def build_authenticate_header(realm=''):
 
 
 def escape(s):
-    """Escape a URL including any /."""
-    return quote(s, safe='~')
+    """Escape a URL including any /.
+    return py2str py3str
+    """
+    # py3k
+    if hasattr(str, 'decode') and type(s) != str:
+        # FIXME assume py2unicode
+        s = s.encode('utf-8')
+    ret = quote(s, safe='~')
+    if type(ret) != str:
+        return str(ret)
+    return ret
 
 
 def _utf8_str(s):
@@ -151,12 +161,12 @@ class OAuthToken(object):
         """ Returns a token from something like:
         oauth_token_secret=xxx&oauth_token=xxx
         """
-        params = cgi.parse_qs(s, keep_blank_values=False)
+        params = parse_qs(s, keep_blank_values=False)
         key = params['oauth_token'][0]
         secret = params['oauth_token_secret'][0]
         token = OAuthToken(key, secret)
         try:
-            token.callback_confirmed = params['oauth_callback_confirmed'][0]
+            token.callback_confirmed = params[b'oauth_callback_confirmed'][0]
         except KeyError:
             pass  # 1.0, no callback confirmed.
         return token
@@ -224,7 +234,8 @@ class OAuthRequest(object):
 
     def to_postdata(self):
         """Serialize as post data for a POST request."""
-        return '&'.join(['%s=%s' % (escape(str(k)), escape(str(v))) \
+        return '&'.join(['%s=%s' % (escape(convert_to_utf8_str(k)),
+                                    escape(convert_to_utf8_str(v))) \
             for k, v in self.parameters.items()])
 
     def to_url(self):
@@ -240,7 +251,8 @@ class OAuthRequest(object):
         except:
             pass
         # Escape key values before sorting.
-        key_values = [(escape(_utf8_str(k)), escape(_utf8_str(v))) \
+        key_values = [(escape(convert_to_utf8_str(k)),
+                       escape(convert_to_utf8_str(v))) \
             for k, v in params.items()]
         # Sort lexicographically, first after key, then after value.
         key_values.sort()
@@ -373,7 +385,7 @@ class OAuthRequest(object):
 
     def _split_url_string(param_str):
         """Turn URL string into parameters."""
-        parameters = cgi.parse_qs(param_str, keep_blank_values=False)
+        parameters = parse_qs(param_str, keep_blank_values=False)
         for k, v in parameters.items():
             parameters[k] = unquote(v[0])
         return parameters

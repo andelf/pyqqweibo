@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright 2011 andelf <andelf@gmail.com>
+# See LICENSE for details.
+# Time-stamp: <2011-06-03 13:29:50 andelf>
 
 from qqweibo.auth import OAuthHandler
 from qqweibo.api import API

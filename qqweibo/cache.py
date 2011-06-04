@@ -1,6 +1,8 @@
 # Tweepy
 # Copyright 2009-2010 Joshua Roesslein
+# Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
+# Time-stamp: <2011-06-03 13:29:22 andelf>
 
 import time
 import threading

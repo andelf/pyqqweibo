@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright 2011 andelf <andelf@gmail.com>
+# Time-stamp: <2011-06-03 13:32:18 andelf>
 
 #from distutils.core import setup
 from setuptools import setup, find_packages
 
 
 setup(name = "pyqqweibo",
-      version = "0.3.1",
+      version = "0.3.2",
       author = "andelf",
       author_email = "andelf@gmail.com",
       description = ("QQ weibo API SDK for python"),

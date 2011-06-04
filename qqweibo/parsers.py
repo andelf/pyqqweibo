@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
-#  Description : description
-#  Time-stamp: <2011-06-03 13:12:57 andelf>
-
+# See LICENSE for details.
+# Time-stamp: <2011-06-03 13:30:27 andelf>
 
 import xml.dom.minidom as dom
 import xml.etree.ElementTree as ET

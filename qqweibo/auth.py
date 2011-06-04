@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright 2009-2010 Joshua Roesslein
-
+# Copyright 2011 andelf <andelf@gmail.com>
+# See LICENSE for details.
+# Time-stamp: <2011-06-04 08:14:39 andelf>
 
 from qqweibo.compat import Request, urlopen
 from qqweibo import oauth
@@ -79,7 +81,7 @@ class OAuthHandler(AuthHandler):
             )
             request.sign_request(self._sigmethod, self._consumer, None)
             resp = urlopen(Request(request.to_url()))  # must
-            return oauth.OAuthToken.from_string(resp.read())
+            return oauth.OAuthToken.from_string(resp.read().decode('ascii'))
         except RuntimeError as e:
             raise QWeiboError(e)
 
@@ -101,7 +103,7 @@ class OAuthHandler(AuthHandler):
             else:
                 url = self._get_oauth_url('authorize')
             request = oauth.OAuthRequest.from_token_and_callback(
-                token=self.request_token, http_url=url
+                token=self.request_token, http_url=url, callback=self.callback
             )
 
             return request.to_url()
@@ -126,10 +128,10 @@ class OAuthHandler(AuthHandler):
 
             # send request
             resp = urlopen(Request(request.to_url()))  # must
-            self.access_token = oauth.OAuthToken.from_string(resp.read())
+            self.access_token = oauth.OAuthToken.from_string(resp.read().decode('ascii'))
 
-            print ('Access token key: ' + str(self.access_token.key))
-            print ('Access token secret: ' + str(self.access_token.secret))
+            #print ('Access token key: ' + str(self.access_token.key))
+            #print ('Access token secret: ' + str(self.access_token.secret))
 
             return self.access_token
         except Exception as e:

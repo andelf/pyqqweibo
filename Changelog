@@ -1,3 +1,10 @@
+2011-06-04  andelf  <andelf@gmail.com>
+	更新至 0.3.2 版本
+	* example/*.py
+	Python 2.x, Python 3.x 兼容示例代码
+	* qqweibo/*.py
+	修复 Python 3.x 兼容 BUG, 代码清理
+
 2011-06-03  andelf  <andelf@gmail.com>
 	* setup.py
 	包命名为 pyqqweibo

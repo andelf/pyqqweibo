@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright 2009-2010 Joshua Roesslein
-# Copyright 2011 andelf<andelf@gmail.com>
+# Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-
+# Time-stamp: <2011-06-04 11:34:52 andelf>
 
 import time
 import re

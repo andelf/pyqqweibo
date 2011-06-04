@@ -6,6 +6,14 @@ pyqqweibo 参考文档
 Quickstart
 ----------
 
+安装 pyqqweibo
+
+   $ easy_install -U pyqqweibo
+
+or
+
+   $ pip install pyqqweibo
+
 ::
 
 	# simple use
@@ -836,3 +844,11 @@ twitterid
   * 偶尔会请求错误. 重新请求后正常. 服务器返回没有任何价值的错误信息.
   * videokey 是干嘛的?
   * "对一些公共信息不需要用户鉴权". 经尝试, 基本上都会 access rate limit.
+
+------
+FAQ
+------
+
+或者说你会遇到的问题.
+
+我还不知道.
