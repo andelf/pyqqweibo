@@ -1,8 +1,10 @@
 2011-06-05  andelf  <andelf@gmail.com>
 	version 0.3.3
-	* qqweibo/*.py
+	* qqweibo/api.py
 	tag API BUG 修复
 	topic API BUG 修复
+	* qqweibo/utils.py
+	感谢 timger(@yishenggudou) 反馈的 BUG
 
 2011-06-04  andelf  <andelf@gmail.com>
 	更新至 0.3.2 版本

@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-03 13:30:27 andelf>
+# Time-stamp: <2011-06-06 00:46:10 andelf>
 
 import xml.dom.minidom as dom
 import xml.etree.ElementTree as ET
@@ -90,18 +90,26 @@ class ModelParser(JSONParser):
             raise QWeiboError('No model for this payload type: %s' % method.payload_type)
 
         json = JSONParser.parse(self, method, payload)
-        json = json['data']             # got data
-        hasnext = False
-        if isinstance(json, dict):      # has data, not None
-            if 'info' in json:
-                hasnext = json.get('hasnext', 1) == 0
-                json = json['info']         # got data list or data
+        data = json['data']
+
+        print (dir(method))
+        print (method.parameters)
+        print (method.method)
+        # pager support
+        if 'pagetime' in method.allowed_param:
+            pass
+
+        #        hasnext = False
+        #        if isinstance(json, dict):      # has data, not None
+        #            if 'info' in json:
+        #                hasnext = json.get('hasnext', 1) == 0
+        #                json = json['info']         # got data list or data
+        if 'info' in data:
+            data = data['info']
 
         if method.payload_list:
-            result = model.parse_list(method.api, json)
+            result = model.parse_list(method.api, data)
         else:
-            result = model.parse(method.api, json)
-        if hasnext:                     # 0 表示还有微博可拉取 1 已拉取完毕
-            pass
+            result = model.parse(method.api, data)
         return result
 

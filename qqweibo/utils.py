@@ -3,7 +3,7 @@
 # Copyright 2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-04 10:21:30 andelf>
+# Time-stamp: <2011-06-06 00:49:00 andelf>
 
 from datetime import datetime
 import time
@@ -65,7 +65,8 @@ def convert_to_utf8_unicode(arg):
 def convert_to_utf8_str(arg):
     # written by andelf ^_^
     # return py2str py3str
-    MAJOR_VERSION = sys.version_info.major
+    # fix py26
+    MAJOR_VERSION = sys.version_info[0]
     if MAJOR_VERSION == 3:
         unicodeType = str
         if type(arg) == unicodeType:
@@ -78,8 +79,8 @@ def convert_to_utf8_str(arg):
             return arg.encode('utf-8')
         elif type(arg) == str:
             return arg
-
-    if hasattr(arg, '__iter__'):      # FIX list
+    # assume list
+    if hasattr(arg, '__iter__'):
         arg = ','.join(map(convert_to_utf8_str, arg))
     return str(arg)
 

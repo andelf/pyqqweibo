@@ -837,19 +837,19 @@ twitterid
 
 * 命名规范类
 
-  * api.user.userinfo 返回的 JSON 数据 Ismyblack, Ismyfans, Ismyidol 是首字母大写的.
+  * api.user.userinfo 返回的 JSON/XML 数据 Ismyblack, Ismyfans, Ismyidol 是首字母大写的.
   * getvideoinfo 和 tweet 数据中视频信息域不对应. real 和 realurl 类似这样.
-  * 返回 JSON 中命名不统一. 比如 time 和 timestamp. 这个超级多.
+  * 返回 JSON 中命名不统一. 比如 time 和 timestamp.
   * 英文和拼音混用, ht, jing, wei...
   * twitterid 竟然还能出现.
-  * 同一功能变量名有时有 `_` 有时没有. 比如 birth_day 等. 这个太多.
+  * 同一功能变量名有时有 `_` 有时没有. 比如 birth_day 等.
   * 变量和函数命名实在是不想多骂了.
 * 功能设计类
 
   * lastid 参数几乎无用.
   * accesslevel 目前没发现到底是什么个东西. 有些 API 无效果, 有些 API 看不出什么规律.
   * api.trends.tweet 通过翻页 API 检查后发现返回顺序是乱的.
-  * getvideoinfo 不应该在 tweet 类 API 中.
+  * getvideoinfo 不应该在 tweet 类 API 中. 放 other 倒是不错
   * geo, jing, wei 无用
   * 翻页方法..... 快十种了.... 传说腾讯微博有多少翻页方法就有多少开发人员
   * Tweet 信息不同 API 返回时详细程度不同. 这个很奇怪. 偶尔出现过.
@@ -857,7 +857,8 @@ twitterid
   * videokey 是干嘛的?
   * "对一些公共信息不需要用户鉴权". 经尝试, 基本上都会 access rate limit.
   * 已知 tagid 无法获得 tagtext
-  * 别看文档啦! 那是错的
+  * 文档很悲剧的说, 没有及时更新, 不完整
+  * public_timeline 中翻页参数 pos 无法跟踪大量更新, 基本是废参数
 
 ------
 FAQ
@@ -880,4 +881,7 @@ FAQ
 - errcode=10 发表太快，被频率限制
 - errcode=11 源消息已删除，如转播或回复时
 - errcode=12 源消息审核中 errcode=13 重复发表
-- errcode=18 Tag不存在
+
+以下部分是我猜的.
+
+- errcode=18 Tag 已经存在
