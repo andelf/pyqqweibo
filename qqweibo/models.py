@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-05 01:02:22 andelf>
+# Time-stamp: <2011-06-06 16:39:35 andelf>
 
 from qqweibo.utils import (parse_datetime, parse_html_value, parse_a_href,
                            parse_search_datetime, unescape_html)
@@ -248,6 +248,11 @@ class User(Model):
         """发私信"""
         assertion(not bool(self.self), "you can't pm yourself")
         return self._api.private.add(self.name, content, clientip, jing, wei)
+
+    def headimg(self, size=100):
+        assertion(size in [20, 30, 40, 50, 100],
+                  'size must be one of 20 30 40 50 100')
+        return '%s/%s' % (self.head, size)
 
 
 class JSON(Model):

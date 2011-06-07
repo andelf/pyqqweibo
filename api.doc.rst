@@ -725,6 +725,7 @@ User
 
 * self
   是否为自己
+* headimg(size=...) 获取头像 URL
 * update(\*\*kwargs)
 * timeline(\*\*kwargs)
 * add() / follow()
@@ -768,6 +769,11 @@ id 属性可能是各种返回结果的 id, 不一定是 Tweet.
 
 pageflag+pagetime
 -----------------
+
+* pageflag: 分页标识（0：第一页，1：向下翻页，2向上翻页）
+* pagetime: 本页起始时间（第一页 时填0，继续翻页：填上一次请求返回的最后一条记录时间）
+
+返回中 data/hasnext: 0 表示还有微博可拉取 1 已拉取完毕
 
 ::
 
@@ -859,6 +865,13 @@ twitterid
   * 已知 tagid 无法获得 tagtext
   * 文档很悲剧的说, 没有及时更新, 不完整
   * public_timeline 中翻页参数 pos 无法跟踪大量更新, 基本是废参数
+  * 根据 REST API 设计准则, 这样的 API 不应该有 HTTP 错误, 告别 500, 400.
+
+* 单元测试结果
+
+  * api.timeline.topic 返回 tweet 数一般要比 reqnum 少一些, hasnext 为 True
+  * contenttype 指定为 8 (带视频)时, 返回 tweet 可能没有 video 信息
+  * api.timeline.mentions 返回也有可能是被转发, 即, 不存在 @ 引用用户名
 
 ------
 FAQ
@@ -867,6 +880,8 @@ FAQ
 或者说你会遇到的问题.
 
 我还不知道.
+
+由于 Python 2.5 不支持 except ExceptionName as e 的语法. 所以本 SDK 不支持 Python 2.5-. 如有需要, 可以自行修改
 
 -------------
 错误代码查询

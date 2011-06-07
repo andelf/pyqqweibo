@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-06 00:46:10 andelf>
+# Time-stamp: <2011-06-07 10:31:59 andelf>
 
 import xml.dom.minidom as dom
 import xml.etree.ElementTree as ET
@@ -92,9 +92,15 @@ class ModelParser(JSONParser):
         json = JSONParser.parse(self, method, payload)
         data = json['data']
 
-        print (dir(method))
-        print (method.parameters)
-        print (method.method)
+        #if data is None and method.payload_type:
+        #    if method.payload_list:
+        #        data = []
+        #        #
+        #    else:
+        #        raise QWeiboError(json.get['msg'])
+        #print (dir(method))
+        #print (method.parameters)
+        #print (method.method)
         # pager support
         if 'pagetime' in method.allowed_param:
             pass
@@ -104,11 +110,17 @@ class ModelParser(JSONParser):
         #            if 'info' in json:
         #                hasnext = json.get('hasnext', 1) == 0
         #                json = json['info']         # got data list or data
-        if 'info' in data:
-            data = data['info']
 
         if method.payload_list:
+            # sometimes data will be a None
+            if data and 'info' in data:
+                # need pager
+                hasnext = data['hasnext'] == 0
+                data = data['info']
+            else:
+                hasnext = False
             result = model.parse_list(method.api, data)
+            result.hasnext = hasnext
         else:
             result = model.parse(method.api, data)
         return result

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright 2011 andelf <andelf@gmail.com>
-# Time-stamp: <2011-06-05 01:54:24 andelf>
+# Time-stamp: <2011-06-06 16:08:30 andelf>
 
 #from distutils.core import setup
 from setuptools import setup, find_packages
@@ -30,9 +30,9 @@ setup(name = "pyqqweibo",
       * fix the bad offical api names and arangement.
       * With model parser support, cache support.
       * Under active development.
-      * Py2.x and Py3.x support
-      * document & samples included
-      * MIT license
+      * Supports Python 2.6 - 2.7 and 3.1 - 3.2.
+      * Document & samples included.
+      * MIT license.
 
       NOTE: this is a thrid party SDK, use at your risk.
       """,

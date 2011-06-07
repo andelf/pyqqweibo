@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-04 11:34:52 andelf>
+# Time-stamp: <2011-06-06 15:06:54 andelf>
 
 import time
 import re
@@ -201,12 +201,6 @@ def bind_api(**config):
 
         method = APIMethod(api, args, kargs)
         return method.execute()
-
-    # Set pagination mode
-    if 'pagetime' in APIMethod.allowed_param:
-        _call.pagination_mode = 'pagetime'
-    elif 'page' in APIMethod.allowed_param:
-        _call.pagination_mode = 'page'
 
     return _call
 
