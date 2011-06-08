@@ -83,10 +83,10 @@ class QWeiboTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """generate OAuthHandler"""
-        auth = OAuthHandler('3b769757390348a58b3b371379e276c8',
-                            '2d925b0a7bb6d3124b7b343df8552827')
-        token = '3fb7dbc160734b739c707ebed88e3d80'
-        tokenSecret = 'b961a0e4f16986a787c879d3131d46f4'
+        auth = OAuthHandler('APIKEY',
+                            'APISECRET')
+        token = 'TOKEN'
+        tokenSecret = 'TOKENSECRET'
         auth.setToken(token, tokenSecret)
         cls.auth = auth
 
