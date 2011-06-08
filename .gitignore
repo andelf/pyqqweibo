@@ -3,3 +3,6 @@
 *.pyo
 test.py
 *~
+tests/secret.py
+dist
+*.egg-info

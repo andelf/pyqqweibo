@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-07 16:04:18 andelf>
+# Time-stamp: <2011-06-08 14:29:48 andelf>
 
 from qqweibo.auth import OAuthHandler
 from qqweibo.api import API
@@ -17,4 +17,4 @@ __all__ = ['OAuthHandler', 'API', 'QWeiboError', 'version',
            'ModelParser', 'JSONParser',
            'MemoryCache', 'FileCache']
 
-version = '0.3.6'
+version = '0.3.7'

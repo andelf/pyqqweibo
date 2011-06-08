@@ -5,7 +5,7 @@
 #  Created     : Wed Jun 08 10:20:57 2011 by Feather.et.ELF
 #  Copyright   : Feather Workshop (c) 2011
 #  Description : testcast
-#  Time-stamp: <2011-06-08 14:09:37 andelf>
+#  Time-stamp: <2011-06-08 14:27:52 andelf>
 
 from __future__ import unicode_literals
 from __future__ import print_function
@@ -83,10 +83,10 @@ class QWeiboTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """generate OAuthHandler"""
-        auth = OAuthHandler('APIKEY',
-                            'APISECRET')
-        token = 'TOKEN'
-        tokenSecret = 'TOKENSECRET'
+        import secret
+        auth = OAuthHandler(secret.apiKey, secret.apiSecret)
+        token = secret.token
+        tokenSecret = secret.tokenSecret
         auth.setToken(token, tokenSecret)
         cls.auth = auth
 
