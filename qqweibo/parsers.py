@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-07 10:31:59 andelf>
+# Time-stamp: <2011-06-08 13:21:47 andelf>
 
 import xml.dom.minidom as dom
 import xml.etree.ElementTree as ET
@@ -113,10 +113,16 @@ class ModelParser(JSONParser):
 
         if method.payload_list:
             # sometimes data will be a None
-            if data and 'info' in data:
-                # need pager
-                hasnext = data['hasnext'] == 0
-                data = data['info']
+            if data:
+                if 'hasnext' in data:
+                    # need pager
+                    hasnext = data['hasnext'] in [0, 2]
+                    # hasNext:2表示不能往上翻 1 表示不能往下翻，
+                    # 0表示两边都可以翻 3表示两边都不能翻了
+                else:
+                    hasnext = False
+                if 'info' in data:
+                    data = data['info']
             else:
                 hasnext = False
             result = model.parse_list(method.api, data)

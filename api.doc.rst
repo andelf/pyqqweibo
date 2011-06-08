@@ -843,35 +843,43 @@ twitterid
 
 * 命名规范类
 
-  * api.user.userinfo 返回的 JSON/XML 数据 Ismyblack, Ismyfans, Ismyidol 是首字母大写的.
-  * getvideoinfo 和 tweet 数据中视频信息域不对应. real 和 realurl 类似这样.
-  * 返回 JSON 中命名不统一. 比如 time 和 timestamp.
+  * user.userinfo 返回的 JSON/XML 数据 Ismyblack, Ismyfans, Ismyidol 是首字母大写的
+  * getvideoinfo 和 tweet 数据中视频信息域不对应. real 和 realurl 类似这样
+  * 返回 JSON 中命名不统一. 比如 time 和 timestamp
   * 英文和拼音混用, ht, jing, wei...
-  * twitterid 竟然还能出现.
-  * 同一功能变量名有时有 `_` 有时没有. 比如 birth_day 等.
-  * 变量和函数命名实在是不想多骂了.
+  * twitterid 竟然还能出现
+  * 同一功能变量名有时有 `_` 有时没有. 比如 birth_day 等
+  * 变量和函数命名实在是不想多骂了
 * 功能设计类
 
-  * lastid 参数几乎无用.
-  * accesslevel 目前没发现到底是什么个东西. 有些 API 无效果, 有些 API 看不出什么规律.
-  * api.trends.tweet 通过翻页 API 检查后发现返回顺序是乱的.
+  * lastid 参数几乎无用
+  * accesslevel 目前没发现到底是什么个东西. 有些 API 无效果, 有些 API 看不出什么规律
+  * trends.tweet 通过翻页 API 检查后发现返回顺序是乱的
   * getvideoinfo 不应该在 tweet 类 API 中. 放 other 倒是不错
   * geo, jing, wei 无用
   * 翻页方法..... 快十种了.... 传说腾讯微博有多少翻页方法就有多少开发人员
-  * Tweet 信息不同 API 返回时详细程度不同. 这个很奇怪. 偶尔出现过.
-  * 偶尔会请求错误. 重新请求后正常. 服务器返回没有任何价值的错误信息.
+  * Tweet 信息不同 API 返回时详细程度不同. 这个很奇怪. 偶尔出现过
+  * 偶尔会请求错误. 重新请求后正常. 服务器返回没有任何价值的错误信息
   * videokey 是干嘛的?
-  * "对一些公共信息不需要用户鉴权". 经尝试, 基本上都会 access rate limit.
+  * "对一些公共信息不需要用户鉴权". 经尝试, 基本上都会 access rate limit
   * 已知 tagid 无法获得 tagtext
   * 文档很悲剧的说, 没有及时更新, 不完整
   * public_timeline 中翻页参数 pos 无法跟踪大量更新, 基本是废参数
-  * 根据 REST API 设计准则, 这样的 API 不应该有 HTTP 错误, 告别 500, 400.
+  * 根据 REST API 设计准则, 这样的 API 不应该有 HTTP 错误, 告别 500, 400
 
 * 单元测试结果
 
-  * api.timeline.topic 返回 tweet 数一般要比 reqnum 少一些, hasnext 为 True
-  * contenttype 指定为 8 (带视频)时, 返回 tweet 可能没有 video 信息
-  * api.timeline.mentions 返回也有可能是被转发, 即, 不存在 @ 引用用户名
+  * timeline.topic 返回 tweet 数一般要比 reqnum 少一些,
+    初步估计是 reqnum 将已删除的信息也算在内
+  * timeline.topic 返回的 hasnext 和其他类似 API 不同
+  * contenttype 指定为 8 (带视频)时, 返回 tweet 可能没有 video 信息,
+    但是事实上带的 url 是视频
+  * timeline.mentions 返回也有可能是被转发, 即, 不存在 @ 引用用户名
+  * 文档中关于参数限制很多是错的, 比如 reqnum
+  * timeline.users 中 reqnum 最大 40, 否则服务器返回错误
+  * timeline.userids, timeline.broadcastids, timeline.mentionsids
+    所返回 tweet 数和 reqnum 对应关系诡异. reqnum > 70 后完全不可控.
+    最多返回 210 条, reqnum = 210 时, 返回 150 条
 
 ------
 FAQ
@@ -887,6 +895,16 @@ FAQ
 错误代码查询
 -------------
 
+RET返回值说明
+
+- Ret=0	成功返回
+- Ret=1	参数错误
+- Ret=2	频率受限
+- Ret=3	鉴权失败
+- Ret=4	服务器内部错误
+
+发表接口错误字段errcode 说明
+
 - errcode=0 表示成功
 - errcode=4 表示有过多脏话
 - errcode=5 禁止访问，如城市，uin黑名单限制等
@@ -896,7 +914,7 @@ FAQ
 - errcode=10 发表太快，被频率限制
 - errcode=11 源消息已删除，如转播或回复时
 - errcode=12 源消息审核中 errcode=13 重复发表
-
+- errcode=13 重复发表
 以下部分是我猜的.
 
 - errcode=18 Tag 已经存在

@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-06 16:39:35 andelf>
+# Time-stamp: <2011-06-07 12:05:46 andelf>
 
 from qqweibo.utils import (parse_datetime, parse_html_value, parse_a_href,
                            parse_search_datetime, unescape_html)
@@ -75,6 +75,9 @@ class Tweet(Model):
             elif k == 'tweetid':
                 #setattr(tweet, k, v)
                 setattr(tweet, 'id', v)
+            elif '_' in k:
+                # avoid xxxx_xxxx
+                setattr(tweet, k.replace('_', ''), v)
             else:
                 setattr(tweet, k, v)
         return tweet
