@@ -3,7 +3,7 @@
 # Copyright 2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-06 00:49:00 andelf>
+# Time-stamp: <2011-06-08 19:22:59 andelf>
 
 from datetime import datetime
 import time

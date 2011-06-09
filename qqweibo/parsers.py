@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-08 13:21:47 andelf>
+# Time-stamp: <2011-06-08 23:25:48 andelf>
 
 import xml.dom.minidom as dom
 import xml.etree.ElementTree as ET
@@ -42,7 +42,6 @@ class XMLRawParser(Parser):
     def parse_error(self, method, payload):
         return payload
 
-
 class XMLDomParser(XMLRawParser):
     """return xml.dom.minidom object"""
     def parse(self, method, payload):
@@ -66,7 +65,7 @@ class JSONParser(Parser):
         try:
             json = self.json_lib.loads(payload, encoding='utf-8')
         except Exception as e:
-            print ("Failed to parse JSON payload:" + str(payload))
+            print ("Failed to parse JSON payload:" + repr(payload))
             raise QWeiboError('Failed to parse JSON payload: %s' % e)
 
         return json
@@ -92,30 +91,15 @@ class ModelParser(JSONParser):
         json = JSONParser.parse(self, method, payload)
         data = json['data']
 
-        #if data is None and method.payload_type:
-        #    if method.payload_list:
-        #        data = []
-        #        #
-        #    else:
-        #        raise QWeiboError(json.get['msg'])
-        #print (dir(method))
-        #print (method.parameters)
-        #print (method.method)
-        # pager support
+        # TODO: add pager
         if 'pagetime' in method.allowed_param:
             pass
-
-        #        hasnext = False
-        #        if isinstance(json, dict):      # has data, not None
-        #            if 'info' in json:
-        #                hasnext = json.get('hasnext', 1) == 0
-        #                json = json['info']         # got data list or data
 
         if method.payload_list:
             # sometimes data will be a None
             if data:
                 if 'hasnext' in data:
-                    # need pager
+                    # need pager here
                     hasnext = data['hasnext'] in [0, 2]
                     # hasNext:2表示不能往上翻 1 表示不能往下翻，
                     # 0表示两边都可以翻 3表示两边都不能翻了

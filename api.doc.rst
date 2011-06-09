@@ -501,6 +501,7 @@ add 发私信
       unicode('请问下您的qqweibo 可以用了么', 'gbk'),
       'must_use_real_ip')
     <RetId id:495...>
+
 delete 删除一条私信
   :参数:
     (id*)
@@ -641,6 +642,7 @@ add 添加标签
 
   > api.tag.add('python')
   <RetId id:7769480420947389987>
+
 delete 删除标签
   :参数:
     (tagid*)
@@ -876,10 +878,14 @@ twitterid
     但是事实上带的 url 是视频
   * timeline.mentions 返回也有可能是被转发, 即, 不存在 @ 引用用户名
   * 文档中关于参数限制很多是错的, 比如 reqnum
-  * timeline.users 中 reqnum 最大 40, 否则服务器返回错误
+  * timeline.users 中 reqnum 最大数值不定, 超过某最大数值后服务器返回错误.
+    一些情况下, 返回正常, 限制为 70
   * timeline.userids, timeline.broadcastids, timeline.mentionsids
     所返回 tweet 数和 reqnum 对应关系诡异. reqnum > 70 后完全不可控.
     最多返回 210 条, reqnum = 210 时, 返回 150 条
+  * 极个别情况下, JSON API 返回 server error 后会在 JSON 数据后追加一个
+    "out of memery". 导致 JSON 解析失败. 一般是 tweet 类, 需要 POST 的 API.
+  * fridends 类 API 有些在添加删除不存在用户时出错, 另些不出错.
 
 ------
 FAQ
@@ -889,7 +895,9 @@ FAQ
 
 我还不知道.
 
-由于 Python 2.5 不支持 except ExceptionName as e 的语法. 所以本 SDK 不支持 Python 2.5-. 如有需要, 可以自行修改
+由于 Python 2.5 不支持 except ExceptionName as e 的语法.
+所以本 SDK 不支持 Python 2.5-. 如有需要, 可以自行修改.
+一般来说处理下 __future__ 和 except ... as ... 语法就可以.
 
 -------------
 错误代码查询
@@ -902,6 +910,7 @@ RET返回值说明
 - Ret=2	频率受限
 - Ret=3	鉴权失败
 - Ret=4	服务器内部错误
+- Ret=-1 自定义, 用于表示 JSON 解析错误等
 
 发表接口错误字段errcode 说明
 
@@ -915,6 +924,19 @@ RET返回值说明
 - errcode=11 源消息已删除，如转播或回复时
 - errcode=12 源消息审核中 errcode=13 重复发表
 - errcode=13 重复发表
+
 以下部分是我猜的.
 
-- errcode=18 Tag 已经存在
+- errcode=18 Tag 已经存在, 添加好友时用户名不存在
+- errcode=19
+- errcode=35 添加黑名单时用户不存在
+- errcode=65
+- errcode=89 添加删除特别收听时不是好友
+
+------------
+表情代码说明
+------------
+
+`/表情文字` 建议使用 javascript 处理.
+
+请参考 docs/emotions

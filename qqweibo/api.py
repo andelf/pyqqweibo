@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-04 19:33:54 andelf>
+# Time-stamp: <2011-06-08 19:24:04 andelf>
 
 import os
 import mimetypes

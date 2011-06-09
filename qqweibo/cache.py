@@ -2,7 +2,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-03 13:29:22 andelf>
+# Time-stamp: <2011-06-08 15:08:40 andelf>
 
 import time
 import threading
@@ -153,7 +153,8 @@ class FileCache(Cache):
 
     def _get_path(self, key):
         md5 = hashlib.md5()
-        md5.update(key)
+        # fixed for py3.x
+        md5.update(key.encode('utf-8'))
         return os.path.join(self.cache_dir, md5.hexdigest())
 
     def _lock_file_dummy(self, path, exclusive=True):

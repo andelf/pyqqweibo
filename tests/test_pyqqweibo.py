@@ -5,7 +5,7 @@
 #  Created     : Wed Jun 08 10:20:57 2011 by Feather.et.ELF
 #  Copyright   : Feather Workshop (c) 2011
 #  Description : testcast
-#  Time-stamp: <2011-06-08 14:27:52 andelf>
+#  Time-stamp: <2011-06-09 22:18:47 andelf>
 
 from __future__ import unicode_literals
 from __future__ import print_function
@@ -57,9 +57,11 @@ def contenttype_tester(apifunc, reqnum, contenttype, **kwargs):
             assert t.music or (t.source and t.source.music)
     return True
 
+
 def test():
     """This Must Pass"""
     pass
+
 
 def test_get_access_token():
     """TODO: write later"""
@@ -109,6 +111,7 @@ class FileCacheTestCase(QWeiboTestCase):
         #super(FileCacheTestCase, self).setUp()
         import tempfile
         self.tmpdir = tempfile.mkdtemp()
+
     def test_FileCache(self):
         """FileCache"""
         api = API(self.auth, cache=FileCache(self.tmpdir), )
@@ -119,6 +122,7 @@ class FileCacheTestCase(QWeiboTestCase):
         self.assertEqual(ret[0].id, ret2[0].id)
         self.assertEqual(ret[-1].id, ret2[-1].id)
         self.assertLess(endTime - startTime, 0.1)
+
     def teardown():
         import shutil
         shutil.rmtree(self.tmpdir)
@@ -130,8 +134,7 @@ class RarserTestCase(QWeiboTestCase):
         import xml.dom.minidom
         api = API(self.auth, parser=XMLRawParser())
         ret = api.info.update()
-        assert isinstance(ret, (unicode, str, bytes))
-        assert bool(ret)
+        assert len(ret) > 0
         xml.dom.minidom.parseString(ret)
 
     def test_XMLDomParser(self):
@@ -197,7 +200,7 @@ class TimelineAPITestCase(APITestCase):
         assert len(ret) == 70
         assert ret.hasnext
 
-        num = randint(5, 70)
+        num = randint(1, 70)
         ret = api.timeline.home(reqnum=num)
         assert len(ret) == num
         assert ret.hasnext
@@ -234,7 +237,7 @@ class TimelineAPITestCase(APITestCase):
         assert len(ret) == 70
         assert ret.hasnext
 
-        num = randint(5, 70)
+        num = randint(1, 70)
         ret = api.timeline.user(name='andelf', reqnum=num)
         assert len(ret) == num
         assert ret.hasnext
@@ -250,7 +253,7 @@ class TimelineAPITestCase(APITestCase):
         # BUG: it also returns retweets of my tweet, no @myusername
         assert (username in ret[0].origtext + ret[0].name) or \
                (ret[0].source and (username in \
-                                   ret[0].source.origtext + ret[0].source.name))
+                ret[0].source.origtext + ret[0].source.name))
 
         for ct in [1, 2, 4, 8, 0x10]:
             contenttype_tester(api.timeline.mentions,
@@ -276,7 +279,7 @@ class TimelineAPITestCase(APITestCase):
         # BUG: hasnext = 2 not 0
         assert ret.hasnext
 
-        for reqnum in [120, randint(5, 100), randint(5, 100)]:
+        for reqnum in [120, randint(1, 100), randint(1, 100)]:
             ret = api.timeline.topic(httext='毕业', reqnum=reqnum)
             # BUG: this will range from 90 or so to 100
             assert len(ret) <= 100
@@ -302,7 +305,7 @@ class TimelineAPITestCase(APITestCase):
         ret = api.timeline.broadcast(reqnum=110)
         assert len(ret) == 70
 
-        num = randint(5, 70)
+        num = randint(1, 70)
         ret = api.timeline.broadcast(reqnum=num)
         assert len(ret) == num
 
@@ -317,7 +320,7 @@ class TimelineAPITestCase(APITestCase):
         ret = api.timeline.special(reqnum=110)
         assert len(ret) == 70
 
-        num = randint(5, 70)
+        num = randint(1, 70)
         ret = api.timeline.special(reqnum=num)
         assert len(ret) == num
 
@@ -334,7 +337,7 @@ class TimelineAPITestCase(APITestCase):
         ret = api.timeline.area(country=1, province=44, city=3, reqnum=110)
         assert len(ret) == 100
 
-        num = randint(5, 100)
+        num = randint(1, 100)
         ret = api.timeline.area(country=1, province=44, city=3, reqnum=num)
         assert len(ret) == num
 
@@ -353,10 +356,14 @@ class TimelineAPITestCase(APITestCase):
                                names=['andelf', 'yinyuetai'])
 
         # BUG: max reqnum is 40, or Exception raised
-        ret = api.timeline.users(names=['andelf', 'NBA'], reqnum=40)
-        print (len(ret))
+        # Update Wed Jun 08 14:35:33 2011:
+        # seems fixed
+        # Update Wed Jun 08 15:06:24 2011
+        # bug again.... 囧rz..
+        ret = api.timeline.users(names=['andelf', 'NBA'], reqnum=100)
+        assert len(ret) == 70
 
-        num = randint(5, 40)
+        num = randint(1, 70)
         ret = api.timeline.users(names=['andelf', 'NBA'], reqnum=num)
         assert len(ret) == num
 
@@ -372,7 +379,7 @@ class TimelineAPITestCase(APITestCase):
         ret = api.timeline.homeids(reqnum=310)
         assert len(ret) == 300
 
-        num = randint(5, 300)
+        num = randint(1, 300)
         ret = api.timeline.homeids(reqnum=num)
         assert len(ret) == num
 
@@ -395,7 +402,7 @@ class TimelineAPITestCase(APITestCase):
         ret = api.timeline.userids(name='t', reqnum=300)
         assert len(ret) == 210
 
-        num = randint(5, 210)
+        num = randint(1, 210)
         ret = api.timeline.userids(name='t', reqnum=num)
         assert len(ret) <= num
 
@@ -412,7 +419,7 @@ class TimelineAPITestCase(APITestCase):
         ret = api.timeline.broadcastids(reqnum=310)
         assert len(ret) == 210
 
-        num = randint(5, 300)
+        num = randint(1, 300)
         ret = api.timeline.broadcastids(reqnum=num)
         assert len(ret) <= num
 
@@ -429,7 +436,7 @@ class TimelineAPITestCase(APITestCase):
         ret = api.timeline.mentionsids(reqnum=300)
         assert len(ret) <= 210
 
-        num = randint(5, 300)
+        num = randint(1, 300)
         ret = api.timeline.mentionsids(reqnum=num)
         assert len(ret) <= num
 
@@ -445,12 +452,14 @@ class TimelineAPITestCase(APITestCase):
         ret = api.timeline.usersids(names=['andelf', 't', 'NBA'], reqnum=310)
         assert len(ret) == 300
 
-        num = randint(5, 300)
+        num = randint(1, 300)
         ret = api.timeline.usersids(names=['andelf', 't', 'NBA'], reqnum=num)
         assert len(ret) == num
 
 # part 2
 test_ids = []
+
+
 class TweetAPITestCase(APITestCase):
     def test_show(self):
         """api.tweet.show"""
@@ -463,12 +472,12 @@ class TweetAPITestCase(APITestCase):
     def test_add(self):
         """api.tweet.add"""
         api = self.api
-        ret =api.tweet.add("#pyqqweibo# unittest auto post."
-                           "will be delete later %d" % randint(0, 100),
-                           clientip='127.0.0.1',
-                           jing=123.422889,
-                           wei=41.76627
-                           )
+        ret = api.tweet.add("#pyqqweibo# unittest auto post."
+                            "will be delete later %d" % randint(0, 100),
+                            clientip='127.0.0.1',
+                            jing=123.422889,
+                            wei=41.76627
+                            )
         assert type(ret) == models.RetId
         assert hasattr(ret, 'id')
         assert hasattr(ret, 'timestamp')
@@ -564,8 +573,8 @@ class TweetAPITestCase(APITestCase):
         assert 'count' in count2
         assert 'mcount' in count2
 
-        assert count2['count']-10 <= count <= count2['count']
-        assert count2['mcount']-5 <= count1 <= count2['mcount']
+        assert count2['count'] - 5 <= count <= count2['count']
+        assert count2['mcount'] - 5 <= count1 <= count2['mcount']
 
     def test_retweetlist(self):
         """api.tweet.retweetlist"""
@@ -580,7 +589,7 @@ class TweetAPITestCase(APITestCase):
                                     reqnum=120)
         assert len(ret) == 100
 
-        num = randint(5, 100)
+        num = randint(1, 100)
         ret = api.tweet.retweetlist(rootid='79504073889068',
                                     reqnum=num)
         assert len(ret) == num
@@ -670,18 +679,200 @@ class UserAPITestCase(APITestCase):
         ret.introduction = old_intro
         ret.update()
 
+    def test_updatehead(self):
+        """api.user.updatehead"""
+        # TODO: implement this
+        api = self.api
+
+    def test_userinfo(self):
+        """api.user.userinfo"""
+        api = self.api
+        ret = api.user.userinfo(name='t')
+        assert type(ret) == models.User
+        assert ret.name == 't'
+
+class FriendsAPITestCase(APITestCase):
+    def test_fanslist(self):
+        """api.friends.fanslist"""
+        api = self.api
+        ret = api.friends.fanslist()
+        assert len(ret) == 30
+        assert type(ret[0]) == models.User
+        assert ret.hasnext
+
+        fansnum  = api.user.info().fansnum
+        ret = api.friends.fanslist(startindex=fansnum-1)
+        assert not ret.hasnext
+
+        ret = api.friends.fanslist(reqnum=100)
+        assert len(ret) == 30
+
+        num = randint(1, 30)
+        ret = api.friends.fanslist(reqnum=num)
+        assert len(ret) == num
+
+    def test_idollist(self):
+        """api.friends.idollist"""
+        api = self.api
+        ret = api.friends.idollist()
+        assert len(ret) == 30
+        assert type(ret[0]) == models.User
+        assert ret.hasnext
+
+        idolnum  = api.user.info().idolnum
+        ret = api.friends.idollist(startindex=idolnum-1)
+        assert not ret.hasnext
+
+        ret = api.friends.idollist(reqnum=100)
+        assert len(ret) == 30
+
+        num = randint(1, 30)
+        ret = api.friends.idollist(reqnum=num)
+        assert len(ret) == num
+
+    def test_blacklist(self):
+        """api.friends.blacklist"""
+        api = self.api
+        ret = api.friends.blacklist()
+        assert len(ret) > 0, "add someone to blacklist to pass test"
+        assert type(ret[0]) == models.User
+
+    def test_speciallist(self):
+        """api.friends.speciallist"""
+        api = self.api
+        ret = api.friends.speciallist()
+        assert len(ret) > 0, "add someone to special list to pass test"
+        assert type(ret[0]) == models.User
+
+    def test_add(self):
+        """api.friends.add"""
+        api = self.api
+        ret = api.friends.add(name='fledna')
+        assert ret is None
+
+        info = api.user.userinfo(name='fledna')
+        assert info.ismyidol
+
+    def test_delete(self):
+        """api.friends.delete"""
+        api = self.api
+        ret = api.friends.delete(name='t')
+        assert ret is None
+
+        info = api.user.userinfo(name='t')
+        assert not info.ismyidol
+
+        try:
+            # BUG: will cause errcode=65. reason unkown
+            api.friends.add(name='t')
+        except:
+            pass
+
+    def test_addspecial(self):
+        """api.friends.addspecial"""
+        api = self.api
+        ret = api.friends.addspecial('t')
+        assert ret is None
+
+    def test_deletespecial(self):
+        """api.friends.deletespecial"""
+        api = self.api
+        try:
+            ret = api.friends.add('t')
+            ret = api.friends.addspecial('t')
+        except:
+            pass
+        ret = api.friends.deletespecial('t')
+        assert ret is None
+
+    def test_addblacklist(self):
+        """api.friends.addblacklist"""
+        api = self.api
+        ret = api.friends.addblacklist(name='t')
+        assert ret is None
+
+        info = api.user.userinfo(name='t')
+        assert info.ismyblack
+
+    def test_deleteblacklist(self):
+        """api.friends.deleteblacklist"""
+        api = self.api
+        ret = api.friends.deleteblacklist(name='t')
+        assert ret is None
+
+        info = api.user.userinfo(name='t')
+        assert not info.ismyblack
+
+    def test_check(self):
+        """self.friends.check"""
+        api = self.api
+        ret = api.friends.check(names=['t', 'andelf', 'NBA'])
+        assert type(ret) == models.JSON
+
+        assert type(ret.t) == bool
+        assert type(ret.as_dict()['andelf']) == bool
+
+    def test_userfanslist(self):
+        """api.friends.userfanslist"""
+        api = self.api
+        ret = api.friends.userfanslist('NBA')
+        assert len(ret) == 30
+        assert type(ret[0]) == models.User
+        assert ret.hasnext
+
+        # BUG: if too large, cause ret=4, errcode=0
+        fansnum  = api.user.userinfo('NBA').fansnum
+        ret = api.friends.userfanslist('NBA', startindex=fansnum-1)
+        assert not ret.hasnext
+
+        ret = api.friends.userfanslist('NBA', reqnum=100)
+        assert len(ret) == 30
+
+        num = randint(1, 30)
+        ret = api.friends.userfanslist('NBA', reqnum=num)
+        assert len(ret) == num
+
+    def test_useridollist(self):
+        """api.friends.useridollist"""
+        api = self.api
+        ret = api.friends.useridollist('andelf')
+        assert len(ret) == 30
+        assert type(ret[0]) == models.User
+        assert ret.hasnext
+
+        idolnum  = api.user.userinfo('andelf').idolnum
+        ret = api.friends.useridollist('andelf', startindex=idolnum-1)
+        assert not ret.hasnext
+
+        ret = api.friends.useridollist('andelf', reqnum=100)
+        assert len(ret) == 30
+
+        num = randint(1, 30)
+        ret = api.friends.useridollist('andelf', reqnum=num)
+        assert len(ret) == num
+
+    def test_userspeciallist(self):
+        """api.friends.userspeciallist"""
+        api = self.api
+
+        ret = api.friends.useridollist('andelf')
+        assert len(ret) > 0
+        assert type(ret[0]) == models.User
+        if len(ret)< 30:
+            assert not ret.hasnext
+
 
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
-    suite = unittest.TestLoader().loadTestsFromTestCase(UserAPITestCase)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    #suite = unittest.TestLoader().loadTestsFromTestCase(FriendsAPITestCase)
+    #unittest.TextTestRunner(verbosity=2).run(suite)
 
-    if 1:
-        print ('\nbegin clean up...')
-        APITestCase.setUpClass()
-        for i in test_ids:
-            ret = APITestCase.api.tweet.delete(i)
-            print ('delete id={}'.format(i))
-            assert ret.id == i
+if 1:
+    print ('\nbegin clean up...')
+    APITestCase.setUpClass()
+    for i in test_ids:
+        ret = APITestCase.api.tweet.delete(i)
+        print ('delete id={}'.format(i))
+        assert ret.id == i
 

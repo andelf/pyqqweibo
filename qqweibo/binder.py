@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-06 15:06:54 andelf>
+# Time-stamp: <2011-06-08 23:21:45 andelf>
 
 import time
 import re
@@ -99,11 +99,12 @@ def bind_api(**config):
                 if self.method == 'GET':
                     url = '%s?%s' % (url, urlencode(self.parameters))
                 else:
-                    self.headers.setdefault("User-Agent", "python")
+                    self.headers.setdefault("User-Agent", "pyqqweibo")
                     if self.post_data is None:
                         self.headers.setdefault("Accept", "text/html")
                         self.headers.setdefault("Content-Type", "application/x-www-form-urlencoded")
-                        self.post_data = urlencode(self.parameters).encode('ascii')  # asure in bytes format
+                        # asure in bytes format
+                        self.post_data = urlencode(self.parameters).encode('ascii')
             # Query the cache if one is available
             # and this request uses a GET method.
             if self.api.cache and self.method == 'GET':
@@ -143,8 +144,8 @@ def bind_api(**config):
                         req = Request(url_full)
                     resp = urlopen(req)
                 except Exception as e:
-                    raise QWeiboError("Failed to send request: %s url=%s headers=%s" % \
-                                      (e, url, self.headers))
+                    raise QWeiboError("Failed to request %s headers=%s %s" % \
+                                      (url, self.headers, e))
 
                 # Exit request loop if non-retry error code
                 if self.retry_errors:
@@ -166,28 +167,31 @@ def bind_api(**config):
                 eTime = '%.0f' % ((time.time() - sTime) * 1000)
                 postData = ""
                 if self.post_data is not None:
-                    postData = ",post:" + self.post_data[0:500]
+                    postData = ",post:" + self.post_data[:500]
                 self.api.log.debug("%s, time: %s, %s result: %s" % (requestUrl, eTime, postData, body))
 
-            ret_code = 0
+            retcode = 0
+            errcode = 0
             # for py3k, ^_^
             if not hasattr(body, 'encode'):
                 body = str(body, 'utf-8')
-            try:
-                if self.api.parser.payload_format == 'json':
+            if self.api.parser.payload_format == 'json':
+                try:
+                    # BUG: API BUG, refer api.doc.rst
+                    if body.endswith('out of memery'):
+                        body = body[:body.rfind('}')+1]
                     json = self.api.parser.parse_error(self, body)
-                    ret_code = json['ret']
-                    error = json['msg']
+                    retcode = json.get('ret', 0)
+                    msg = json.get('msg', '')
+                    # only in some post request
                     errcode = json.get('errcode', 0)
-                    error_msg = 'ret_code: %s, %s' % (ret_code, error)
-                    if errcode:
-                        error_msg += ' errcode: %s' % errcode
-            except Exception as e:
-                ret_code = -1
-                error_msg = "Weibo error response: Error = %s" % e
-            finally:
-                if ret_code != 0:
-                    raise QWeiboError(error_msg)
+                except ValueError as e:
+                    retcode = -1
+                    msg = "Bad json format (%s)" % e
+                finally:
+                    if retcode + errcode != 0:
+                        raise QWeiboError("Response error: %s. (ret=%s, errcode=%s)" % \
+                                          (msg, retcode, errcode))
 
             # Parse the response payload
             result = self.api.parser.parse(self, body)
@@ -198,9 +202,20 @@ def bind_api(**config):
             return result
 
     def _call(api, *args, **kargs):
-
         method = APIMethod(api, args, kargs)
         return method.execute()
+
+    # make doc string
+    if config.get('payload_list', False):
+        rettype = '[%s]' % config.get('payload_type', None)
+    else:
+        rettype = str(config.get('payload_type', None))
+    doc_string = """ \
+    Call API Method {:s}
+    ({:s}) => {:s}""".format(config['path'],
+                             ', '.join(config.get('allowed_param', [])),
+                             rettype)
+    _call.__doc__ = doc_string
 
     return _call
 

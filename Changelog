@@ -1,3 +1,10 @@
+2011-06-08  andelf  <andelf@gmail.com>
+	version 0.3.7
+	* qqweibo/binder.py
+	加入 API 函数 doc string 支持
+	* tests/*
+	加入单元测试
+
 2011-06-05  andelf  <andelf@gmail.com>
 	version 0.3.3
 	* qqweibo/api.py

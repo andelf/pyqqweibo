@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2010 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-03 13:30:10 andelf>
+# Time-stamp: <2011-06-08 15:15:00 andelf>
 
 class QWeiboError(Exception):
     """basic weibo error class"""
@@ -14,3 +14,4 @@ def assertion(condition, msg):
         assert condition, msg
     except AssertionError as e:
         raise QWeiboError(e.message)
+

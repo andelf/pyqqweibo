@@ -7,7 +7,7 @@ By @andelf <andelf@gmail.com>
 
 已经更新到 5.27 日 API 版本.
 
-我就不吐槽腾讯的 API 了.
+我就不吐槽腾讯的 API 了. 相关吐槽请参考 `api.doc.rst`.
 
 特色
 ----
@@ -17,15 +17,17 @@ By @andelf <andelf@gmail.com>
 * 可以返回 JSON 或 XML 数据(多 Parser 支持)
 * 修改所有 API 绑定组织结构参数顺序及返回等
 * 支持 Python 3
-
-具体参考 `api.doc.rst` 及　`Changelog`
+* 良好文档支持, 包括 doc string
+* 单元测试
 
 使用方法
 --------
 
-`api.doc.rst` 文件为参考文档.
+具体文档请参考 `api.doc.rst`.
 
-相关例子请参考 `examples` 目录, 不过已经很过期了.
+API 使用例子请参考 `tests` 及 `example` 目录下文件.
+
+简单 API 用法可直接 `help()`.
 
 Further TODO
 ------------
