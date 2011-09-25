@@ -304,7 +304,7 @@ add 发表一条微博
 
   ::
 
-    > api.add('some text', clientip='?.?.?.?')
+    > api.tweet.add('some text', clientip='?.?.?.?')
     RetId
 delete 删除一条微博
   :参数:
