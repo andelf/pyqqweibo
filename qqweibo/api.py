@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-08 19:24:04 andelf>
+# Time-stamp: <2011-09-27 00:36:27 wangshuyu>
 
 import os
 import mimetypes
@@ -159,6 +159,15 @@ class API(object):
         require_auth = True
     )
 
+    """ 15.statuses/ht_timeline_ext 话题时间线 """
+    _statuses_ht_timeline_ext = bind_api(
+        path = '/statuses/ht_timeline_ext',
+        payload_type = 'tweet', payload_list = True,
+        allowed_param = ['httext', 'reqnum', 'tweetid', 'time', 'pageflag',
+                         'flag', 'accesslevel', 'type', 'contenttype'],
+        require_auth = True
+    )
+
     ## 微博相关 ##
     """ 1.t/show 获取一条微博数据 """
     _t_show = bind_api(
@@ -291,6 +300,23 @@ class API(object):
         require_auth = True
     )
 
+    """ 14.t/add_video_prev 预发表一条视频微博 """
+    _t_add_video_prev = bind_api(
+        path = '/t/add_video_prev',
+        method = 'POST',
+        payload_type = 'retid',
+        allowed_param = ['content', 'clientip', 'jing', 'wei', 'vid', 'title'],
+        require_auth = True
+    )
+
+    """ 15.t/sub_re_count 获取转播的再次转播数（二次转发次数) """
+    _t_sub_re_count = bind_api(
+        path = '/t/sub_re_count',
+        payload_type = 'dict',
+        allowed_param = ['ids'],
+        require_auth = True
+    )
+
     ## 帐户相关 ##
     """ 1.User/info获取自己的详细资料 """
     _user_info = bind_api(
@@ -323,11 +349,47 @@ class API(object):
             allowed_param = allowed_param
             )(self, *args, post_data=post_data, headers=headers)
 
-    """ 4.user/other_info 获取其他人资料 """
+    """ 4.user/update_edu 更新用户教育信息 """
+    # TODO: 吐槽此条API
+    _user_update_edu = bind_api(
+        path = '/user/update_edu',
+        method = 'POST',
+        allowed_param = ['feildid', 'year', 'schoolid', 'departmentid', 'level'],
+        require_auth = True
+    )
+
+    """ 5.user/other_info 获取其他人资料 """
     _user_other_info = bind_api(
         path = '/user/other_info',
         payload_type = 'user',
         allowed_param = ['name'],
+        require_auth = True
+    )
+
+    """ 6.user/infos 获取一批人的简单资料 """
+    _user_infos = bind_api(
+        path = '/user/infos',
+        payload_type = 'user', payload_list = True,
+        allowed_param = ['names'],
+        require_auth = True
+    )
+
+    """ 7.user/verify 验证账户是否合法（是否注册微博） """
+    _user_verify = bind_api(
+        path = '/user/verify',
+        method = 'POST',
+        payload_type = 'json',
+        allowed_param = ['name'],
+        require_auth = True
+    )
+
+    """ 8.user/emotion 获取心情微博 """
+    _user_emotion = bind_api(
+        path = '/user/emotion',
+        method = 'POST',
+        payload_type = 'json',
+        allowed_param = ['name', 'reqnum', 'pageflag', 'timestamp', 'type',
+                         'contenttype', 'accesslevel', 'emotiontype'],
         require_auth = True
     )
 
@@ -441,6 +503,22 @@ class API(object):
         path = '/friends/user_speciallist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['name', 'reqnum', 'startindex'],
+        require_auth = True
+    )
+
+    """ 15.friends/fanslist_s 我的听众列表，简单信息（200个）"""
+    _friends_fanslist_s = bind_api(
+        path = '/friends/fanslist_s',
+        payload_type = 'user', payload_list = True,
+        allowed_param = ['reqnum', 'startindex'],
+        require_auth = True
+    )
+
+    """ 16.friends/idollist_s 我的收听列表，简单信息（200个） """
+    _friends_idollist_s = bind_api(
+        path = '/friends/idollist_s',
+        payload_type = 'user', payload_list = True,
+        allowed_param = ['reqnum', 'startindex'],
         require_auth = True
     )
 
@@ -646,6 +724,22 @@ class API(object):
         require_auth = True
     )
 
+    """ 4.other/get_emotions 获取表情接口 """
+    _other_get_emotions = bind_api(
+        path = '/other/get_emotions',
+        payload_type = 'json', payload_list = True,
+        allowed_param = ['type'],
+        require_auth = True,
+    )
+
+    """ 5.other/gettopreadd 一键转播热门排行 """
+    _other_gettopreadd = bind_api(
+        path = '/other/gettopreadd',
+        payload_type = 'retid', payload_list = True,
+        allowed_param = ['type', 'country', 'province', 'city'],
+        require_auth = True,
+    )
+
     """ Get the authenticated user """
     def me(self):
         return self.user.info()
@@ -812,4 +906,3 @@ class API(object):
         }
 
         return headers, body
-
