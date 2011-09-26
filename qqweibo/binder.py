@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-08 23:21:45 andelf>
+# Time-stamp: <2011-09-05 19:40:35 wangshuyu>
 
 import time
 import re
@@ -211,11 +211,10 @@ def bind_api(**config):
     else:
         rettype = str(config.get('payload_type', None))
     doc_string = """ \
-    Call API Method {:s}
-    ({:s}) => {:s}""".format(config['path'],
-                             ', '.join(config.get('allowed_param', [])),
-                             rettype)
+    Call API Method %s
+    (%s) => %s""" % (config['path'],
+                     ', '.join(config.get('allowed_param', [])),
+                     rettype)
     _call.__doc__ = doc_string
 
     return _call
-
