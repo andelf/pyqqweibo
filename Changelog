@@ -1,3 +1,7 @@
+2011-11-01  andelf  <andelf@gmail.com>
+	* qqweibo/__init__.py
+	update to 0.3.8
+
 2011-09-27  andelf  <andelf@gmail.com>
 	* api.doc.rst
 	add missing "tweet" ns for adding tweet API, thank Mike Chen
