@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-09-27 00:36:27 wangshuyu>
+# Time-stamp: <2011-11-01 17:43:57 wangshuyu>
 
 import os
 import mimetypes
@@ -519,6 +519,14 @@ class API(object):
         path = '/friends/idollist_s',
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
+        require_auth = True
+    )
+
+    """ 17.friends/mutual_list 互听关系链列表 """
+    _friends_mutual_list = bind_api(
+        path = '/friends/mutual_list',
+        payload_type = 'user', payload_list = True,
+        allowed_param = ['name', 'reqnum', 'startindex'],
         require_auth = True
     )
 
