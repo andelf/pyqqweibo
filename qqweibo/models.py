@@ -3,7 +3,7 @@
 # Copyright 2009-2010 Joshua Roesslein
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-06-07 12:05:46 andelf>
+# Time-stamp: <2011-11-09 10:15:42 wangshuyu>
 
 from qqweibo.utils import (parse_datetime, parse_html_value, parse_a_href,
                            parse_search_datetime, unescape_html)
@@ -160,7 +160,9 @@ class User(Model):
             setattr(user, 'self', False)  # is this myself?
         else:
             setattr(user, 'self', True)
-
+        # fixture for trends/famouslist
+        if hasattr(user, 'account') and not hasattr(user, 'name'):
+            setattr(user, 'name', user.account)
         return user
 
     def update(self, **kwargs):

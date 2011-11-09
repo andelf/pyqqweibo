@@ -5,7 +5,7 @@ By @andelf <andelf@gmail.com>
 
 腾讯微博 API Python 绑定, 基于 Twitter API 绑定库 tweepy 改写. 目前在不断完善中.
 
-已经更新到 5.27 日 API 版本.
+已经更新到 11.11.09 日 API 版本.
 
 我就不吐槽腾讯的 API 了. 相关吐槽请参考 `api.doc.rst`.
 
@@ -19,6 +19,7 @@ By @andelf <andelf@gmail.com>
 * 支持 Python 3
 * 良好文档支持, 包括 doc string
 * 单元测试
+* 原命名方式的 API 可通过 api._大类_API名() 访问
 
 使用方法
 --------

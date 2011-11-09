@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2011 andelf <andelf@gmail.com>
 # See LICENSE for details.
-# Time-stamp: <2011-11-01 17:43:57 wangshuyu>
+# Time-stamp: <2011-11-09 10:18:18 wangshuyu>
 
 import os
 import mimetypes
@@ -168,6 +168,14 @@ class API(object):
         require_auth = True
     )
 
+    """ 16.statuses/home_timeline_vip 拉取vip用户发表微博消息接口 """
+    _statuses_home_timeline_vip = bind_api(
+        path = '/statuses/home_timeline_vip',
+        payload_type = 'tweet', payload_list = True,
+        allowed_param = ['reqnum', 'lastid', 'pagetime', 'pageflag',],
+        require_auth = True
+    )
+
     ## 微博相关 ##
     """ 1.t/show 获取一条微博数据 """
     _t_show = bind_api(
@@ -317,6 +325,15 @@ class API(object):
         require_auth = True
     )
 
+    """ 16.t/add_emotion 发表心情帖子 """ # test fail
+    _t_add_emotion = bind_api(
+        path = '/t/add_emotion',
+        method = 'POST',
+        payload_type = 'retid',
+        allowed_param = ['content', 'signtype', 'clientip', 'jing', 'wei'],
+        require_auth = True
+    )
+
     ## 帐户相关 ##
     """ 1.User/info获取自己的详细资料 """
     _user_info = bind_api(
@@ -383,11 +400,11 @@ class API(object):
         require_auth = True
     )
 
-    """ 8.user/emotion 获取心情微博 """
+    """ 8.user/emotion 获取心情微博 """ # TODO: if empty returned, may fail
     _user_emotion = bind_api(
         path = '/user/emotion',
         method = 'POST',
-        payload_type = 'json',
+        payload_type = 'tweet', payload_list = True,
         allowed_param = ['name', 'reqnum', 'pageflag', 'timestamp', 'type',
                          'contenttype', 'accesslevel', 'emotiontype'],
         require_auth = True
@@ -530,6 +547,22 @@ class API(object):
         require_auth = True
     )
 
+    """ 18.fanslist_name 我的听众列表，只输出name（200个） """
+    _friends_fanslist_name = bind_api(
+        path = '/friends/fanslist_name',
+        payload_type = 'json', payload_list = True,
+        allowed_param = ['reqnum', 'startindex'],
+        require_auth = True
+    )
+
+    """ 19.idollist_name 我的收听列表，只输出name（200个） """
+    _friends_fanslist_name = bind_api(
+        path = '/friends/idollist_name',
+        payload_type = 'json', payload_list = True,
+        allowed_param = ['reqnum', 'startindex'],
+        require_auth = True
+    )
+
     ## 私信相关 ##
     """ 1.private/add 发私信 """
     _private_add = bind_api(
@@ -605,6 +638,14 @@ class API(object):
         path = '/trends/t',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'type', 'pos'],
+        require_auth = True
+    )
+
+    """ 3.trends/famouslist 推荐名人列表 """
+    _trends_famouslist = bind_api(
+        path = '/trends/famouslist',
+        payload_type = 'user', payload_list = True,
+        allowed_param = ['classid', 'subclassid'],
         require_auth = True
     )
 
@@ -706,6 +747,9 @@ class API(object):
         allowed_param = ['tagid'],
         require_auth = True
     )
+
+    ## 名单 ##
+    # TODO
 
     ## 其他 ##
     """ 1.other/kownperson 我可能认识的人 """
