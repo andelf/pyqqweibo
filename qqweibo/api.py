@@ -556,7 +556,7 @@ class API(object):
     )
 
     """ 19.idollist_name 我的收听列表，只输出name（200个） """
-    _friends_fanslist_name = bind_api(
+    _friends_idollist_name = bind_api(
         path = '/friends/idollist_name',
         payload_type = 'json', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
