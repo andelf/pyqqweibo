@@ -9,9 +9,15 @@ from datetime import datetime
 import time
 import re
 import sys
+import random
+import os
+import mimetypes
 
 from qqweibo.compat import htmlentitydefs
 
+
+def timestamp():
+    return int(time.time()*1000)
 
 def parse_datetime(str):
     # We must parse datetime this way to work in python 2.4
@@ -95,3 +101,64 @@ def convert_to_utf8_bytes(arg):
 
 def timestamp_to_str(tm):
     return time.ctime(tm)
+
+
+def parse_json(payload, encoding='ascii'):
+    from .compat import json
+    if isinstance(payload, bytes):
+        payload = payload.decode(encoding)
+    return json.loads(payload)
+
+def mulitpart_urlencode(fieldname, filename, max_size=1024, **params):
+    """Pack image from file into multipart-formdata post body"""
+    # image must be less than 700kb in size
+    try:
+        if os.path.getsize(filename) > (max_size * 1024):
+            raise QWeiboError('File is too big, must be less than 700kb.')
+    except os.error:
+        raise QWeiboError('Unable to access file')
+
+    # image must be gif, jpeg, or png
+    file_type = mimetypes.guess_type(filename)
+    if file_type is None:
+        raise QWeiboError('Could not determine file type')
+    file_type = file_type[0]
+    if file_type.split('/')[0] != 'image':
+        raise QWeiboError('Invalid file type for image: %s' % file_type)
+
+    # build the mulitpart-formdata body
+    BOUNDARY = 'ANDELF%s----' % ''.join(
+        random.sample('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 10))
+    body = []
+    for key, val in params.items():
+        if val is not None:
+            body.append('--' + BOUNDARY)
+            body.append('Content-Disposition: form-data; name="%s"' % key)
+            body.append('Content-Type: text/plain; charset=UTF-8')
+            body.append('Content-Transfer-Encoding: 8bit')
+            body.append('')
+            val = convert_to_utf8_bytes(val)
+            body.append(val)
+    fp = open(filename, 'rb')
+    body.append('--' + BOUNDARY)
+    body.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (fieldname, filename.encode('utf-8')))
+    body.append('Content-Type: %s' % file_type)
+    body.append('Content-Transfer-Encoding: binary')
+    body.append('')
+    body.append(fp.read())
+    body.append('--%s--' % BOUNDARY)
+    body.append('')
+    fp.close()
+    body.append('--%s--' % BOUNDARY)
+    body.append('')
+    # fix py3k
+    for i in range(len(body)):
+        body[i] = convert_to_utf8_bytes(body[i])
+    body = b'\r\n'.join(body)
+    # build headers
+    headers = {
+        'Content-Type': 'multipart/form-data; boundary=%s' % BOUNDARY,
+        'Content-Length': len(body)
+    }
+
+    return headers, body

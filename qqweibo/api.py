@@ -10,7 +10,7 @@ import mimetypes
 from qqweibo.binder import bind_api
 from qqweibo.error import QWeiboError
 from qqweibo.parsers import ModelParser
-from qqweibo.utils import convert_to_utf8_bytes
+from qqweibo.utils import convert_to_utf8_bytes, mulitpart_urlencode
 
 
 class API(object):
@@ -41,7 +41,6 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime',
                          'type', 'contenttype'],
-        require_auth = True
     )
 
     """ 2.Statuses/public_timeline 广播大厅时间线"""
@@ -49,7 +48,6 @@ class API(object):
         path = '/statuses/public_timeline',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'pos'],
-        require_auth = True
     )
 
     """ 3.Statuses/user_timeline 其他用户发表时间线"""
@@ -58,7 +56,6 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['name', 'reqnum', 'pageflag', 'pagetime',
                          'lastid', 'type', 'contenttype'],
-        require_auth = True
     )
 
     """ 4.Statuses/mentions_timeline @提到我的时间线 """
@@ -67,7 +64,6 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime', 'lastid',
                          'type', 'contenttype', 'accesslevel'],
-        require_auth = True
     )
 
     """ 5.Statuses/ht_timeline 话题时间线 """
@@ -75,7 +71,6 @@ class API(object):
         path = '/statuses/ht_timeline',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['httext', 'reqnum', 'pageflag', 'pageinfo'],
-        require_auth = True
     )
 
     """ 6.Statuses/broadcast_timeline 我发表时间线 """
@@ -84,7 +79,6 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime',
                          'lastid', 'type', 'contenttype'],
-        require_auth = True
     )
 
     """ 7.Statuses/special_timeline 特别收听的人发表时间线 """
@@ -92,7 +86,6 @@ class API(object):
         path = '/statuses/special_timeline',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime'],
-        require_auth = True
     )
 
     """ 8.Statuses/area_timeline 地区发表时间线 """
@@ -101,7 +94,6 @@ class API(object):
         path = '/statuses/area_timeline',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['country', 'province', 'city', 'reqnum', 'pos'],
-        require_auth = True
     )
 
     """ 9.Statuses/home_timeline_ids 主页时间线索引 """
@@ -110,7 +102,6 @@ class API(object):
         payload_type = 'retid', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime', 'type',
                          'contenttype'],
-        require_auth = True
     )
 
     """ 10.Statuses/user_timeline_ids 其他用户发表时间线索引 """
@@ -120,7 +111,6 @@ class API(object):
         payload_type = 'retid', payload_list = True,
         allowed_param = ['name', 'reqnum', 'pageflag', 'pagetime', 'type',
                          'contenttype'],
-        require_auth = True
     )
 
     """ 11.Statuses/broadcast_timeline_ids 我发表时间线索引 """
@@ -129,7 +119,6 @@ class API(object):
         payload_type = 'retid', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime', 'lastid', 'type',
                          'contenttype'],
-        require_auth = True
     )
 
     """ 12.Statuses/mentions_timeline_ids 用户提及时间线索引 """
@@ -138,7 +127,6 @@ class API(object):
         payload_type = 'retid', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime', 'lastid', 'type',
                          'contenttype'],
-        require_auth = True
     )
 
     """ 13.Statuses/users_timeline 多用户发表时间线 """
@@ -147,7 +135,6 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['names', 'reqnum', 'pageflag', 'pagetime',
                          'lastid', 'type', 'contenttype'],
-        require_auth = True
     )
 
     """ 14.Statuses/users_timeline_ids 多用户发表时间线索引 """
@@ -156,7 +143,6 @@ class API(object):
         payload_type = 'retid', payload_list = True,
         allowed_param = ['names', 'reqnum', 'pageflag', 'pagetime',
                          'lastid', 'type', 'contenttype'],
-        require_auth = True
     )
 
     """ 15.statuses/ht_timeline_ext 话题时间线 """
@@ -165,7 +151,6 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['httext', 'reqnum', 'tweetid', 'time', 'pageflag',
                          'flag', 'accesslevel', 'type', 'contenttype'],
-        require_auth = True
     )
 
     """ 16.statuses/home_timeline_vip 拉取vip用户发表微博消息接口 """
@@ -173,8 +158,29 @@ class API(object):
         path = '/statuses/home_timeline_vip',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'lastid', 'pagetime', 'pageflag',],
-        require_auth = True
+
     )
+
+    _statuses_get_micro_album = bind_api(
+        path = '/statuses/get_micro_album',
+        payload_type = 'json', payload_list = True,
+        allowed_param = ['reqnum', 'name'],
+    )
+
+    _statuses_sub_re_list = bind_api(
+        path = '/statuses/sub_re_list',
+        payload_type = 'tweet', payload_list = True,
+        allowed_param = ['rootid', 'type', 'reqnum'],
+    )
+
+    """ 名单接口 """
+    _list_add_to_list = bind_api(
+        path = '/add_to_list',
+        method = 'POST',
+        payload_type = 'json',
+        allowed_param = ['listid', 'names'],
+    )
+    ## TODO: finish list api
 
     ## 微博相关 ##
     """ 1.t/show 获取一条微博数据 """
@@ -182,7 +188,7 @@ class API(object):
         path = '/t/show',
         payload_type = 'tweet',
         allowed_param = ['id'],
-        require_auth = True
+
     )
 
     """ 2.t/add 发表一条微博 """
@@ -190,8 +196,8 @@ class API(object):
         path = '/t/add',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['content', 'clientip', 'jing', 'wei'],
-        require_auth = True
+        allowed_param = ['content', 'longitude', 'latitude', 'clientip'],
+
     )
 
     """ 3.t/del 删除一条微博 """
@@ -200,7 +206,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['id'],
-        require_auth = True
+
     )
 
     """ 4.t/re_add 转播一条微博 """
@@ -208,8 +214,8 @@ class API(object):
         path = '/t/re_add',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['reid', 'content', 'clientip', 'jing', 'wei'],
-        require_auth = True
+        allowed_param = ['reid', 'content', 'longitude', 'latitude', 'clientip'],
+
     )
 
     """ 5.t/reply 回复一条微博 """
@@ -217,31 +223,22 @@ class API(object):
         path = '/t/reply',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['reid', 'content', 'clientip', 'jing', 'wei'],
-        require_auth = True
+        allowed_param = ['reid', 'content', 'longitude', 'latitude', 'clientip'],
+
     )
 
     """ 6.t/add_pic 发表一条带图片的微博 """
-    def _t_add_pic(self, filename, content, clientip='127.0.0.1',
-                   jing=None, wei=None):
-        headers, post_data = API._pack_image(filename, contentname="pic",
-            content=content, clientip=clientip, jing=jing, wei=wei, )
-        args = [content, clientip]
-        allowed_param = ['content', 'clientip']
+    def _t_add_pic(self, filename, content="", longitude=0, latitude=0, clientip='127.0.0.1'):
+        _, query = self.auth.authorize_request(
+            "dummy", "POST", {}, dict(content=content, clientip=clientip, longitude=longitude, latitude=latitude))
+        headers, post_data = mulitpart_urlencode("pic", filename, **dict(query))
 
-        if jing is not None:
-            args.append(jing)
-            allowed_param.append('jing')
-
-        if wei is not None:
-            args.append(wei)
-            allowed_param.append('wei')
-
+        allowed_param = ['content', 'longitude', 'latitude', 'clientip']
+        args = [content, longitude, latitude, clientip]
         return bind_api(
             path = '/t/add_pic',
             method = 'POST',
             payload_type = 'retid',
-            require_auth = True,
             allowed_param = allowed_param
             )(self, *args, post_data=post_data, headers=headers)
 
@@ -250,7 +247,6 @@ class API(object):
         path = '/t/re_count',
         payload_type = 'json',
         allowed_param = ['ids', 'flag'],
-        require_auth = True
     )
 
     """ 8.t/re_list 获取单条微博的转发或点评列表 """
@@ -259,7 +255,6 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['rootid', 'reqnum', 'flag', 'pageflag', 'pagetime',
                          'twitterid'],
-        require_auth = True
     )
 
     """ 9.t/comment 点评一条微博 """
@@ -267,8 +262,7 @@ class API(object):
         path = '/t/comment',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['reid', 'content', 'clientip', 'jing', 'wei'],
-        require_auth = True
+        allowed_param = ['reid', 'content', 'longitude', 'latitude', 'clientip'],
     )
 
     """ 10.t/add_music发表音乐微博 """
@@ -277,8 +271,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['url', 'title', 'author', 'content',
-                         'clientip', 'jing', 'wei'],
-        require_auth = True
+                         'longitude', 'latitude', 'clientip'],
     )
 
     """ 11.t/add_video发表视频微博 """
@@ -286,8 +279,7 @@ class API(object):
         path = '/t/add_video',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['url', 'content', 'clientip', 'jing', 'wei'],
-        require_auth = True
+        allowed_param = ['url', 'content', 'longitude', 'latitude', 'clientip'],
     )
 
     """ 12.t/getvideoinfo 获取视频信息 """
@@ -296,7 +288,6 @@ class API(object):
         method = 'POST',
         payload_type = 'video',
         allowed_param = ['url'],
-        require_auth = True
     )
 
     """ 13.t/list 根据微博ID批量获取微博内容（与索引合起来用） """
@@ -305,7 +296,6 @@ class API(object):
         method = 'GET',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['ids'],
-        require_auth = True
     )
 
     """ 14.t/add_video_prev 预发表一条视频微博 """
@@ -313,8 +303,7 @@ class API(object):
         path = '/t/add_video_prev',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['content', 'clientip', 'jing', 'wei', 'vid', 'title'],
-        require_auth = True
+        allowed_param = ['content', 'longitude', 'latitude', 'vid', 'title', 'clientip'],
     )
 
     """ 15.t/sub_re_count 获取转播的再次转播数（二次转发次数) """
@@ -322,16 +311,36 @@ class API(object):
         path = '/t/sub_re_count',
         payload_type = 'dict',
         allowed_param = ['ids'],
-        require_auth = True
     )
 
-    """ 16.t/add_emotion 发表心情帖子 """ # test fail
+    """ 16.t/add_emotion 发表心情帖子 """
     _t_add_emotion = bind_api(
         path = '/t/add_emotion',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['content', 'signtype', 'clientip', 'jing', 'wei'],
-        require_auth = True
+        allowed_param = ['signtype', 'content', 'longitude', 'latitude', 'clientip'],
+    )
+
+    _t_add_pic_url = bind_api(
+        path = '/t/add_pic_url',
+        method = 'POST',
+        payload_type = 'retid',
+        allowed_param = ['pic_url', 'content', 'longitude', 'latitude', 'clientip'],
+    )
+
+    _t_add_multi = bind_api(
+        path = '/t/add_multi',
+        method = 'POST',
+        payload_type = 'retid',
+        allowed_param = ['content', 'longitude', 'latitude', 'pic_url', 'video_url', 'music_url',
+                         'music_title', 'music_author', 'clientip'],
+    )
+
+    _t_upload_pic = bind_api(
+        path = '/t/upload_pic',
+        method = 'POST',
+        payload_type = 'json',
+        allowed_param = ['pic_url'],
     )
 
     ## 帐户相关 ##
@@ -340,7 +349,7 @@ class API(object):
         path = '/user/info',
         payload_type = 'user',
         allowed_param = [],
-        require_auth = True
+
     )
 
     """ 2.user/update 更新用户信息 """
@@ -350,19 +359,19 @@ class API(object):
         allowed_param = ['nick', 'sex', 'year', 'month',
                          'day', 'countrycode', 'provincecode',
                          'citycode', 'introduction'],
-        require_auth = True
+
     )
 
     """ 3.user/update_head 更新用户头像信息 """
     def _user_update_head(self, filename):
-        headers, post_data = API._pack_image(filename, "pic")
+        headers, post_data = mulitpart_urlencode("pic", filename)
         args = []
         allowed_param = []
 
         return bind_api(
             path = '/user/update_head',
             method = 'POST',
-            require_auth = True,
+
             allowed_param = allowed_param
             )(self, *args, post_data=post_data, headers=headers)
 
@@ -372,7 +381,7 @@ class API(object):
         path = '/user/update_edu',
         method = 'POST',
         allowed_param = ['feildid', 'year', 'schoolid', 'departmentid', 'level'],
-        require_auth = True
+
     )
 
     """ 5.user/other_info 获取其他人资料 """
@@ -380,7 +389,7 @@ class API(object):
         path = '/user/other_info',
         payload_type = 'user',
         allowed_param = ['name'],
-        require_auth = True
+
     )
 
     """ 6.user/infos 获取一批人的简单资料 """
@@ -388,7 +397,7 @@ class API(object):
         path = '/user/infos',
         payload_type = 'user', payload_list = True,
         allowed_param = ['names'],
-        require_auth = True
+
     )
 
     """ 7.user/verify 验证账户是否合法（是否注册微博） """
@@ -397,7 +406,7 @@ class API(object):
         method = 'POST',
         payload_type = 'json',
         allowed_param = ['name'],
-        require_auth = True
+
     )
 
     """ 8.user/emotion 获取心情微博 """ # TODO: if empty returned, may fail
@@ -407,16 +416,15 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['name', 'reqnum', 'pageflag', 'timestamp', 'type',
                          'contenttype', 'accesslevel', 'emotiontype'],
-        require_auth = True
+
     )
 
-    ## 关系链相关 ##
     """ 1.friends/fanslist 我的听众列表 """
     _friends_fanslist = bind_api(
         path = '/friends/fanslist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
-        require_auth = True
+
     )
 
     """ 2.friends/idollist 我收听的人列表 """
@@ -424,7 +432,6 @@ class API(object):
         path = '/friends/idollist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 3.Friends/blacklist 黑名单列表 """
@@ -432,7 +439,6 @@ class API(object):
         path = '/friends/blacklist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 4.Friends/speciallist 特别收听列表 """
@@ -440,7 +446,6 @@ class API(object):
         path = '/friends/speciallist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 5.friends/add 收听某个用户 """
@@ -448,7 +453,6 @@ class API(object):
         path = '/friends/add',
         method = 'POST',
         allowed_param = ['name'],
-        require_auth = True
     )
 
     """ 6.friends/del取消收听某个用户 """
@@ -456,7 +460,6 @@ class API(object):
         path = '/friends/del',
         method = 'POST',
         allowed_param = ['name'],
-        require_auth = True
     )
 
     """ 7.friends/addspecial 特别收听某个用户 """
@@ -464,7 +467,6 @@ class API(object):
         path = '/friends/addspecial',
         method = 'POST',
         allowed_param = ['name'],
-        require_auth = True
     )
 
     """ 8.friends/delspecial 取消特别收听某个用户 """
@@ -472,7 +474,7 @@ class API(object):
         path = '/friends/delspecial',
         method = 'POST',
         allowed_param = ['name'],
-        require_auth = True
+
     )
 
     """ 9.friends/addblacklist 添加某个用户到黑名单 """
@@ -480,7 +482,7 @@ class API(object):
         path = '/friends/addblacklist',
         method = 'POST',
         allowed_param = ['name'],
-        require_auth = True
+
     )
 
     """ 10.friends/delblacklist 从黑名单中删除某个用户 """
@@ -488,7 +490,7 @@ class API(object):
         path = '/friends/delblacklist',
         method = 'POST',
         allowed_param = ['name'],
-        require_auth = True
+
     )
 
     """ 11.friends/check 检测是否我的听众或收听的人 """
@@ -496,7 +498,7 @@ class API(object):
         path = '/friends/check',
         payload_type = 'json',
         allowed_param = ['names', 'flag'],
-        require_auth = True
+
     )
 
     """ 12.friends/user_fanslist 其他帐户听众列表 """
@@ -504,7 +506,6 @@ class API(object):
         path = '/friends/user_fanslist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['name', 'reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 13.friends/user_idollist 其他帐户收听的人列表 """
@@ -512,7 +513,6 @@ class API(object):
         path = '/friends/user_idollist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['name', 'reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 14.friends/user_speciallist 其他帐户特别收听的人列表 """
@@ -520,7 +520,6 @@ class API(object):
         path = '/friends/user_speciallist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['name', 'reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 15.friends/fanslist_s 我的听众列表，简单信息（200个）"""
@@ -528,7 +527,6 @@ class API(object):
         path = '/friends/fanslist_s',
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 16.friends/idollist_s 我的收听列表，简单信息（200个） """
@@ -536,7 +534,6 @@ class API(object):
         path = '/friends/idollist_s',
         payload_type = 'user', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 17.friends/mutual_list 互听关系链列表 """
@@ -544,7 +541,6 @@ class API(object):
         path = '/friends/mutual_list',
         payload_type = 'user', payload_list = True,
         allowed_param = ['name', 'reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 18.fanslist_name 我的听众列表，只输出name（200个） """
@@ -552,7 +548,6 @@ class API(object):
         path = '/friends/fanslist_name',
         payload_type = 'json', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
-        require_auth = True
     )
 
     """ 19.idollist_name 我的收听列表，只输出name（200个） """
@@ -560,7 +555,20 @@ class API(object):
         path = '/friends/idollist_name',
         payload_type = 'json', payload_list = True,
         allowed_param = ['reqnum', 'startindex'],
-        require_auth = True
+    )
+
+    """  获取用户最亲密的好友列表 """
+    _friends_get_intimate_friends = bind_api(
+        path = '/friends/get_intimate_friends',
+        payload_type = 'user', payload_list = True,
+        allowed_param = ['reqnum'],
+    )
+
+    """ 好友帐号输入提示 """
+    _friends_match_nick_tips = bind_api(
+        path = '/friends/match_nick_tips',
+        payload_type = 'user', payload_list = True,
+        allowed_param = ['match', 'reqnum'],
     )
 
     ## 私信相关 ##
@@ -569,8 +577,8 @@ class API(object):
         path = '/private/add',
         method = 'POST',
         payload_type = 'retid',
-        allowed_param = ['name', 'content', 'clientip', 'jing', 'wei'],
-        require_auth = True
+        allowed_param = ['name', 'content', 'longitude', 'latitude', 'clientip'],
+
     )
 
     """ 2.private/del 删除一条私信 """
@@ -579,7 +587,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['id'],
-        require_auth = True
+
     )
 
     """ 3.private/recv 收件箱 """
@@ -587,7 +595,7 @@ class API(object):
         path = '/private/recv',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime', 'lastid'],
-        require_auth = True
+
     )
 
     """ 4.private/send 发件箱 """
@@ -595,7 +603,7 @@ class API(object):
         path = '/private/send',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime', 'lastid'],
-        require_auth = True
+
     )
 
     ## 搜索相关 ##
@@ -604,7 +612,7 @@ class API(object):
         path = '/search/user',
         payload_type = 'user', payload_list = True,
         allowed_param = ['keyword', 'pagesize', 'page'],
-        require_auth = True
+
     )
 
     """ 2.Search/t 搜索微博 """
@@ -612,7 +620,7 @@ class API(object):
         path = '/search/t',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['keyword', 'pagesize', 'page'],
-        require_auth = True
+
     )
 
     """ 3.Search/userbytag 通过标签搜索用户 """
@@ -620,7 +628,7 @@ class API(object):
         path = '/search/userbytag',
         payload_type = 'user', payload_list = True,
         allowed_param = ['keyword', 'pagesize', 'page'],
-        require_auth = True
+
     )
 
     # TODO: model parser
@@ -630,7 +638,7 @@ class API(object):
         path = '/trends/ht',
         payload_type = 'json',
         allowed_param = ['reqnum', 'type', 'pos'],
-        require_auth = True
+
     )
 
     """ 2.Trends/t 转播热榜 """
@@ -638,7 +646,7 @@ class API(object):
         path = '/trends/t',
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'type', 'pos'],
-        require_auth = True
+
     )
 
     """ 3.trends/famouslist 推荐名人列表 """
@@ -646,7 +654,7 @@ class API(object):
         path = '/trends/famouslist',
         payload_type = 'user', payload_list = True,
         allowed_param = ['classid', 'subclassid'],
-        require_auth = True
+
     )
 
     ## 数据更新相关 ##
@@ -655,7 +663,7 @@ class API(object):
         path = '/info/update',
         payload_type = 'json',
         allowed_param = ['op', 'type'],
-        require_auth = True
+
     )
 
     ## 数据收藏 ##
@@ -665,7 +673,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['id'],
-        require_auth = True
+
     )
 
     """ 2.fav/delt 从收藏删除一条微博 """
@@ -674,7 +682,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['id'],
-        require_auth = True
+
     )
 
     """ 3.fav/list_t 收藏的微博列表 """
@@ -683,7 +691,7 @@ class API(object):
         payload_type = 'tweet', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'nexttime', 'prevtime',
                          'lastid'],
-        require_auth = True
+
     )
 
     """ 4.fav/addht 订阅话题 """
@@ -692,7 +700,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['id'],
-        require_auth = True
+
     )
 
     """ 5.fav/delht 从收藏删除话题 """
@@ -701,7 +709,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['id'],
-        require_auth = True
+
     )
 
     """ 6.fav/list_ht 获取已订阅话题列表 """
@@ -709,7 +717,16 @@ class API(object):
         path = '/fav/list_ht',
         payload_type = 'json', payload_list = True,
         allowed_param = ['reqnum', 'pageflag', 'pagetime', 'lastid'],
-        require_auth = True
+
+    )
+
+    ## lbs
+    # todo: list parser
+    _lbs_get_poi = bind_api(
+        path = '/lbs/get_poi',
+        method = 'POST',
+        payload_type = 'json',
+        allowed_param = ['longitude', 'latitude', 'radius', 'reqnum']
     )
 
     ## 话题相关 ##
@@ -718,7 +735,7 @@ class API(object):
         path = '/ht/ids',
         payload_type = 'json', payload_list = True,
         allowed_param = ['httexts'],
-        require_auth = True
+
     )
 
     """ 2.ht/info 根据话题ID获取话题相关微博 """
@@ -726,7 +743,7 @@ class API(object):
         path = '/ht/info',
         payload_type = 'json', payload_list = True,
         allowed_param = ['ids'],
-        require_auth = True
+
     )
 
     ## 标签相关 ##
@@ -736,7 +753,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['tag'],
-        require_auth = True
+
     )
 
     """ 2.tag/del 删除标签 """
@@ -745,7 +762,7 @@ class API(object):
         method = 'POST',
         payload_type = 'retid',
         allowed_param = ['tagid'],
-        require_auth = True
+
     )
 
     ## 名单 ##
@@ -757,7 +774,7 @@ class API(object):
         path = '/other/kownperson',
         payload_type = 'user', payload_list = True,
         allowed_param = [],
-        require_auth = True
+
     )
 
     """ 2.other/shorturl短URL变长URL """
@@ -765,7 +782,7 @@ class API(object):
         path = '/other/shorturl',
         payload_type = 'json',
         allowed_param = ['url'],
-        require_auth = True
+
     )
 
     """ 3.other/videokey 获取视频上传的KEY """
@@ -773,7 +790,7 @@ class API(object):
         path = '/other/videokey',
         payload_type = 'json',
         allowed_param = [],
-        require_auth = True
+
     )
 
     """ 4.other/get_emotions 获取表情接口 """
@@ -781,7 +798,7 @@ class API(object):
         path = '/other/get_emotions',
         payload_type = 'json', payload_list = True,
         allowed_param = ['type'],
-        require_auth = True,
+
     )
 
     """ 5.other/gettopreadd 一键转播热门排行 """
@@ -789,7 +806,7 @@ class API(object):
         path = '/other/gettopreadd',
         payload_type = 'retid', payload_list = True,
         allowed_param = ['type', 'country', 'province', 'city'],
-        require_auth = True,
+
     )
 
     """ Get the authenticated user """

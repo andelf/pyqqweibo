@@ -9,11 +9,11 @@ try:
     import urlparse
     from urllib import quote, unquote, urlencode
     import htmlentitydefs
-    from cgi import parse_qs
+    from cgi import parse_qs, parse_qsl
 except ImportError:
     from urllib.request import Request, urlopen
     import urllib.parse as urlparse
-    from urllib.parse import quote, unquote, urlencode, parse_qs
+    from urllib.parse import quote, unquote, urlencode, parse_qs, parse_qsl
     import html.entities as htmlentitydefs
 
 try:
@@ -37,4 +37,3 @@ def import_simplejson():
     return json
 
 json = import_simplejson()
-
