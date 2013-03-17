@@ -239,7 +239,7 @@ class OpenId_OpenKey_Handler(AuthHandler):
         query["wbversion"] = "1"
 
         query = query.items()
-        query = [(str(k), to_utf8(v)) for k,v in query]
+        query = [(str(k), convert_to_utf8_bytes(v)) for k,v in query]
         query.sort()
         uri = urlparse.urlparse(url)[2] # url path
         raw = '&'.join(method, urlencode(uri), urlencode('&'.join(("%s=%s" % kv) for kv in query)))
@@ -248,7 +248,8 @@ class OpenId_OpenKey_Handler(AuthHandler):
         #return binascii.b2a_base64(hashed.digest())[:-1]
         # fix py3k, str() on a bytes obj will be a "b'...'"
         sig = binascii.b2a_base64(hashed.digest())[:-1]
-        print ret
+        print sig
+        query.append(("sig", sig))
         return ret.decode('ascii')
 
         if method == 'POST':

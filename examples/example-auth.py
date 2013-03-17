@@ -12,8 +12,9 @@ from __future__ import unicode_literals
 import sys
 sys.path.insert(0, '..')
 import webbrowser
-from qqweibo import OAuthHandler, API, JSONParser
-
+from qqweibo import API, JSONParser
+from qqweibo import OAuth2_0_Handler as AuthHandler
+import secret
 
 # for py3k
 try:
@@ -22,17 +23,13 @@ except:
     pass
 
 
-API_KEY = 'your key'
-API_SECRET = 'your secret'
+API_KEY = secret.apiKey
+API_SECRET = secret.apiSecret
+CALLBACK_URL = 'http://fledna.duapp.com/query'
 
-if API_KEY.startswith('your'):
-    print ('You must fill API_KEY and API_SECRET!')
-    webbrowser.open("http://open.t.qq.com/apps_index.php")
-    raise RuntimeError('You must set API_KEY and API_SECRET')
-
-auth = OAuthHandler(API_KEY, API_SECRET)
+auth = AuthHandler(API_KEY, API_SECRET, CALLBACK_URL)
 # or you can use callback url
-# auth = OAuthHandler(API_KEY, API_SECRET,
+# auth = AuthHandler(API_KEY, API_SECRET,
 #     callback="http://localhost:5000/callback")
 # will be callbackurl?oauth_token=[OAUTH_TOKEN]&oauth_verifier=[VERIFIER]
 
@@ -44,6 +41,7 @@ verifier = input('Your PIN: ').strip()
 
 access_token = auth.get_access_token(verifier)
 
+print access_token
 # = Save Token =
 token = access_token.key
 tokenSecret = access_token.secret

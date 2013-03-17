@@ -12,7 +12,8 @@ import sys
 sys.path.insert(0, "..")
 import webbrowser
 
-from qqweibo import OAuthHandler, API
+from qqweibo import API
+from qqweibo import OAuth2_0_Handler as AuthHandler
 
 API_KEY = 'your key'
 API_SECRET = 'your secret'
@@ -22,8 +23,10 @@ if API_KEY.startswith('your'):
     webbrowser.open("http://open.t.qq.com/apps_index.php")
     raise RuntimeError('You must set API_KEY and API_SECRET')
 
+CALLBACK_URL = 'http://fledna.duapp.com/query'
 
-auth = OAuthHandler(API_KEY, API_SECRET)
+auth = AuthHandler(API_KEY, API_SECRET, CALLBACK_URL)
+
 
 token = YOUR TOKEN HERE
 tokenSecret = YOUR TOKEN_SECRET HERE
@@ -65,4 +68,3 @@ print (ret.verifyinfo)
 
 for t in ret.timeline(reqnum=3):
     print (t.text)
-
