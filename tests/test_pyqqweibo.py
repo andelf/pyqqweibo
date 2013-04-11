@@ -86,10 +86,12 @@ class QWeiboTestCase(unittest.TestCase):
     def setUpClass(cls):
         """generate OAuthHandler"""
         import secret
-        auth = OAuthHandler(secret.apiKey, secret.apiSecret)
-        token = secret.token
-        tokenSecret = secret.tokenSecret
-        auth.setToken(token, tokenSecret)
+        #auth = OAuthHandler(secret.apiKey, secret.apiSecret)
+        auth = OAuth2_0_Handler(secret.apiKey, secret.apiSecret, secret.callbackUrl)
+
+
+        auth.access_token = secret.accessToken
+        auth.openid = secret.openid
         cls.auth = auth
 
 
@@ -128,7 +130,7 @@ class FileCacheTestCase(QWeiboTestCase):
         shutil.rmtree(self.tmpdir)
 
 
-class RarserTestCase(QWeiboTestCase):
+class ParserTestCase(QWeiboTestCase):
     def test_XMLRawParser(self):
         """XMLRawParser"""
         import xml.dom.minidom
@@ -291,7 +293,7 @@ class TimelineAPITestCase(APITestCase):
     def test_broadcast(self):
         """api.timeline.broadcast"""
         api = self.api
-        username = self.auth.get_username()
+        username = api.user.info().username
         ret = api.timeline.broadcast()
         assert len(ret) == 20
         assert type(ret[0]) == models.Tweet
@@ -875,4 +877,3 @@ if 1:
         ret = APITestCase.api.tweet.delete(i)
         print ('delete id={}'.format(i))
         assert ret.id == i
-

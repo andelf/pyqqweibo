@@ -242,13 +242,14 @@ class OAuth2_0_Handler(AuthHandler):
             'refresh_token': refresh_token,
         }
 
-        uri = urlparse.urljoin(self.oauth_base_url, endpoint)
+        uri = urlparse.urljoin(self.BASE_URL, endpoint)
         body = urlencode(args)
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
 
-        resp = urlopen(uri, body, headers)
+        req = Request(uri, body, headers)
+        resp = urlopen(req)
         content = resp.read()
 
         if not resp.code == 200:
@@ -264,7 +265,7 @@ class OAuth2_0_Handler(AuthHandler):
     def authorize_request(self, url, method, headers, parameters):
         query = dict(parameters)
         if "oauth_consumer_key" not in query:
-            query["oauth_consumer_key"] = self.api_key
+            query["oauth_consumer_key"] = self._api_key
         if "access_token" not in query:
             query["access_token"] = self.access_token
         if "openid" not in query:
@@ -281,7 +282,6 @@ class OAuth2_0_Handler(AuthHandler):
         if method == 'POST':
             return url, query
         elif method == 'GET':
-            print query
             params = '&'.join(("%s=%s" % kv) for kv in query)
             if '?' in url:
                 return "%s&%s" % (url, params), query

@@ -108,7 +108,7 @@ def bind_api(**config):
             except Exception as e:
                     raise QWeiboError("Failed to request %s headers=%s %s" % \
                                       (url, self.headers, e))
-            body = resp.read(); print body
+            body = resp.read()
             self.api.last_response = resp
             # log handling
             if self.api.log is not None:
