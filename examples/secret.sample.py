@@ -1,0 +1,5 @@
+apiKey = 'yours'
+apiSecret = 'yours'
+callbackUrl = 'http://fledna.duapp.com/query'
+openid = 'yours'
+accessToken = 'yours'

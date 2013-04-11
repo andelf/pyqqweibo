@@ -213,8 +213,8 @@ class OAuth2_0_Handler(AuthHandler):
         access_token = response_args.get('access_token', None)
         openid = response_args.get('openid', None)
 
-        if refresh_token is not None:
-            response_args = self.refresh(refresh_token)
+        #if refresh_token is not None:
+        #    response_args = self.refresh(refresh_token)
 
         self.refresh_token = refresh_token
         self.access_token = access_token
@@ -259,7 +259,6 @@ class OAuth2_0_Handler(AuthHandler):
         self.access_token = response_args.get("access_token", None)
         self.refresh_token = response_args.get("refresh_token", None)
         return response_args
-
 
 
     def authorize_request(self, url, method, headers, parameters):

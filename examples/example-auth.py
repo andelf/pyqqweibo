@@ -25,32 +25,21 @@ except:
 
 API_KEY = secret.apiKey
 API_SECRET = secret.apiSecret
-CALLBACK_URL = 'http://fledna.duapp.com/query'
+CALLBACK_URL = secret.callbackUrl
 
 auth = AuthHandler(API_KEY, API_SECRET, CALLBACK_URL)
-# or you can use callback url
-# auth = AuthHandler(API_KEY, API_SECRET,
-#     callback="http://localhost:5000/callback")
-# will be callbackurl?oauth_token=[OAUTH_TOKEN]&oauth_verifier=[VERIFIER]
+
 
 ## use get_authorization_url if you haven't got a token
 url = auth.get_authorization_url()
 print ('Opening {:s} in your browser...'.format(url))
 webbrowser.open_new(url)
-verifier = input('Your PIN: ').strip()
+verifier = input('Your CODE: ').strip()
 
-access_token = auth.get_access_token(verifier)
+token = auth.get_access_token(verifier)
 
-print access_token
+print token
 # = Save Token =
-token = access_token.key
-tokenSecret = access_token.secret
-print (("Access token key:    {:s}\n"
-        "Access token secret: {:s}").format(token, tokenSecret))
-## or if you already have token
-# token = 'your token'
-# tokenSecret = 'yourr tokenSecret'
-# auth.setToken(token, tokenSecret)
 
 
 # now you have a workable api

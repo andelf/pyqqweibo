@@ -43,9 +43,6 @@ def bind_api(**config):
             self.build_parameters(args, kargs)
             self.api_root = api.api_root
 
-            # Perform any path variable substitution
-            self.build_path()
-
             self.scheme = 'https://' if api.auth.AUTH_TYPE == "OAuth2.0" else 'http://'
 
             self.host = api.host
@@ -74,21 +71,6 @@ def bind_api(**config):
                 #    raise QWeiboError('`%s` is not allowd in this API function.' % k)
                 self.parameters[k] = quote(convert_to_utf8_str(arg))
 
-        def build_path(self):
-            for variable in re_path_template.findall(self.path):
-                name = variable.strip('{}')
-
-                if name == 'user' and self.api.auth:
-                    value = self.api.auth.get_username()
-                else:
-                    try:
-                        value = quote(self.parameters[name])
-                    except KeyError:
-                        raise QWeiboError('No parameter value found for path variable: %s' % name)
-                    del self.parameters[name]
-
-                self.path = self.path.replace(variable, value)
-
         def execute(self):
             # Build the request URL
             url = self.scheme + self.host + self.api_root + self.path
@@ -101,7 +83,7 @@ def bind_api(**config):
                     # asure in bytes format
                     self.post_data = '&'.join(("%s=%s" % kv) for kv in parameters)
                 req = Request(full_url, data=self.post_data, headers=self.headers)
-            else:
+            elif self.method == 'GET':
                 req = Request(full_url)
             try:
                 resp = urlopen(req)
@@ -151,13 +133,6 @@ def bind_api(**config):
             return result
 
 
-                # Exit request loop if non-retry error code
-##                if self.retry_errors:
- #                   if resp.code not in self.retry_errors:
- #                       break
- #               else:
- #                   if resp.code == 200:
- #                       break
 
             # Query the cache if one is available
             # and this request uses a GET method.
