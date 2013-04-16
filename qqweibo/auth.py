@@ -213,12 +213,12 @@ class OAuth2_0_Handler(AuthHandler):
         access_token = response_args.get('access_token', None)
         openid = response_args.get('openid', None)
 
-        if refresh_token is not None:
-            response_args = self.refresh(refresh_token)
-
         self.refresh_token = refresh_token
         self.access_token = access_token
         self.openid = openid
+
+        if refresh_token is not None:
+            response_args = self.refresh(refresh_token)
 
         return response_args
 
