@@ -456,7 +456,7 @@ class API(object):
     )
 
     """ 6.friends/del取消收听某个用户 """
-    _friends_del = bind_api(          # fix confilicts with del
+    _friends_del = bind_api(          # fix conflicts with del
         path = '/friends/del',
         method = 'POST',
         allowed_param = ['name'],

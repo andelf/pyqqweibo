@@ -190,7 +190,7 @@ class User(Model):
         """收听某个用户"""
         assertion(not bool(self.self), "you can't follow your self")
         if self.ismyidol:
-            return                      # already flollowed
+            return                      # already followed
         else:
             self._api.friends.add(name=self.name)
     follow = add
