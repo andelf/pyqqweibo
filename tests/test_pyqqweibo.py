@@ -560,7 +560,7 @@ class TweetAPITestCase(APITestCase):
                                      flag=0)
         count0 = ret0.as_dict()['79504073889068']
         assert count0 > 0
-        # in some senconds
+        # in some seconds
         assert count0 - 10 <= count <= count0
 
         ret1 = api.tweet.retweetcount(ids=79504073889068,
@@ -765,7 +765,7 @@ class FriendsAPITestCase(APITestCase):
         assert not info.ismyidol
 
         try:
-            # BUG: will cause errcode=65. reason unkown
+            # BUG: will cause errcode=65. reason unknown
             api.friends.add(name='t')
         except:
             pass
